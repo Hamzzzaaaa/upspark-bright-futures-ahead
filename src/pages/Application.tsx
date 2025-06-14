@@ -163,7 +163,7 @@ const Application = () => {
             Patient Application Form
           </h1>
           <p className="text-sm sm:text-base text-gray-800 font-bold">
-            Please fill out all sections completely
+            Please fill out the required fields (marked with *)
           </p>
         </div>
 
@@ -179,7 +179,7 @@ const Application = () => {
             <CardContent className="space-y-3 sm:space-y-4 p-4 sm:p-6 pt-0">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <div className="space-y-1 sm:space-y-2">
-                  <Label className="text-gray-900 font-black text-sm sm:text-base">Parent/Guardian Name</Label>
+                  <Label className="text-gray-900 font-black text-sm sm:text-base">Parent/Guardian Name *</Label>
                   <Input
                     value={formData.parentName}
                     onChange={(e) => handleInputChange('parentName', e.target.value)}
@@ -189,7 +189,7 @@ const Application = () => {
                   />
                 </div>
                 <div className="space-y-1 sm:space-y-2">
-                  <Label className="text-gray-900 font-black text-sm sm:text-base">Phone Number</Label>
+                  <Label className="text-gray-900 font-black text-sm sm:text-base">Phone Number *</Label>
                   <Input
                     value={formData.parentPhone}
                     onChange={(e) => handleInputChange('parentPhone', e.target.value)}
@@ -208,13 +208,12 @@ const Application = () => {
                   className="border-2 border-gray-300 bg-white focus:border-purple-500 h-10 sm:h-12 text-sm sm:text-base font-bold text-gray-900 placeholder:text-gray-600"
                   placeholder="Email address"
                   type="email"
-                  required
                 />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <div className="space-y-1 sm:space-y-2">
-                  <Label className="text-gray-900 font-black text-sm sm:text-base">Child's Name</Label>
+                  <Label className="text-gray-900 font-black text-sm sm:text-base">Child's Name *</Label>
                   <Input
                     value={formData.childName}
                     onChange={(e) => handleInputChange('childName', e.target.value)}
@@ -231,7 +230,6 @@ const Application = () => {
                     className="border-2 border-gray-300 bg-white focus:border-purple-500 h-10 sm:h-12 text-sm sm:text-base font-bold text-gray-900 placeholder:text-gray-600"
                     placeholder="Age"
                     type="number"
-                    required
                   />
                 </div>
               </div>
@@ -265,7 +263,6 @@ const Application = () => {
                   onChange={(e) => handleInputChange('address', e.target.value)}
                   className="border-2 border-gray-300 bg-white focus:border-purple-500 min-h-[80px] text-sm sm:text-base font-bold text-gray-900 placeholder:text-gray-600"
                   placeholder="Full address"
-                  required
                 />
               </div>
 
@@ -277,7 +274,6 @@ const Application = () => {
                     onChange={(e) => handleInputChange('emergencyContact', e.target.value)}
                     className="border-2 border-gray-300 bg-white focus:border-purple-500 h-10 sm:h-12 text-sm sm:text-base font-bold text-gray-900 placeholder:text-gray-600"
                     placeholder="Emergency contact name"
-                    required
                   />
                 </div>
                 <div className="space-y-1 sm:space-y-2">
@@ -287,7 +283,6 @@ const Application = () => {
                     onChange={(e) => handleInputChange('emergencyPhone', e.target.value)}
                     className="border-2 border-gray-300 bg-white focus:border-purple-500 h-10 sm:h-12 text-sm sm:text-base font-bold text-gray-900 placeholder:text-gray-600"
                     placeholder="Emergency phone number"
-                    required
                   />
                 </div>
               </div>
@@ -304,7 +299,7 @@ const Application = () => {
             </CardHeader>
             <CardContent className="space-y-3 sm:space-y-4 p-4 sm:p-6 pt-0">
               <div className="space-y-1 sm:space-y-2">
-                <Label className="text-gray-900 font-black text-sm sm:text-base">Type of Disability</Label>
+                <Label className="text-gray-900 font-black text-sm sm:text-base">Type of Disability *</Label>
                 <Input
                   value={formData.disabilityType}
                   onChange={(e) => handleInputChange('disabilityType', e.target.value)}
@@ -322,7 +317,6 @@ const Application = () => {
                     onChange={(e) => handleInputChange('disabilityDuration', e.target.value)}
                     className="border-2 border-gray-300 bg-white focus:border-purple-500 h-10 sm:h-12 text-sm sm:text-base font-bold text-gray-900 placeholder:text-gray-600"
                     placeholder="e.g., Since birth, 2 years"
-                    required
                   />
                 </div>
                 <div className="space-y-1 sm:space-y-2">
@@ -332,7 +326,6 @@ const Application = () => {
                     onChange={(e) => handleInputChange('onsetDate', e.target.value)}
                     className="border-2 border-gray-300 bg-white focus:border-purple-500 h-10 sm:h-12 text-sm sm:text-base font-bold text-gray-900 placeholder:text-gray-600"
                     placeholder="When did symptoms first appear?"
-                    required
                   />
                 </div>
               </div>
@@ -344,7 +337,6 @@ const Application = () => {
                   onChange={(e) => handleInputChange('currentSymptoms', e.target.value)}
                   className="border-2 border-gray-300 bg-white focus:border-purple-500 min-h-[100px] text-sm sm:text-base font-bold text-gray-900 placeholder:text-gray-600"
                   placeholder="Describe current symptoms and behaviors"
-                  required
                 />
               </div>
 
@@ -355,7 +347,6 @@ const Application = () => {
                   onChange={(e) => handleInputChange('functionalLimitations', e.target.value)}
                   className="border-2 border-gray-300 bg-white focus:border-purple-500 min-h-[100px] text-sm sm:text-base font-bold text-gray-900 placeholder:text-gray-600"
                   placeholder="What activities are affected? How does this impact daily life?"
-                  required
                 />
               </div>
             </CardContent>
