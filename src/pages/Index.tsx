@@ -15,6 +15,11 @@ const Index = () => {
   const [selectedPlan, setSelectedPlan] = useState(30); // Default 30-day plan
   const navigate = useNavigate();
 
+  // Progress data
+  const therapistProgress = 75; // 12/16 sessions = 75%
+  const activitiesProgress = 85; // 85% activities done
+  const overallDevelopment = Math.round((therapistProgress + activitiesProgress) / 2); // Average of both
+
   // Load child name from localStorage on component mount
   useEffect(() => {
     const storedChildName = localStorage.getItem('childName');
@@ -52,62 +57,41 @@ const Index = () => {
 
             {/* Progress Stats Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-              {/* Therapist Sessions */}
-              <Card className="bold-card">
+              {/* Therapist Sessions - Clickable */}
+              <Card 
+                className="bold-card cursor-pointer hover:scale-105 transition-all duration-300"
+                onClick={() => setActiveTab('therapist')}
+              >
                 <CardContent className="p-4 sm:p-6 text-center">
                   <Calendar className="w-8 h-8 sm:w-10 sm:h-10 text-purple-400 mx-auto mb-2" />
                   <div className="text-2xl sm:text-3xl font-black text-white">12/16</div>
                   <div className="text-base sm:text-lg font-black text-white">Therapist Sessions</div>
-                  <div className="text-sm sm:text-base font-bold text-purple-300">75% Complete</div>
+                  <div className="text-sm sm:text-base font-bold text-purple-300">{therapistProgress}% Complete</div>
                 </CardContent>
               </Card>
 
-              {/* Activities Completed */}
-              <Card className="bold-card">
+              {/* Activities Completed - Clickable */}
+              <Card 
+                className="bold-card cursor-pointer hover:scale-105 transition-all duration-300"
+                onClick={() => setActiveTab('activities')}
+              >
                 <CardContent className="p-4 sm:p-6 text-center">
                   <Target className="w-8 h-8 sm:w-10 sm:h-10 text-green-400 mx-auto mb-2" />
-                  <div className="text-2xl sm:text-3xl font-black text-white">85%</div>
+                  <div className="text-2xl sm:text-3xl font-black text-white">{activitiesProgress}%</div>
                   <div className="text-base sm:text-lg font-black text-white">Activities Done</div>
                   <div className="text-sm sm:text-base font-bold text-green-300">Great Progress!</div>
                 </CardContent>
               </Card>
 
-              {/* Development Progress */}
+              {/* Development Progress - Calculated from above */}
               <Card className="bold-card sm:col-span-2">
                 <CardContent className="p-4 sm:p-6 text-center">
                   <TrendingUp className="w-8 h-8 sm:w-10 sm:h-10 text-yellow-400 mx-auto mb-2" />
-                  <div className="text-2xl sm:text-3xl font-black text-white">78%</div>
+                  <div className="text-2xl sm:text-3xl font-black text-white">{overallDevelopment}%</div>
                   <div className="text-base sm:text-lg font-black text-white">Overall Development</div>
                   <div className="text-sm sm:text-base font-bold text-yellow-300">Excellent Progress This Month</div>
                 </CardContent>
               </Card>
-            </div>
-
-            {/* Main Dashboard Cards */}
-            <div className="space-y-4 sm:space-y-6">
-              <DashboardCard
-                title="Daily Activities"
-                description={`Fun learning games for ${selectedPlan}-day program`}
-                icon={Activity}
-                gradient="from-yellow-400 to-orange-500"
-                onClick={() => setActiveTab('activities')}
-              />
-              
-              <DashboardCard
-                title="Book Therapist"
-                description="Schedule therapy sessions & choose program"
-                icon={UserCheck}
-                gradient="from-purple-400 to-pink-500"
-                onClick={() => setActiveTab('therapist')}
-              />
-              
-              <DashboardCard
-                title="Medicine Delivery"
-                description="Order medication refills"
-                icon={Pill}
-                gradient="from-teal-400 to-cyan-500"
-                onClick={() => setActiveTab('medicine')}
-              />
             </div>
           </div>
         );
