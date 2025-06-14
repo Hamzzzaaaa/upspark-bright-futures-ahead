@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -22,7 +21,25 @@ const PlanSelection = () => {
   const navigate = useNavigate();
   const [selectedPlan, setSelectedPlan] = useState<string>('');
   
-  const { therapistName, specialization } = location.state || {};
+  const { therapistName, specialization, therapistId } = location.state || {};
+
+  // Mock therapist data to get phone number - in real app this would come from API
+  const getTherapistDetails = (id: string) => {
+    const therapists = [
+      {
+        id: '1',
+        phone: '+91 98765 43210',
+        image: 'https://images.unsplash.com/photo-1649972904349-6e44c42644a7?w=150&h=150&fit=crop&crop=face'
+      },
+      {
+        id: '2',
+        phone: '+91 98765 43211',
+        image: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=150&h=150&fit=crop&crop=face'
+      },
+      // Add more as needed
+    ];
+    return therapists.find(t => t.id === id) || { phone: '+91 98765 43210', image: '' };
+  };
 
   const plans: Plan[] = [
     {
@@ -89,10 +106,20 @@ const PlanSelection = () => {
     }
     
     const plan = plans.find(p => p.id === selectedPlan);
-    alert(`Booking confirmed!\nTherapist: ${therapistName}\nPlan: ${plan?.name}\nAmount: ₹${plan?.price}`);
+    const therapistDetails = getTherapistDetails(therapistId);
     
-    // Navigate to a success page or back to home
-    navigate('/');
+    // Navigate to confirmation page with all necessary data
+    navigate('/booking-confirmation', {
+      state: {
+        therapistName,
+        specialization,
+        planName: plan?.name,
+        price: plan?.price,
+        therapistPhone: therapistDetails.phone,
+        therapistImage: therapistDetails.image,
+        therapistId
+      }
+    });
   };
 
   const formatPrice = (price: number) => {
