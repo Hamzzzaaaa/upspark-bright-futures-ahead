@@ -23,11 +23,10 @@ interface TherapistBookingProps {
 }
 
 const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
-  const [selectedPlan, setSelectedPlan] = useState<string>('');
   const [selectedTherapist, setSelectedTherapist] = useState<string>('');
 
   const therapists: Therapist[] = [
-    // Speech Therapists
+    // Speech Therapists - 10 available
     {
       id: '1',
       name: 'Dr. Sarah Johnson',
@@ -60,16 +59,108 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
       specialization: 'Speech Therapy',
       rating: 4.8,
       experience: '10 years',
-      available: false,
+      available: true,
       image: '👨‍⚕️',
       area: 'Madhapur',
       pincode: '500081',
       phone: '+91 98765 43212',
       distance: '5.1 km'
     },
-    // Behavioral Therapists
     {
       id: '4',
+      name: 'Dr. Anita Reddy',
+      specialization: 'Speech Therapy',
+      rating: 4.6,
+      experience: '6 years',
+      available: true,
+      image: '👩‍⚕️',
+      area: 'Kondapur',
+      pincode: '500084',
+      phone: '+91 98765 43213',
+      distance: '4.2 km'
+    },
+    {
+      id: '5',
+      name: 'Dr. Vikram Singh',
+      specialization: 'Speech Therapy',
+      rating: 4.8,
+      experience: '7 years',
+      available: true,
+      image: '👨‍⚕️',
+      area: 'Gachibowli',
+      pincode: '500032',
+      phone: '+91 98765 43214',
+      distance: '6.8 km'
+    },
+    {
+      id: '6',
+      name: 'Dr. Meera Patel',
+      specialization: 'Speech Therapy',
+      rating: 4.7,
+      experience: '4 years',
+      available: true,
+      image: '👩‍⚕️',
+      area: 'Begumpet',
+      pincode: '500016',
+      phone: '+91 98765 43215',
+      distance: '3.7 km'
+    },
+    {
+      id: '7',
+      name: 'Dr. Suresh Babu',
+      specialization: 'Speech Therapy',
+      rating: 4.9,
+      experience: '9 years',
+      available: true,
+      image: '👨‍⚕️',
+      area: 'Kukatpally',
+      pincode: '500072',
+      phone: '+91 98765 43216',
+      distance: '8.1 km'
+    },
+    {
+      id: '8',
+      name: 'Dr. Kavya Rao',
+      specialization: 'Speech Therapy',
+      rating: 4.5,
+      experience: '3 years',
+      available: true,
+      image: '👩‍⚕️',
+      area: 'Secunderabad',
+      pincode: '500003',
+      phone: '+91 98765 43217',
+      distance: '7.9 km'
+    },
+    {
+      id: '9',
+      name: 'Dr. Ravi Chandra',
+      specialization: 'Speech Therapy',
+      rating: 4.8,
+      experience: '11 years',
+      available: true,
+      image: '👨‍⚕️',
+      area: 'Ameerpet',
+      pincode: '500016',
+      phone: '+91 98765 43218',
+      distance: '4.8 km'
+    },
+    {
+      id: '10',
+      name: 'Dr. Lakshmi Devi',
+      specialization: 'Speech Therapy',
+      rating: 4.6,
+      experience: '5 years',
+      available: true,
+      image: '👩‍⚕️',
+      area: 'Miyapur',
+      pincode: '500049',
+      phone: '+91 98765 43219',
+      distance: '9.2 km'
+    },
+
+    // Behavioral Therapists - 10 available
+    {
+      id: '11',
       name: 'Dr. Michael Chen',
       specialization: 'Behavioral Therapy',
       rating: 4.8,
@@ -78,11 +169,11 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
       image: '👨‍⚕️',
       area: 'HITEC City',
       pincode: '500081',
-      phone: '+91 98765 43213',
+      phone: '+91 98765 43220',
       distance: '4.8 km'
     },
     {
-      id: '5',
+      id: '12',
       name: 'Dr. Kavitha Reddy',
       specialization: 'Behavioral Therapy',
       rating: 4.9,
@@ -91,11 +182,11 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
       image: '👩‍⚕️',
       area: 'Kondapur',
       pincode: '500084',
-      phone: '+91 98765 43214',
+      phone: '+91 98765 43221',
       distance: '6.3 km'
     },
     {
-      id: '6',
+      id: '13',
       name: 'Dr. Arun Patel',
       specialization: 'Behavioral Therapy',
       rating: 4.6,
@@ -104,12 +195,104 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
       image: '👨‍⚕️',
       area: 'Kukatpally',
       pincode: '500072',
-      phone: '+91 98765 43215',
+      phone: '+91 98765 43222',
       distance: '8.2 km'
     },
-    // Occupational Therapists
     {
-      id: '7',
+      id: '14',
+      name: 'Dr. Neha Gupta',
+      specialization: 'Behavioral Therapy',
+      rating: 4.7,
+      experience: '8 years',
+      available: true,
+      image: '👩‍⚕️',
+      area: 'Banjara Hills',
+      pincode: '500034',
+      phone: '+91 98765 43223',
+      distance: '2.1 km'
+    },
+    {
+      id: '15',
+      name: 'Dr. Arjun Kumar',
+      specialization: 'Behavioral Therapy',
+      rating: 4.8,
+      experience: '5 years',
+      available: true,
+      image: '👨‍⚕️',
+      area: 'Jubilee Hills',
+      pincode: '500033',
+      phone: '+91 98765 43224',
+      distance: '3.5 km'
+    },
+    {
+      id: '16',
+      name: 'Dr. Swathi Nair',
+      specialization: 'Behavioral Therapy',
+      rating: 4.9,
+      experience: '9 years',
+      available: true,
+      image: '👩‍⚕️',
+      area: 'Madhapur',
+      pincode: '500081',
+      phone: '+91 98765 43225',
+      distance: '5.7 km'
+    },
+    {
+      id: '17',
+      name: 'Dr. Rohit Sharma',
+      specialization: 'Behavioral Therapy',
+      rating: 4.5,
+      experience: '3 years',
+      available: true,
+      image: '👨‍⚕️',
+      area: 'Gachibowli',
+      pincode: '500032',
+      phone: '+91 98765 43226',
+      distance: '7.1 km'
+    },
+    {
+      id: '18',
+      name: 'Dr. Pooja Mehta',
+      specialization: 'Behavioral Therapy',
+      rating: 4.7,
+      experience: '6 years',
+      available: true,
+      image: '👩‍⚕️',
+      area: 'Begumpet',
+      pincode: '500016',
+      phone: '+91 98765 43227',
+      distance: '4.3 km'
+    },
+    {
+      id: '19',
+      name: 'Dr. Vinay Reddy',
+      specialization: 'Behavioral Therapy',
+      rating: 4.8,
+      experience: '10 years',
+      available: true,
+      image: '👨‍⚕️',
+      area: 'Secunderabad',
+      pincode: '500003',
+      phone: '+91 98765 43228',
+      distance: '8.9 km'
+    },
+    {
+      id: '20',
+      name: 'Dr. Priyanka Joshi',
+      specialization: 'Behavioral Therapy',
+      rating: 4.6,
+      experience: '4 years',
+      available: true,
+      image: '👩‍⚕️',
+      area: 'Ameerpet',
+      pincode: '500016',
+      phone: '+91 98765 43229',
+      distance: '5.2 km'
+    },
+
+    // Occupational Therapists - 10 available
+    {
+      id: '21',
       name: 'Dr. Emma Wilson',
       specialization: 'Occupational Therapy',
       rating: 4.9,
@@ -118,11 +301,11 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
       image: '👩‍⚕️',
       area: 'Gachibowli',
       pincode: '500032',
-      phone: '+91 98765 43216',
+      phone: '+91 98765 43230',
       distance: '7.1 km'
     },
     {
-      id: '8',
+      id: '22',
       name: 'Dr. Suresh Babu',
       specialization: 'Occupational Therapy',
       rating: 4.7,
@@ -131,69 +314,132 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
       image: '👨‍⚕️',
       area: 'Begumpet',
       pincode: '500016',
-      phone: '+91 98765 43217',
+      phone: '+91 98765 43231',
       distance: '4.5 km'
     },
     {
-      id: '9',
+      id: '23',
       name: 'Dr. Meera Singh',
       specialization: 'Occupational Therapy',
       rating: 4.8,
       experience: '6 years',
-      available: false,
+      available: true,
       image: '👩‍⚕️',
       area: 'Secunderabad',
       pincode: '500003',
-      phone: '+91 98765 43218',
+      phone: '+91 98765 43232',
       distance: '9.8 km'
-    }
-  ];
-
-  const plans = [
+    },
+    {
+      id: '24',
+      name: 'Dr. Kiran Kumar',
+      specialization: 'Occupational Therapy',
+      rating: 4.6,
+      experience: '7 years',
+      available: true,
+      image: '👨‍⚕️',
+      area: 'Banjara Hills',
+      pincode: '500034',
+      phone: '+91 98765 43233',
+      distance: '2.8 km'
+    },
+    {
+      id: '25',
+      name: 'Dr. Radhika Iyer',
+      specialization: 'Occupational Therapy',
+      rating: 4.8,
+      experience: '5 years',
+      available: true,
+      image: '👩‍⚕️',
+      area: 'Jubilee Hills',
+      pincode: '500033',
+      phone: '+91 98765 43234',
+      distance: '3.9 km'
+    },
+    {
+      id: '26',
+      name: 'Dr. Ashwin Rao',
+      specialization: 'Occupational Therapy',
+      rating: 4.7,
+      experience: '9 years',
+      available: true,
+      image: '👨‍⚕️',
+      area: 'Madhapur',
+      pincode: '500081',
+      phone: '+91 98765 43235',
+      distance: '5.4 km'
+    },
+    {
+      id: '27',
+      name: 'Dr. Divya Nair',
+      specialization: 'Occupational Therapy',
+      rating: 4.9,
+      experience: '4 years',
+      available: true,
+      image: '👩‍⚕️',
+      area: 'Kondapur',
+      pincode: '500084',
+      phone: '+91 98765 43236',
+      distance: '6.7 km'
+    },
+    {
+      id: '28',
+      name: 'Dr. Sanjay Verma',
+      specialization: 'Occupational Therapy',
+      rating: 4.5,
+      experience: '11 years',
+      available: true,
+      image: '👨‍⚕️',
+      area: 'HITEC City',
+      pincode: '500081',
+      phone: '+91 98765 43237',
+      distance: '4.9 km'
+    },
+    {
+      id: '29',
+      name: 'Dr. Sneha Reddy',
+      specialization: 'Occupational Therapy',
+      rating: 4.8,
+      experience: '6 years',
+      available: true,
+      image: '👩‍⚕️',
+      area: 'Kukatpally',
+      pincode: '500072',
+      phone: '+91 98765 43238',
+      distance: '8.5 km'
+    },
     {
       id: '30',
-      duration: '30 Days',
-      price: '$299',
-      sessions: '8 sessions',
-      color: 'from-green-400 to-teal-500',
-      popular: false
-    },
-    {
-      id: '60',
-      duration: '60 Days',
-      price: '$549',
-      sessions: '16 sessions',
-      color: 'from-blue-400 to-purple-500',
-      popular: true
-    },
-    {
-      id: '90',
-      duration: '90 Days',
-      price: '$799',
-      sessions: '24 sessions',
-      color: 'from-purple-400 to-pink-500',
-      popular: false
+      name: 'Dr. Naveen Kumar',
+      specialization: 'Occupational Therapy',
+      rating: 4.6,
+      experience: '3 years',
+      available: true,
+      image: '👨‍⚕️',
+      area: 'Miyapur',
+      pincode: '500049',
+      phone: '+91 98765 43239',
+      distance: '9.5 km'
     }
   ];
 
-  // Group therapists by specialization
+  // Group available therapists by specialization
   const groupedTherapists = {
-    'Speech Therapy': therapists.filter(t => t.specialization === 'Speech Therapy'),
-    'Behavioral Therapy': therapists.filter(t => t.specialization === 'Behavioral Therapy'),
-    'Occupational Therapy': therapists.filter(t => t.specialization === 'Occupational Therapy')
+    'Speech Therapy': therapists.filter(t => t.specialization === 'Speech Therapy' && t.available),
+    'Behavioral Therapy': therapists.filter(t => t.specialization === 'Behavioral Therapy' && t.available),
+    'Occupational Therapy': therapists.filter(t => t.specialization === 'Occupational Therapy' && t.available)
   };
 
   const handleBooking = () => {
-    if (selectedPlan && selectedTherapist) {
-      const planDays = parseInt(selectedPlan);
+    if (selectedTherapist) {
       const therapist = therapists.find(t => t.id === selectedTherapist);
-      alert(`Booking confirmed! ${planDays}-day program with ${therapist?.name} in ${therapist?.area}`);
+      alert(`Booking confirmed with ${therapist?.name} in ${therapist?.area}!`);
       
       if (onPlanSelected) {
-        onPlanSelected(planDays);
+        onPlanSelected(30); // Default to 30 days
       }
     } else {
-      alert('Please select both a plan and a therapist');
+      alert('Please select a therapist');
     }
   };
 
@@ -209,50 +455,8 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
         </p>
       </div>
 
-      {/* Plan Selection */}
-      <div className="space-y-4">
-        <h3 className="text-xl sm:text-2xl font-black text-white">Select Your Plan</h3>
-        <div className="space-y-3">
-          {plans.map((plan) => (
-            <Card 
-              key={plan.id}
-              className={`border-2 cursor-pointer transition-all duration-200 bold-card ${
-                selectedPlan === plan.id 
-                  ? 'border-purple-400 shadow-lg scale-105' 
-                  : 'border-gray-200 hover:border-gray-300'
-              } ${plan.popular ? 'ring-2 ring-yellow-400' : ''}`}
-              onClick={() => setSelectedPlan(plan.id)}
-            >
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-4">
-                    <div className={`w-12 h-12 bg-gradient-to-r ${plan.color} rounded-full flex items-center justify-center`}>
-                      <Calendar className="w-6 h-6 text-white" />
-                    </div>
-                    <div>
-                      <h4 className="font-black text-white text-lg sm:text-xl">{plan.duration}</h4>
-                      <p className="text-base sm:text-lg font-bold text-white">{plan.sessions}</p>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-2xl sm:text-3xl font-black text-white">{plan.price}</div>
-                    {plan.popular && (
-                      <span className="text-xs bg-yellow-400 text-yellow-800 px-2 py-1 rounded-full font-black">
-                        Most Popular
-                      </span>
-                    )}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </div>
-
       {/* Therapist Selection by Specialization */}
-      <div className="space-y-6">
-        <h3 className="text-xl sm:text-2xl font-black text-white">Choose Your Therapist by Location</h3>
-        
+      <div className="space-y-6">        
         {Object.entries(groupedTherapists).map(([specialization, specialists]) => (
           <div key={specialization} className="space-y-3">
             <h4 className="text-lg sm:text-xl font-black text-purple-300">{specialization} Specialists</h4>
@@ -264,8 +468,8 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
                     selectedTherapist === therapist.id 
                       ? 'border-purple-400 shadow-lg scale-105' 
                       : 'border-gray-200 hover:border-gray-300'
-                  } ${!therapist.available ? 'opacity-50' : ''}`}
-                  onClick={() => therapist.available && setSelectedTherapist(therapist.id)}
+                  }`}
+                  onClick={() => setSelectedTherapist(therapist.id)}
                 >
                   <CardContent className="p-4">
                     <div className="space-y-3">
@@ -279,11 +483,7 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
                           </div>
                         </div>
                         <div className="text-right">
-                          {therapist.available ? (
-                            <span className="text-green-400 text-sm font-black">Available</span>
-                          ) : (
-                            <span className="text-red-400 text-sm font-black">Busy</span>
-                          )}
+                          <span className="text-green-400 text-sm font-black">Available</span>
                         </div>
                       </div>
 
@@ -325,12 +525,12 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
       {/* Booking Button */}
       <Button
         onClick={handleBooking}
-        disabled={!selectedPlan || !selectedTherapist}
+        disabled={!selectedTherapist}
         className="w-full py-4 text-lg font-black bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white rounded-xl transition-all duration-200 disabled:opacity-50"
       >
-        {selectedPlan && selectedTherapist 
+        {selectedTherapist 
           ? '🎉 Confirm Booking & Start Activities' 
-          : '📋 Select Plan & Therapist'
+          : '📋 Select a Therapist'
         }
       </Button>
     </div>
