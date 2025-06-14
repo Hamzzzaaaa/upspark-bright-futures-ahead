@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -224,15 +223,15 @@ const ActivitiesZone = ({ childName, selectedPlan = 30 }: ActivitiesZoneProps) =
     <div className="space-y-6">
       {/* Header */}
       <div className="text-center">
-        <h2 className="text-2xl font-normal text-white mb-2">
+        <h2 className="text-2xl font-black text-white mb-2">
           {childName}'s Activities 🌟
         </h2>
 
-        <div className="bg-gradient-to-r from-green-100 to-blue-100 p-4 rounded-2xl">
-          <p className="text-lg font-normal text-gray-800">
+        <div className="bold-card p-4 rounded-2xl">
+          <p className="text-lg font-black text-white">
             {completedCount} of {activities.length} activities completed!
           </p>
-          <div className="w-full bg-gray-200 rounded-full h-3 mt-2">
+          <div className="w-full bg-gray-700 rounded-full h-3 mt-2">
             <div 
               className="bg-gradient-to-r from-green-400 to-blue-500 h-3 rounded-full transition-all duration-500"
               style={{ width: `${(completedCount / activities.length) * 100}%` }}
@@ -246,50 +245,27 @@ const ActivitiesZone = ({ childName, selectedPlan = 30 }: ActivitiesZoneProps) =
         {activities.map((activity) => (
           <Card 
             key={activity.id} 
-            className={`border-0 shadow-lg transition-all duration-300 ${
-              activity.completed ? 'opacity-75 scale-95' : 'hover:shadow-xl'
+            className={`bold-card border-0 shadow-lg transition-all duration-300 cursor-pointer ${
+              activity.completed ? 'opacity-75' : ''
             }`}
+            onClick={() => openActivity(activity)}
           >
-            <CardContent className="p-0">
-              <div className={`bg-gradient-to-r ${getCategoryColor(activity.category)} p-4 rounded-t-xl`}>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
-                    <span className="text-3xl">{activity.emoji}</span>
-                    <div>
-                      <h3 className="text-lg font-normal text-white">{activity.title}</h3>
-                      <div className="flex items-center text-white/90 text-sm">
-                        <Clock className="w-4 h-4 mr-1" />
-                        <span className="text-white/90">{activity.duration} min</span>
-                      </div>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-4">
+                  <span className="text-3xl">{activity.emoji}</span>
+                  <div>
+                    <h3 className="text-xl font-black text-white mb-1">{activity.title}</h3>
+                    <p className="text-base font-bold text-gray-300 mb-2">{activity.description}</p>
+                    <div className="flex items-center text-gray-400">
+                      <Clock className="w-4 h-4 mr-1" />
+                      <span className="text-sm font-bold">{activity.duration} min</span>
                     </div>
                   </div>
-                  {activity.completed && (
-                    <div className="text-3xl animate-bounce">✅</div>
-                  )}
                 </div>
-              </div>
-              
-              <div className="p-4 bg-white rounded-b-xl">
-                <p className="text-gray-800 mb-4 font-normal">{activity.description}</p>
-                <Button
-                  onClick={() => openActivity(activity)}
-                  className={`w-full py-3 text-lg font-normal rounded-xl transition-all duration-200 ${
-                    activity.completed
-                      ? 'bg-green-500 hover:bg-green-600 text-white'
-                      : activity.interactive
-                      ? 'bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white'
-                      : 'bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white'
-                  }`}
-                >
-                  <span className="text-white">
-                    {activity.completed 
-                      ? '🎉 Great Job!' 
-                      : activity.interactive 
-                      ? '🎮 Play Activity'
-                      : '🚀 Start Activity'
-                    }
-                  </span>
-                </Button>
+                {activity.completed && (
+                  <div className="text-3xl">✅</div>
+                )}
               </div>
             </CardContent>
           </Card>
