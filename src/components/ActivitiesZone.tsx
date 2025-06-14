@@ -402,7 +402,7 @@ const ColorSortingGame = ({ onComplete }: { onComplete: () => void }) => {
   );
 };
 
-// Animal Name Game Component
+// Animal Name Game Component - Updated with selection and feedback
 const AnimalNameGame = ({ onComplete }: { onComplete: () => void }) => {
   const [animals] = useState([
     { id: 1, name: 'Dog', emoji: '🐶' },
@@ -413,71 +413,129 @@ const AnimalNameGame = ({ onComplete }: { onComplete: () => void }) => {
   ]);
   
   const [score, setScore] = useState(0);
-  const [selectedAnimals, setSelectedAnimals] = useState<number[]>([]);
+  const [currentAnimalIndex, setCurrentAnimalIndex] = useState(0);
+  const [gameCompleted, setGameCompleted] = useState(false);
+  const [feedback, setFeedback] = useState<string | null>(null);
+  const [showOptions, setShowOptions] = useState(true);
 
-  const selectAnimal = (animal: typeof animals[0]) => {
-    if (selectedAnimals.includes(animal.id)) return;
+  const currentAnimal = animals[currentAnimalIndex];
+  
+  // Create shuffled options for each question
+  const getRandomOptions = () => {
+    const correctAnswer = currentAnimal.name;
+    const wrongOptions = animals
+      .filter(animal => animal.name !== correctAnswer)
+      .sort(() => Math.random() - 0.5)
+      .slice(0, 2)
+      .map(animal => animal.name);
     
-    setSelectedAnimals(prev => [...prev, animal.id]);
-    setScore(prev => prev + 1);
+    const allOptions = [correctAnswer, ...wrongOptions]
+      .sort(() => Math.random() - 0.5);
     
-    // Speak the animal name
-    if ('speechSynthesis' in window) {
-      const utterance = new SpeechSynthesisUtterance(`This is a ${animal.name}!`);
-      utterance.rate = 0.8;
-      speechSynthesis.speak(utterance);
+    return allOptions;
+  };
+
+  const [options, setOptions] = useState<string[]>([]);
+
+  useEffect(() => {
+    setOptions(getRandomOptions());
+  }, [currentAnimalIndex]);
+
+  const selectOption = (selectedName: string) => {
+    const isCorrect = selectedName === currentAnimal.name;
+    
+    if (isCorrect) {
+      setScore(prev => prev + 1);
+      setFeedback('Right! 🎉');
+      
+      // Speak success message
+      if ('speechSynthesis' in window) {
+        const utterance = new SpeechSynthesisUtterance(`Right! This is a ${currentAnimal.name}!`);
+        utterance.rate = 0.8;
+        speechSynthesis.speak(utterance);
+      }
+    } else {
+      setFeedback('Wrong! 😔');
+      
+      // Speak correct answer
+      if ('speechSynthesis' in window) {
+        const utterance = new SpeechSynthesisUtterance(`Wrong! This is a ${currentAnimal.name}.`);
+        utterance.rate = 0.8;
+        speechSynthesis.speak(utterance);
+      }
     }
 
-    if (score + 1 === animals.length) {
-      setTimeout(() => {
+    setShowOptions(false);
+
+    // Move to next animal or complete game
+    setTimeout(() => {
+      if (currentAnimalIndex + 1 < animals.length) {
+        setCurrentAnimalIndex(prev => prev + 1);
+        setFeedback(null);
+        setShowOptions(true);
+      } else {
+        setGameCompleted(true);
         if ('speechSynthesis' in window) {
-          const utterance = new SpeechSynthesisUtterance('Excellent! You learned all the animal names!');
+          const utterance = new SpeechSynthesisUtterance(`Great job! You got ${score + (isCorrect ? 1 : 0)} out of ${animals.length} correct!`);
           speechSynthesis.speak(utterance);
         }
-        onComplete();
-      }, 2000);
-    }
+        setTimeout(onComplete, 2000);
+      }
+    }, 2000);
   };
+
+  if (gameCompleted) {
+    return (
+      <div className="text-center p-6 bg-gradient-to-r from-green-400 to-blue-400 rounded-2xl">
+        <div className="text-4xl mb-2">🎉</div>
+        <h3 className="text-2xl font-normal text-white">Game Complete!</h3>
+        <p className="text-white text-lg">You got {score} out of {animals.length} correct!</p>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8">
       <div className="text-center">
         <h3 className="text-2xl font-normal text-white mb-2">Animal Name Game 🐾</h3>
-        <p className="text-gray-300">Click on the animals to learn their names!</p>
+        <p className="text-gray-300">What animal is this?</p>
         <div className="text-3xl font-normal text-green-300 mt-4">
-          Animals Found: {score} / {animals.length}
+          Question {currentAnimalIndex + 1} of {animals.length} | Score: {score}
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-6">
-        {animals.map((animal) => {
-          const isSelected = selectedAnimals.includes(animal.id);
-          return (
-            <button
-              key={animal.id}
-              onClick={() => selectAnimal(animal)}
-              disabled={isSelected}
-              className={`p-6 rounded-2xl transition-all duration-300 ${
-                isSelected 
-                  ? 'bg-green-200 scale-95 opacity-75' 
-                  : 'bg-gradient-to-br from-yellow-100 to-orange-100 hover:scale-105 hover:shadow-lg'
-              }`}
-            >
-              <div className="text-6xl mb-2">{animal.emoji}</div>
-              <div className={`text-xl font-normal ${isSelected ? 'text-green-700' : 'text-gray-700'}`}>
-                {isSelected ? animal.name : '?'}
-              </div>
-              {isSelected && <div className="text-2xl mt-2">✅</div>}
-            </button>
-          );
-        })}
+      {/* Current Animal Display */}
+      <div className="text-center bg-gradient-to-br from-yellow-100 to-orange-100 p-8 rounded-2xl">
+        <div className="text-8xl mb-4">{currentAnimal.emoji}</div>
+        <h4 className="text-2xl font-normal text-gray-800">What animal is this?</h4>
       </div>
 
-      {score === animals.length && (
-        <div className="text-center p-6 bg-gradient-to-r from-green-400 to-blue-400 rounded-2xl">
-          <div className="text-4xl mb-2">🎉</div>
-          <h3 className="text-2xl font-normal text-white">Amazing Job!</h3>
-          <p className="text-white text-lg">You learned all {animals.length} animal names!</p>
+      {/* Feedback Display */}
+      {feedback && (
+        <div className={`text-center p-4 rounded-2xl ${
+          feedback.includes('Right') 
+            ? 'bg-gradient-to-r from-green-400 to-green-500' 
+            : 'bg-gradient-to-r from-red-400 to-red-500'
+        }`}>
+          <div className="text-2xl font-normal text-white">{feedback}</div>
+          <div className="text-lg text-white mt-2">
+            This is a <strong>{currentAnimal.name}</strong>!
+          </div>
+        </div>
+      )}
+
+      {/* Answer Options */}
+      {showOptions && (
+        <div className="grid grid-cols-1 gap-4">
+          {options.map((option, index) => (
+            <button
+              key={index}
+              onClick={() => selectOption(option)}
+              className="p-4 bg-gradient-to-r from-blue-400 to-purple-400 hover:from-blue-500 hover:to-purple-500 text-white font-normal text-xl rounded-2xl transition-all duration-200 hover:scale-105"
+            >
+              {option}
+            </button>
+          ))}
         </div>
       )}
     </div>
