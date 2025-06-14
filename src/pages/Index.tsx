@@ -1,10 +1,10 @@
+
 import { useState, useEffect } from 'react';
-import { Calendar, Activity, TrendingUp, UserCheck, Pill, Home, User } from 'lucide-react';
+import { Activity, UserCheck, Pill, Home, User } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useNavigate } from 'react-router-dom';
 import DashboardCard from '@/components/DashboardCard';
 import ActivitiesZone from '@/components/ActivitiesZone';
-import ProgressTracker from '@/components/ProgressTracker';
 import TherapistBooking from '@/components/TherapistBooking';
 import MedicineDelivery from '@/components/MedicineDelivery';
 import UpSparkLogo from '@/components/UpSparkLogo';
@@ -36,8 +36,6 @@ const Index = () => {
     switch (activeTab) {
       case 'activities':
         return <ActivitiesZone childName={childName} selectedPlan={selectedPlan} />;
-      case 'progress':
-        return <ProgressTracker childName={childName} />;
       case 'therapist':
         return <TherapistBooking onPlanSelected={handlePlanSelected} />;
       case 'medicine':
@@ -79,14 +77,6 @@ const Index = () => {
               />
               
               <DashboardCard
-                title="Progress Tracking"
-                description="View detailed progress reports"
-                icon={TrendingUp}
-                gradient="from-green-400 to-blue-500"
-                onClick={() => setActiveTab('progress')}
-              />
-              
-              <DashboardCard
                 title="Book Therapist"
                 description="Schedule therapy sessions & choose program"
                 icon={UserCheck}
@@ -123,7 +113,6 @@ const Index = () => {
             {[
               { id: 'dashboard', icon: Home, label: 'Home' },
               { id: 'activities', icon: Activity, label: 'Activities' },
-              { id: 'progress', icon: TrendingUp, label: 'Progress' },
               { id: 'therapist', icon: UserCheck, label: 'Therapist' },
               { id: 'medicine', icon: Pill, label: 'Medicine' },
             ].map((tab) => (
