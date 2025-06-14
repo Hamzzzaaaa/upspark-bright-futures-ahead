@@ -1,8 +1,7 @@
-
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Clock, Calendar, ArrowLeft } from 'lucide-react';
+import { Clock, Calendar, ArrowLeft, RefreshCw } from 'lucide-react';
 
 interface Activity {
   id: string;
@@ -39,32 +38,36 @@ const ActivitiesZone = ({ childName, selectedPlan = 30 }: ActivitiesZoneProps) =
           interactive: true
         },
         {
-          title: 'Shape Recognition',
-          description: 'Match shapes with their outlines',
+          title: 'Animal Name Game',
+          description: 'Click on animals and learn their names',
           duration: 12,
           category: 'cognitive' as const,
-          emoji: '🔷'
+          emoji: '🐶',
+          interactive: true
         },
         {
-          title: 'Finger Painting',
-          description: 'Create art with finger paints',
+          title: 'Alphabet Scribbling',
+          description: 'Draw letters with colorful crayons',
           duration: 20,
           category: 'creative' as const,
-          emoji: '🎨'
+          emoji: '✏️',
+          interactive: true
         },
         {
-          title: 'Sound Identification',
-          description: 'Listen and identify animal sounds',
+          title: 'Shape Selection',
+          description: 'Identify and name different shapes',
           duration: 10,
-          category: 'speech' as const,
-          emoji: '🐶'
+          category: 'cognitive' as const,
+          emoji: '🔷',
+          interactive: true
         },
         {
-          title: 'Texture Exploration',
-          description: 'Feel different textures and materials',
+          title: 'Bird Selection Game',
+          description: 'Click on birds and learn their names',
           duration: 15,
           category: 'sensory' as const,
-          emoji: '🤚'
+          emoji: '🐦',
+          interactive: true
         },
         {
           title: 'Balance Walk',
@@ -159,6 +162,42 @@ const ActivitiesZone = ({ childName, selectedPlan = 30 }: ActivitiesZoneProps) =
         
         {activeActivity.title === 'Color Sorting Game' && (
           <ColorSortingGame 
+            onComplete={() => {
+              toggleActivity(activeActivity.id);
+              setActiveActivity(null);
+            }}
+          />
+        )}
+        
+        {activeActivity.title === 'Animal Name Game' && (
+          <AnimalNameGame 
+            onComplete={() => {
+              toggleActivity(activeActivity.id);
+              setActiveActivity(null);
+            }}
+          />
+        )}
+        
+        {activeActivity.title === 'Alphabet Scribbling' && (
+          <AlphabetScribbling 
+            onComplete={() => {
+              toggleActivity(activeActivity.id);
+              setActiveActivity(null);
+            }}
+          />
+        )}
+        
+        {activeActivity.title === 'Shape Selection' && (
+          <ShapeSelectionGame 
+            onComplete={() => {
+              toggleActivity(activeActivity.id);
+              setActiveActivity(null);
+            }}
+          />
+        )}
+        
+        {activeActivity.title === 'Bird Selection Game' && (
+          <BirdSelectionGame 
             onComplete={() => {
               toggleActivity(activeActivity.id);
               setActiveActivity(null);
@@ -392,6 +431,393 @@ const ColorSortingGame = ({ onComplete }: { onComplete: () => void }) => {
           <div className="text-4xl mb-2">🎉</div>
           <h3 className="text-2xl font-bold text-white">Amazing Job!</h3>
           <p className="text-white text-lg">You sorted all {balls.length} colors!</p>
+        </div>
+      )}
+    </div>
+  );
+};
+
+// Animal Name Game Component
+const AnimalNameGame = ({ onComplete }: { onComplete: () => void }) => {
+  const [animals] = useState([
+    { id: 1, name: 'Dog', emoji: '🐶' },
+    { id: 2, name: 'Cat', emoji: '🐱' },
+    { id: 3, name: 'Lion', emoji: '🦁' },
+    { id: 4, name: 'Elephant', emoji: '🐘' },
+    { id: 5, name: 'Monkey', emoji: '🐵' }
+  ]);
+  
+  const [score, setScore] = useState(0);
+  const [selectedAnimals, setSelectedAnimals] = useState<number[]>([]);
+
+  const selectAnimal = (animal: typeof animals[0]) => {
+    if (selectedAnimals.includes(animal.id)) return;
+    
+    setSelectedAnimals(prev => [...prev, animal.id]);
+    setScore(prev => prev + 1);
+    
+    // Speak the animal name
+    if ('speechSynthesis' in window) {
+      const utterance = new SpeechSynthesisUtterance(`This is a ${animal.name}!`);
+      utterance.rate = 0.8;
+      speechSynthesis.speak(utterance);
+    }
+
+    if (score + 1 === animals.length) {
+      setTimeout(() => {
+        if ('speechSynthesis' in window) {
+          const utterance = new SpeechSynthesisUtterance('Excellent! You learned all the animal names!');
+          speechSynthesis.speak(utterance);
+        }
+        onComplete();
+      }, 2000);
+    }
+  };
+
+  return (
+    <div className="space-y-8">
+      <div className="text-center">
+        <h3 className="text-2xl font-bold text-gray-800 mb-2">Animal Name Game 🐾</h3>
+        <p className="text-gray-600">Click on the animals to learn their names!</p>
+        <div className="text-3xl font-bold text-green-600 mt-4">
+          Animals Found: {score} / {animals.length}
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-6">
+        {animals.map((animal) => {
+          const isSelected = selectedAnimals.includes(animal.id);
+          return (
+            <button
+              key={animal.id}
+              onClick={() => selectAnimal(animal)}
+              disabled={isSelected}
+              className={`p-6 rounded-2xl transition-all duration-300 ${
+                isSelected 
+                  ? 'bg-green-200 scale-95 opacity-75' 
+                  : 'bg-gradient-to-br from-yellow-100 to-orange-100 hover:scale-105 hover:shadow-lg'
+              }`}
+            >
+              <div className="text-6xl mb-2">{animal.emoji}</div>
+              <div className={`text-xl font-bold ${isSelected ? 'text-green-700' : 'text-gray-700'}`}>
+                {isSelected ? animal.name : '?'}
+              </div>
+              {isSelected && <div className="text-2xl mt-2">✅</div>}
+            </button>
+          );
+        })}
+      </div>
+
+      {score === animals.length && (
+        <div className="text-center p-6 bg-gradient-to-r from-green-400 to-blue-400 rounded-2xl">
+          <div className="text-4xl mb-2">🎉</div>
+          <h3 className="text-2xl font-bold text-white">Amazing Job!</h3>
+          <p className="text-white text-lg">You learned all {animals.length} animal names!</p>
+        </div>
+      )}
+    </div>
+  );
+};
+
+// Alphabet Scribbling Component
+const AlphabetScribbling = ({ onComplete }: { onComplete: () => void }) => {
+  const [currentLetter, setCurrentLetter] = useState('A');
+  const [currentColor, setCurrentColor] = useState('red');
+  const [completedLetters, setCompletedLetters] = useState<string[]>([]);
+  const [isDrawing, setIsDrawing] = useState(false);
+  
+  const colors = ['red', 'blue', 'green', 'yellow', 'purple', 'orange'];
+  const letters = ['A', 'B', 'C', 'D', 'E'];
+
+  const getRandomColor = () => {
+    const randomColor = colors[Math.floor(Math.random() * colors.length)];
+    setCurrentColor(randomColor);
+  };
+
+  const startDrawing = () => {
+    setIsDrawing(true);
+    getRandomColor();
+  };
+
+  const finishLetter = () => {
+    if (!completedLetters.includes(currentLetter)) {
+      setCompletedLetters(prev => [...prev, currentLetter]);
+      
+      if ('speechSynthesis' in window) {
+        const utterance = new SpeechSynthesisUtterance(`Great job drawing the letter ${currentLetter}!`);
+        utterance.rate = 0.8;
+        speechSynthesis.speak(utterance);
+      }
+
+      if (completedLetters.length + 1 === letters.length) {
+        setTimeout(() => {
+          if ('speechSynthesis' in window) {
+            const utterance = new SpeechSynthesisUtterance('Excellent! You practiced all the letters!');
+            speechSynthesis.speak(utterance);
+          }
+          onComplete();
+        }, 2000);
+      }
+    }
+    setIsDrawing(false);
+  };
+
+  const nextLetter = () => {
+    const currentIndex = letters.indexOf(currentLetter);
+    const nextIndex = (currentIndex + 1) % letters.length;
+    setCurrentLetter(letters[nextIndex]);
+    getRandomColor();
+  };
+
+  return (
+    <div className="space-y-8">
+      <div className="text-center">
+        <h3 className="text-2xl font-bold text-gray-800 mb-2">Alphabet Scribbling ✏️</h3>
+        <p className="text-gray-600">Draw the letter with the given color!</p>
+        <div className="text-3xl font-bold text-purple-600 mt-4">
+          Letters Done: {completedLetters.length} / {letters.length}
+        </div>
+      </div>
+
+      <div className="text-center">
+        <h4 className="text-lg font-semibold text-gray-700 mb-4">
+          Draw the letter: <span className="text-4xl font-bold text-blue-600">{currentLetter}</span>
+        </h4>
+        <p className="text-lg mb-4">
+          Use this color: <span 
+            className="font-bold text-2xl" 
+            style={{ color: currentColor }}
+          >
+            {currentColor.toUpperCase()}
+          </span>
+        </p>
+      </div>
+
+      {/* Drawing Area */}
+      <div className="bg-white border-4 border-dashed border-gray-300 rounded-2xl p-8 min-h-64 flex flex-col items-center justify-center">
+        <div className="text-8xl font-bold mb-4" style={{ color: currentColor, opacity: 0.3 }}>
+          {currentLetter}
+        </div>
+        
+        {!isDrawing ? (
+          <Button
+            onClick={startDrawing}
+            className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold py-4 px-8 rounded-xl text-lg"
+          >
+            Start Drawing! 🖍️
+          </Button>
+        ) : (
+          <div className="text-center">
+            <div className="text-2xl mb-4">✏️ Keep drawing...</div>
+            <Button
+              onClick={finishLetter}
+              className="bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white font-bold py-3 px-6 rounded-xl"
+            >
+              Finished Drawing!
+            </Button>
+          </div>
+        )}
+      </div>
+
+      {/* Navigation */}
+      <div className="flex justify-center space-x-4">
+        <Button
+          onClick={nextLetter}
+          variant="outline"
+          className="flex items-center space-x-2"
+        >
+          <RefreshCw className="w-4 h-4" />
+          <span>Next Letter</span>
+        </Button>
+      </div>
+
+      {/* Progress */}
+      <div className="flex justify-center space-x-2">
+        {letters.map((letter) => (
+          <div
+            key={letter}
+            className={`w-12 h-12 rounded-full flex items-center justify-center font-bold ${
+              completedLetters.includes(letter)
+                ? 'bg-green-500 text-white'
+                : letter === currentLetter
+                ? 'bg-blue-500 text-white'
+                : 'bg-gray-200 text-gray-500'
+            }`}
+          >
+            {letter}
+          </div>
+        ))}
+      </div>
+
+      {completedLetters.length === letters.length && (
+        <div className="text-center p-6 bg-gradient-to-r from-purple-400 to-pink-400 rounded-2xl">
+          <div className="text-4xl mb-2">🎉</div>
+          <h3 className="text-2xl font-bold text-white">Amazing Job!</h3>
+          <p className="text-white text-lg">You practiced all {letters.length} letters!</p>
+        </div>
+      )}
+    </div>
+  );
+};
+
+// Shape Selection Game Component
+const ShapeSelectionGame = ({ onComplete }: { onComplete: () => void }) => {
+  const [shapes] = useState([
+    { id: 1, name: 'Circle', emoji: '⭕', color: 'bg-red-400' },
+    { id: 2, name: 'Square', emoji: '🟦', color: 'bg-blue-400' },
+    { id: 3, name: 'Triangle', emoji: '🔺', color: 'bg-green-400' },
+    { id: 4, name: 'Star', emoji: '⭐', color: 'bg-yellow-400' },
+    { id: 5, name: 'Heart', emoji: '❤️', color: 'bg-pink-400' }
+  ]);
+  
+  const [score, setScore] = useState(0);
+  const [selectedShapes, setSelectedShapes] = useState<number[]>([]);
+
+  const selectShape = (shape: typeof shapes[0]) => {
+    if (selectedShapes.includes(shape.id)) return;
+    
+    setSelectedShapes(prev => [...prev, shape.id]);
+    setScore(prev => prev + 1);
+    
+    // Speak the shape name
+    if ('speechSynthesis' in window) {
+      const utterance = new SpeechSynthesisUtterance(`This is a ${shape.name}!`);
+      utterance.rate = 0.8;
+      speechSynthesis.speak(utterance);
+    }
+
+    if (score + 1 === shapes.length) {
+      setTimeout(() => {
+        if ('speechSynthesis' in window) {
+          const utterance = new SpeechSynthesisUtterance('Excellent! You learned all the shape names!');
+          speechSynthesis.speak(utterance);
+        }
+        onComplete();
+      }, 2000);
+    }
+  };
+
+  return (
+    <div className="space-y-8">
+      <div className="text-center">
+        <h3 className="text-2xl font-bold text-gray-800 mb-2">Shape Selection Game 🔷</h3>
+        <p className="text-gray-600">Click on the shapes to learn their names!</p>
+        <div className="text-3xl font-bold text-blue-600 mt-4">
+          Shapes Found: {score} / {shapes.length}
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-6">
+        {shapes.map((shape) => {
+          const isSelected = selectedShapes.includes(shape.id);
+          return (
+            <button
+              key={shape.id}
+              onClick={() => selectShape(shape)}
+              disabled={isSelected}
+              className={`p-6 rounded-2xl transition-all duration-300 ${
+                isSelected 
+                  ? 'bg-green-200 scale-95 opacity-75' 
+                  : `${shape.color} hover:scale-105 hover:shadow-lg`
+              }`}
+            >
+              <div className="text-6xl mb-2">{shape.emoji}</div>
+              <div className={`text-xl font-bold ${isSelected ? 'text-green-700' : 'text-white'}`}>
+                {isSelected ? shape.name : '?'}
+              </div>
+              {isSelected && <div className="text-2xl mt-2">✅</div>}
+            </button>
+          );
+        })}
+      </div>
+
+      {score === shapes.length && (
+        <div className="text-center p-6 bg-gradient-to-r from-blue-400 to-purple-400 rounded-2xl">
+          <div className="text-4xl mb-2">🎉</div>
+          <h3 className="text-2xl font-bold text-white">Amazing Job!</h3>
+          <p className="text-white text-lg">You learned all {shapes.length} shape names!</p>
+        </div>
+      )}
+    </div>
+  );
+};
+
+// Bird Selection Game Component
+const BirdSelectionGame = ({ onComplete }: { onComplete: () => void }) => {
+  const [birds] = useState([
+    { id: 1, name: 'Eagle', emoji: '🦅' },
+    { id: 2, name: 'Owl', emoji: '🦉' },
+    { id: 3, name: 'Parrot', emoji: '🦜' },
+    { id: 4, name: 'Penguin', emoji: '🐧' },
+    { id: 5, name: 'Flamingo', emoji: '🦩' }
+  ]);
+  
+  const [score, setScore] = useState(0);
+  const [selectedBirds, setSelectedBirds] = useState<number[]>([]);
+
+  const selectBird = (bird: typeof birds[0]) => {
+    if (selectedBirds.includes(bird.id)) return;
+    
+    setSelectedBirds(prev => [...prev, bird.id]);
+    setScore(prev => prev + 1);
+    
+    // Speak the bird name
+    if ('speechSynthesis' in window) {
+      const utterance = new SpeechSynthesisUtterance(`This is an ${bird.name}!`);
+      utterance.rate = 0.8;
+      speechSynthesis.speak(utterance);
+    }
+
+    if (score + 1 === birds.length) {
+      setTimeout(() => {
+        if ('speechSynthesis' in window) {
+          const utterance = new SpeechSynthesisUtterance('Excellent! You learned all the bird names!');
+          speechSynthesis.speak(utterance);
+        }
+        onComplete();
+      }, 2000);
+    }
+  };
+
+  return (
+    <div className="space-y-8">
+      <div className="text-center">
+        <h3 className="text-2xl font-bold text-gray-800 mb-2">Bird Selection Game 🐦</h3>
+        <p className="text-gray-600">Click on the birds to learn their names!</p>
+        <div className="text-3xl font-bold text-indigo-600 mt-4">
+          Birds Found: {score} / {birds.length}
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-6">
+        {birds.map((bird) => {
+          const isSelected = selectedBirds.includes(bird.id);
+          return (
+            <button
+              key={bird.id}
+              onClick={() => selectBird(bird)}
+              disabled={isSelected}
+              className={`p-6 rounded-2xl transition-all duration-300 ${
+                isSelected 
+                  ? 'bg-green-200 scale-95 opacity-75' 
+                  : 'bg-gradient-to-br from-sky-100 to-blue-100 hover:scale-105 hover:shadow-lg'
+              }`}
+            >
+              <div className="text-6xl mb-2">{bird.emoji}</div>
+              <div className={`text-xl font-bold ${isSelected ? 'text-green-700' : 'text-gray-700'}`}>
+                {isSelected ? bird.name : '?'}
+              </div>
+              {isSelected && <div className="text-2xl mt-2">✅</div>}
+            </button>
+          );
+        })}
+      </div>
+
+      {score === birds.length && (
+        <div className="text-center p-6 bg-gradient-to-r from-sky-400 to-indigo-400 rounded-2xl">
+          <div className="text-4xl mb-2">🎉</div>
+          <h3 className="text-2xl font-bold text-white">Amazing Job!</h3>
+          <p className="text-white text-lg">You learned all {birds.length} bird names!</p>
         </div>
       )}
     </div>
