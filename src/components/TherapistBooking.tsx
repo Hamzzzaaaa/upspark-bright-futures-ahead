@@ -1,9 +1,10 @@
 
 import { useState, useMemo } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { UserCheck, Clock, Calendar, MapPin, Phone, Search } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { MapPin, Phone, Search } from 'lucide-react';
 
 interface Therapist {
   id: string;
@@ -27,9 +28,10 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
   const [selectedTherapist, setSelectedTherapist] = useState<string>('');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [pincodeFilter, setPincodeFilter] = useState<string>('');
+  const [categoryFilter, setCategoryFilter] = useState<string>('all');
 
   const therapists: Therapist[] = [
-    // Speech Therapists - 10 available
+    // Speech Therapists - 5 available
     {
       id: '1',
       name: 'Dr. Sarah Johnson',
@@ -95,73 +97,8 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
       phone: '+91 98765 43214',
       distance: '6.8 km'
     },
-    {
-      id: '6',
-      name: 'Dr. Meera Patel',
-      specialization: 'Speech Therapy',
-      rating: 4.7,
-      experience: '4 years',
-      available: true,
-      image: '👩‍⚕️',
-      area: 'Begumpet',
-      pincode: '500016',
-      phone: '+91 98765 43215',
-      distance: '3.7 km'
-    },
-    {
-      id: '7',
-      name: 'Dr. Suresh Babu',
-      specialization: 'Speech Therapy',
-      rating: 4.9,
-      experience: '9 years',
-      available: true,
-      image: '👨‍⚕️',
-      area: 'Kukatpally',
-      pincode: '500072',
-      phone: '+91 98765 43216',
-      distance: '8.1 km'
-    },
-    {
-      id: '8',
-      name: 'Dr. Kavya Rao',
-      specialization: 'Speech Therapy',
-      rating: 4.5,
-      experience: '3 years',
-      available: true,
-      image: '👩‍⚕️',
-      area: 'Secunderabad',
-      pincode: '500003',
-      phone: '+91 98765 43217',
-      distance: '7.9 km'
-    },
-    {
-      id: '9',
-      name: 'Dr. Ravi Chandra',
-      specialization: 'Speech Therapy',
-      rating: 4.8,
-      experience: '11 years',
-      available: true,
-      image: '👨‍⚕️',
-      area: 'Ameerpet',
-      pincode: '500016',
-      phone: '+91 98765 43218',
-      distance: '4.8 km'
-    },
-    {
-      id: '10',
-      name: 'Dr. Lakshmi Devi',
-      specialization: 'Speech Therapy',
-      rating: 4.6,
-      experience: '5 years',
-      available: true,
-      image: '👩‍⚕️',
-      area: 'Miyapur',
-      pincode: '500049',
-      phone: '+91 98765 43219',
-      distance: '9.2 km'
-    },
 
-    // Behavioral Therapists - 10 available
+    // Behavioral Therapists - 5 available
     {
       id: '11',
       name: 'Dr. Michael Chen',
@@ -183,8 +120,8 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
       experience: '7 years',
       available: true,
       image: '👩‍⚕️',
-      area: 'Kondapur',
-      pincode: '500084',
+      area: 'Kukatpally',
+      pincode: '500072',
       phone: '+91 98765 43221',
       distance: '6.3 km'
     },
@@ -196,8 +133,8 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
       experience: '4 years',
       available: true,
       image: '👨‍⚕️',
-      area: 'Kukatpally',
-      pincode: '500072',
+      area: 'Secunderabad',
+      pincode: '500003',
       phone: '+91 98765 43222',
       distance: '8.2 km'
     },
@@ -209,8 +146,8 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
       experience: '8 years',
       available: true,
       image: '👩‍⚕️',
-      area: 'Banjara Hills',
-      pincode: '500034',
+      area: 'Ameerpet',
+      pincode: '500016',
       phone: '+91 98765 43223',
       distance: '2.1 km'
     },
@@ -222,78 +159,13 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
       experience: '5 years',
       available: true,
       image: '👨‍⚕️',
-      area: 'Jubilee Hills',
-      pincode: '500033',
+      area: 'Miyapur',
+      pincode: '500049',
       phone: '+91 98765 43224',
       distance: '3.5 km'
     },
-    {
-      id: '16',
-      name: 'Dr. Swathi Nair',
-      specialization: 'Behavioral Therapy',
-      rating: 4.9,
-      experience: '9 years',
-      available: true,
-      image: '👩‍⚕️',
-      area: 'Madhapur',
-      pincode: '500081',
-      phone: '+91 98765 43225',
-      distance: '5.7 km'
-    },
-    {
-      id: '17',
-      name: 'Dr. Rohit Sharma',
-      specialization: 'Behavioral Therapy',
-      rating: 4.5,
-      experience: '3 years',
-      available: true,
-      image: '👨‍⚕️',
-      area: 'Gachibowli',
-      pincode: '500032',
-      phone: '+91 98765 43226',
-      distance: '7.1 km'
-    },
-    {
-      id: '18',
-      name: 'Dr. Pooja Mehta',
-      specialization: 'Behavioral Therapy',
-      rating: 4.7,
-      experience: '6 years',
-      available: true,
-      image: '👩‍⚕️',
-      area: 'Begumpet',
-      pincode: '500016',
-      phone: '+91 98765 43227',
-      distance: '4.3 km'
-    },
-    {
-      id: '19',
-      name: 'Dr. Vinay Reddy',
-      specialization: 'Behavioral Therapy',
-      rating: 4.8,
-      experience: '10 years',
-      available: true,
-      image: '👨‍⚕️',
-      area: 'Secunderabad',
-      pincode: '500003',
-      phone: '+91 98765 43228',
-      distance: '8.9 km'
-    },
-    {
-      id: '20',
-      name: 'Dr. Priyanka Joshi',
-      specialization: 'Behavioral Therapy',
-      rating: 4.6,
-      experience: '4 years',
-      available: true,
-      image: '👩‍⚕️',
-      area: 'Ameerpet',
-      pincode: '500016',
-      phone: '+91 98765 43229',
-      distance: '5.2 km'
-    },
 
-    // Occupational Therapists - 10 available
+    // Occupational Therapists - 5 available
     {
       id: '21',
       name: 'Dr. Emma Wilson',
@@ -302,8 +174,8 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
       experience: '10 years',
       available: true,
       image: '👩‍⚕️',
-      area: 'Gachibowli',
-      pincode: '500032',
+      area: 'Begumpet',
+      pincode: '500016',
       phone: '+91 98765 43230',
       distance: '7.1 km'
     },
@@ -315,8 +187,8 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
       experience: '8 years',
       available: true,
       image: '👨‍⚕️',
-      area: 'Begumpet',
-      pincode: '500016',
+      area: 'Kondapur',
+      pincode: '500084',
       phone: '+91 98765 43231',
       distance: '4.5 km'
     },
@@ -328,8 +200,8 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
       experience: '6 years',
       available: true,
       image: '👩‍⚕️',
-      area: 'Secunderabad',
-      pincode: '500003',
+      area: 'Jubilee Hills',
+      pincode: '500033',
       phone: '+91 98765 43232',
       distance: '9.8 km'
     },
@@ -341,8 +213,8 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
       experience: '7 years',
       available: true,
       image: '👨‍⚕️',
-      area: 'Banjara Hills',
-      pincode: '500034',
+      area: 'Madhapur',
+      pincode: '500081',
       phone: '+91 98765 43233',
       distance: '2.8 km'
     },
@@ -354,83 +226,18 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
       experience: '5 years',
       available: true,
       image: '👩‍⚕️',
-      area: 'Jubilee Hills',
-      pincode: '500033',
+      area: 'Banjara Hills',
+      pincode: '500034',
       phone: '+91 98765 43234',
       distance: '3.9 km'
-    },
-    {
-      id: '26',
-      name: 'Dr. Ashwin Rao',
-      specialization: 'Occupational Therapy',
-      rating: 4.7,
-      experience: '9 years',
-      available: true,
-      image: '👨‍⚕️',
-      area: 'Madhapur',
-      pincode: '500081',
-      phone: '+91 98765 43235',
-      distance: '5.4 km'
-    },
-    {
-      id: '27',
-      name: 'Dr. Divya Nair',
-      specialization: 'Occupational Therapy',
-      rating: 4.9,
-      experience: '4 years',
-      available: true,
-      image: '👩‍⚕️',
-      area: 'Kondapur',
-      pincode: '500084',
-      phone: '+91 98765 43236',
-      distance: '6.7 km'
-    },
-    {
-      id: '28',
-      name: 'Dr. Sanjay Verma',
-      specialization: 'Occupational Therapy',
-      rating: 4.5,
-      experience: '11 years',
-      available: true,
-      image: '👨‍⚕️',
-      area: 'HITEC City',
-      pincode: '500081',
-      phone: '+91 98765 43237',
-      distance: '4.9 km'
-    },
-    {
-      id: '29',
-      name: 'Dr. Sneha Reddy',
-      specialization: 'Occupational Therapy',
-      rating: 4.8,
-      experience: '6 years',
-      available: true,
-      image: '👩‍⚕️',
-      area: 'Kukatpally',
-      pincode: '500072',
-      phone: '+91 98765 43238',
-      distance: '8.5 km'
-    },
-    {
-      id: '30',
-      name: 'Dr. Naveen Kumar',
-      specialization: 'Occupational Therapy',
-      rating: 4.6,
-      experience: '3 years',
-      available: true,
-      image: '👨‍⚕️',
-      area: 'Miyapur',
-      pincode: '500049',
-      phone: '+91 98765 43239',
-      distance: '9.5 km'
     }
   ];
 
-  // Filter therapists based on search query and pincode
+  // Filter therapists based on search query, pincode, and category
   const filteredTherapists = useMemo(() => {
     let filtered = therapists.filter(t => t.available);
 
-    // Filter by search query (therapist type)
+    // Filter by search query (therapist type or name)
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter(therapist => 
@@ -446,22 +253,15 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
       );
     }
 
+    // Filter by category
+    if (categoryFilter !== 'all') {
+      filtered = filtered.filter(therapist => 
+        therapist.specialization.toLowerCase().includes(categoryFilter.toLowerCase())
+      );
+    }
+
     return filtered;
-  }, [searchQuery, pincodeFilter]);
-
-  // Group filtered therapists by specialization
-  const groupedTherapists = useMemo(() => {
-    const groups: Record<string, Therapist[]> = {};
-    
-    filteredTherapists.forEach(therapist => {
-      if (!groups[therapist.specialization]) {
-        groups[therapist.specialization] = [];
-      }
-      groups[therapist.specialization].push(therapist);
-    });
-
-    return groups;
-  }, [filteredTherapists]);
+  }, [searchQuery, pincodeFilter, categoryFilter]);
 
   const handleBooking = () => {
     if (selectedTherapist) {
@@ -495,7 +295,7 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
             <Input
               type="text"
-              placeholder="Search therapist type (e.g., speech therapist, behavioral therapy...)"
+              placeholder="Search therapist type or name..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-10 bg-card border-gray-600 text-white placeholder-gray-400"
@@ -510,93 +310,95 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
               className="bg-card border-gray-600 text-white placeholder-gray-400"
             />
           </div>
+          <div className="sm:w-56">
+            <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+              <SelectTrigger className="bg-card border-gray-600 text-white">
+                <SelectValue placeholder="Select Category" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Categories</SelectItem>
+                <SelectItem value="speech">Speech Therapy</SelectItem>
+                <SelectItem value="behavioral">Behavioral Therapy</SelectItem>
+                <SelectItem value="occupational">Occupational Therapy</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
       </div>
 
       {/* Results Count */}
-      {(searchQuery || pincodeFilter) && (
+      {(searchQuery || pincodeFilter || categoryFilter !== 'all') && (
         <div className="text-center">
           <p className="text-purple-300 font-bold">
             Found {filteredTherapists.length} therapist{filteredTherapists.length !== 1 ? 's' : ''} 
             {searchQuery && ` for "${searchQuery}"`}
             {pincodeFilter && ` in pincode "${pincodeFilter}"`}
+            {categoryFilter !== 'all' && ` in ${categoryFilter} therapy`}
           </p>
         </div>
       )}
 
-      {/* Therapist Selection by Specialization */}
+      {/* Therapist Grid */}
       <div className="space-y-6">        
-        {Object.keys(groupedTherapists).length === 0 ? (
+        {filteredTherapists.length === 0 ? (
           <div className="text-center py-8">
             <p className="text-gray-300 text-lg">No therapists found matching your search criteria.</p>
-            <p className="text-gray-400 text-sm mt-2">Try adjusting your search terms or pincode.</p>
+            <p className="text-gray-400 text-sm mt-2">Try adjusting your search terms, pincode, or category.</p>
           </div>
         ) : (
-          Object.entries(groupedTherapists).map(([specialization, specialists]) => (
-            <div key={specialization} className="space-y-3">
-              <h4 className="text-lg sm:text-xl font-black text-purple-300">
-                {specialization} Specialists ({specialists.length})
-              </h4>
-              <div className="space-y-3">
-                {specialists.map((therapist) => (
-                  <Card 
-                    key={therapist.id}
-                    className={`border-2 cursor-pointer transition-all duration-200 bold-card ${
-                      selectedTherapist === therapist.id 
-                        ? 'border-purple-400 shadow-lg scale-105' 
-                        : 'border-gray-200 hover:border-gray-300'
-                    }`}
-                    onClick={() => setSelectedTherapist(therapist.id)}
-                  >
-                    <CardContent className="p-4">
-                      <div className="space-y-3">
-                        {/* Header Row */}
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center space-x-3">
-                            <div className="text-3xl">{therapist.image}</div>
-                            <div>
-                              <h4 className="font-black text-white text-lg">{therapist.name}</h4>
-                              <p className="text-sm font-bold text-purple-300">{therapist.specialization}</p>
-                            </div>
-                          </div>
-                          <div className="text-right">
-                            <span className="text-green-400 text-sm font-black">Available</span>
-                          </div>
-                        </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {filteredTherapists.map((therapist) => (
+              <Card 
+                key={therapist.id}
+                className={`border-2 cursor-pointer transition-all duration-200 bold-card aspect-square ${
+                  selectedTherapist === therapist.id 
+                    ? 'border-purple-400 shadow-lg scale-105' 
+                    : 'border-gray-200 hover:border-gray-300'
+                }`}
+                onClick={() => setSelectedTherapist(therapist.id)}
+              >
+                <CardContent className="p-4 h-full flex flex-col justify-between">
+                  <div className="space-y-3">
+                    {/* Header */}
+                    <div className="flex items-center justify-between">
+                      <div className="text-3xl">{therapist.image}</div>
+                      <span className="text-green-400 text-xs font-black">Available</span>
+                    </div>
 
-                        {/* Details Row */}
-                        <div className="flex items-center justify-between text-sm">
-                          <div className="flex items-center space-x-4">
-                            <span className="text-yellow-400 font-bold">⭐ {therapist.rating}</span>
-                            <span className="text-white font-bold">{therapist.experience}</span>
-                          </div>
-                        </div>
+                    {/* Name and Specialization */}
+                    <div>
+                      <h4 className="font-black text-white text-sm">{therapist.name}</h4>
+                      <p className="text-xs font-bold text-purple-300">{therapist.specialization}</p>
+                    </div>
 
-                        {/* Location Row */}
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center space-x-2">
-                            <MapPin className="w-4 h-4 text-blue-400" />
-                            <span className="text-white font-bold">{therapist.area}</span>
-                            <span className="text-gray-300">|</span>
-                            <span className="text-blue-300 font-bold">{therapist.pincode}</span>
-                          </div>
-                          <div className="flex items-center space-x-2">
-                            <span className="text-green-400 font-bold">{therapist.distance} away</span>
-                          </div>
-                        </div>
+                    {/* Rating and Experience */}
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-yellow-400 font-bold">⭐ {therapist.rating}</span>
+                      <span className="text-white font-bold">{therapist.experience}</span>
+                    </div>
 
-                        {/* Contact Row */}
-                        <div className="flex items-center space-x-2">
-                          <Phone className="w-4 h-4 text-green-400" />
-                          <span className="text-green-300 font-bold">{therapist.phone}</span>
-                        </div>
+                    {/* Location */}
+                    <div className="space-y-1">
+                      <div className="flex items-center space-x-1">
+                        <MapPin className="w-3 h-3 text-blue-400" />
+                        <span className="text-white font-bold text-xs">{therapist.area}</span>
                       </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </div>
-          ))
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="text-blue-300 font-bold">{therapist.pincode}</span>
+                        <span className="text-green-400 font-bold">{therapist.distance}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Contact */}
+                  <div className="flex items-center space-x-1 mt-2">
+                    <Phone className="w-3 h-3 text-green-400" />
+                    <span className="text-green-300 font-bold text-xs">{therapist.phone}</span>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         )}
       </div>
 
