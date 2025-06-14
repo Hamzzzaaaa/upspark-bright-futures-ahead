@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -14,7 +13,11 @@ interface Therapist {
   image: string;
 }
 
-const TherapistBooking = () => {
+interface TherapistBookingProps {
+  onPlanSelected?: (planDays: number) => void;
+}
+
+const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
   const [selectedPlan, setSelectedPlan] = useState<string>('');
   const [selectedTherapist, setSelectedTherapist] = useState<string>('');
 
@@ -77,7 +80,13 @@ const TherapistBooking = () => {
 
   const handleBooking = () => {
     if (selectedPlan && selectedTherapist) {
-      alert(`Booking confirmed! Plan: ${selectedPlan} days with therapist ID: ${selectedTherapist}`);
+      const planDays = parseInt(selectedPlan);
+      alert(`Booking confirmed! ${planDays}-day program with therapist ID: ${selectedTherapist}`);
+      
+      // Call the callback to update the selected plan
+      if (onPlanSelected) {
+        onPlanSelected(planDays);
+      }
     } else {
       alert('Please select both a plan and a therapist');
     }
@@ -179,7 +188,7 @@ const TherapistBooking = () => {
         className="w-full py-4 text-lg font-semibold bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white rounded-xl transition-all duration-200 disabled:opacity-50"
       >
         {selectedPlan && selectedTherapist 
-          ? '🎉 Confirm Booking' 
+          ? '🎉 Confirm Booking & Start Activities' 
           : '📋 Select Plan & Therapist'
         }
       </Button>

@@ -11,21 +11,27 @@ import MedicineDelivery from '@/components/MedicineDelivery';
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
-  const [childName] = useState('Emma'); // This would come from user profile
+  const [childName] = useState('Emma');
+  const [selectedPlan, setSelectedPlan] = useState(30); // Default 30-day plan
   const navigate = useNavigate();
 
   const handleProfileClick = () => {
     navigate('/profile');
   };
 
+  const handlePlanSelected = (planDays: number) => {
+    setSelectedPlan(planDays);
+    setActiveTab('activities'); // Switch to activities after booking
+  };
+
   const renderActiveTab = () => {
     switch (activeTab) {
       case 'activities':
-        return <ActivitiesZone childName={childName} />;
+        return <ActivitiesZone childName={childName} selectedPlan={selectedPlan} />;
       case 'progress':
         return <ProgressTracker childName={childName} />;
       case 'therapist':
-        return <TherapistBooking />;
+        return <TherapistBooking onPlanSelected={handlePlanSelected} />;
       case 'medicine':
         return <MedicineDelivery />;
       default:
@@ -50,8 +56,8 @@ const Index = () => {
               </Card>
               <Card className="bg-gradient-to-br from-blue-100 to-blue-200 border-0">
                 <CardContent className="p-4 text-center">
-                  <div className="text-2xl font-bold text-blue-700">85%</div>
-                  <div className="text-sm text-blue-600">This Week's Progress</div>
+                  <div className="text-2xl font-bold text-blue-700">{selectedPlan}</div>
+                  <div className="text-sm text-blue-600">Day Program Active</div>
                 </CardContent>
               </Card>
             </div>
@@ -60,7 +66,7 @@ const Index = () => {
             <div className="space-y-4">
               <DashboardCard
                 title="Daily Activities"
-                description="Fun learning games and exercises"
+                description={`Fun learning games for ${selectedPlan}-day program`}
                 icon={Activity}
                 gradient="from-yellow-400 to-orange-500"
                 onClick={() => setActiveTab('activities')}
@@ -76,7 +82,7 @@ const Index = () => {
               
               <DashboardCard
                 title="Book Therapist"
-                description="Schedule therapy sessions"
+                description="Schedule therapy sessions & choose program"
                 icon={UserCheck}
                 gradient="from-purple-400 to-pink-500"
                 onClick={() => setActiveTab('therapist')}
