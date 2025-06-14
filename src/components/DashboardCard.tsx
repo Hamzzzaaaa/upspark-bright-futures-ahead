@@ -13,7 +13,7 @@ interface DashboardCardProps {
 const DashboardCard = ({ title, description, icon: Icon, gradient, onClick }: DashboardCardProps) => {
   return (
     <Card 
-      className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer hover:scale-105"
+      className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer hover:scale-105 bold-card"
       onClick={onClick}
     >
       <CardContent className="p-0">
@@ -21,8 +21,8 @@ const DashboardCard = ({ title, description, icon: Icon, gradient, onClick }: Da
           <Icon className="w-8 h-8 text-white mb-2" />
           <h3 className="text-xl font-bold text-white">{title}</h3>
         </div>
-        <div className="p-4 bg-white rounded-b-xl">
-          <p className="text-gray-600">{description}</p>
+        <div className="p-4 rounded-b-xl">
+          <p className="text-gray-200 font-medium">{description}</p>
         </div>
       </CardContent>
     </Card>

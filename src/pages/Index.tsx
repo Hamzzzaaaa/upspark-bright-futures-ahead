@@ -41,8 +41,8 @@ const Index = () => {
             {/* Welcome Header with Logo */}
             <div className="bold-card p-8 rounded-3xl text-center">
               <UpSparkLogo size="medium" className="mb-6" />
-              <h1 className="bold-text text-4xl mb-4">Welcome to UpSpark!</h1>
-              <p className="text-2xl text-muted-foreground font-bold">Let's make today amazing for {childName} ✨</p>
+              <h1 className="text-4xl mb-4 font-black text-white">Welcome to UpSpark!</h1>
+              <p className="text-2xl text-gray-200 font-bold">Let's make today amazing for {childName} ✨</p>
             </div>
 
             {/* Quick Stats */}
@@ -50,13 +50,13 @@ const Index = () => {
               <Card className="bold-card">
                 <CardContent className="p-6 text-center">
                   <div className="text-4xl font-black text-primary">7</div>
-                  <div className="text-lg font-bold text-muted-foreground">Activities Done Today</div>
+                  <div className="text-lg font-bold text-gray-200">Activities Done Today</div>
                 </CardContent>
               </Card>
               <Card className="bold-card">
                 <CardContent className="p-6 text-center">
                   <div className="text-4xl font-black text-secondary">{selectedPlan}</div>
-                  <div className="text-lg font-bold text-muted-foreground">Day Program Active</div>
+                  <div className="text-lg font-bold text-gray-200">Day Program Active</div>
                 </CardContent>
               </Card>
             </div>
@@ -126,7 +126,7 @@ const Index = () => {
                 className={`flex flex-col items-center py-3 px-4 rounded-2xl transition-all duration-300 font-bold ${
                   activeTab === tab.id
                     ? 'bold-button text-white shadow-2xl scale-110'
-                    : 'text-muted-foreground hover:text-primary hover:scale-105'
+                    : 'text-gray-300 hover:text-white hover:scale-105'
                 }`}
               >
                 <tab.icon className="w-6 h-6 mb-2" />
@@ -135,7 +135,7 @@ const Index = () => {
             ))}
             <button
               onClick={handleProfileClick}
-              className="flex flex-col items-center py-3 px-4 rounded-2xl transition-all duration-300 font-bold text-muted-foreground hover:text-primary hover:scale-105"
+              className="flex flex-col items-center py-3 px-4 rounded-2xl transition-all duration-300 font-bold text-gray-300 hover:text-white hover:scale-105"
             >
               <User className="w-6 h-6 mb-2" />
               <span className="text-sm font-black tracking-wide">Profile</span>
