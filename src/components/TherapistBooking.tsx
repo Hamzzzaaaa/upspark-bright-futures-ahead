@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -25,8 +26,7 @@ interface TherapistBookingProps {
 }
 
 const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
-  const [selectedTherapist, setSelectedTherapist] = useState<string>('');
-  const [selectedForDetails, setSelectedForDetails] = useState<string>('');
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [pincodeFilter, setPincodeFilter] = useState<string>('');
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
@@ -264,20 +264,9 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
     return filtered;
   }, [searchQuery, pincodeFilter, categoryFilter]);
 
-  const handleBooking = () => {
-    if (selectedTherapist) {
-      const therapist = therapists.find(t => t.id === selectedTherapist);
-      alert(`Booking confirmed with ${therapist?.name} in ${therapist?.area}!`);
-      
-      if (onPlanSelected) {
-        onPlanSelected(30); // Default to 30 days
-      }
-    } else {
-      alert('Please select a therapist');
-    }
+  const handleTherapistClick = (therapistId: string) => {
+    navigate(`/therapist/${therapistId}`);
   };
-
-  const selectedTherapistForDetails = therapists.find(t => t.id === selectedForDetails);
 
   return (
     <div className="space-y-6">
@@ -353,15 +342,8 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
             {filteredTherapists.map((therapist) => (
               <Card 
                 key={therapist.id}
-                className={`border-2 cursor-pointer transition-all duration-200 bold-card ${
-                  selectedTherapist === therapist.id 
-                    ? 'border-purple-400 shadow-lg scale-105' 
-                    : 'border-gray-200 hover:border-gray-300'
-                }`}
-                onClick={() => {
-                  setSelectedTherapist(therapist.id);
-                  setSelectedForDetails(therapist.id);
-                }}
+                className="border-2 cursor-pointer transition-all duration-200 bold-card hover:border-purple-400 hover:scale-105"
+                onClick={() => handleTherapistClick(therapist.id)}
               >
                 <CardContent className="p-4 flex flex-col items-center text-center space-y-3">
                   {/* Profile Picture */}
@@ -386,98 +368,6 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
           </div>
         )}
       </div>
-
-      {/* Detailed Information Modal */}
-      {selectedTherapistForDetails && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <Card className="w-full max-w-md bold-card">
-            <CardContent className="p-6">
-              <div className="flex justify-between items-start mb-4">
-                <h3 className="text-xl font-black text-white">Therapist Details</h3>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setSelectedForDetails('')}
-                  className="text-gray-400 hover:text-white"
-                >
-                  <X className="w-4 h-4" />
-                </Button>
-              </div>
-
-              <div className="space-y-4">
-                {/* Profile Picture */}
-                <div className="flex justify-center">
-                  <Avatar className="w-24 h-24">
-                    <AvatarImage src={selectedTherapistForDetails.image} alt={selectedTherapistForDetails.name} />
-                    <AvatarFallback className="bg-purple-500 text-white font-bold text-lg">
-                      {selectedTherapistForDetails.name.split(' ').map(n => n[0]).join('')}
-                    </AvatarFallback>
-                  </Avatar>
-                </div>
-
-                {/* Details */}
-                <div className="text-center space-y-2">
-                  <h4 className="font-black text-white text-lg">{selectedTherapistForDetails.name}</h4>
-                  <p className="text-purple-300 font-bold">{selectedTherapistForDetails.specialization}</p>
-                </div>
-
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-white font-bold">Rating:</span>
-                    <div className="flex items-center space-x-1">
-                      <Star className="w-4 h-4 text-yellow-400 fill-current" />
-                      <span className="text-yellow-400 font-bold">{selectedTherapistForDetails.rating}</span>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <span className="text-white font-bold">Experience:</span>
-                    <span className="text-white font-bold">{selectedTherapistForDetails.experience}</span>
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <span className="text-white font-bold">Location:</span>
-                    <div className="text-right">
-                      <div className="flex items-center space-x-1">
-                        <MapPin className="w-3 h-3 text-blue-400" />
-                        <span className="text-white font-bold text-sm">{selectedTherapistForDetails.area}</span>
-                      </div>
-                      <span className="text-blue-300 font-bold text-sm">{selectedTherapistForDetails.pincode}</span>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <span className="text-white font-bold">Distance:</span>
-                    <span className="text-green-400 font-bold">{selectedTherapistForDetails.distance}</span>
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <span className="text-white font-bold">Phone:</span>
-                    <div className="flex items-center space-x-1">
-                      <Phone className="w-3 h-3 text-green-400" />
-                      <span className="text-green-300 font-bold text-sm">{selectedTherapistForDetails.phone}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      )}
-
-      {/* Booking Button */}
-      {filteredTherapists.length > 0 && (
-        <Button
-          onClick={handleBooking}
-          disabled={!selectedTherapist}
-          className="w-full py-4 text-lg font-black bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white rounded-xl transition-all duration-200 disabled:opacity-50"
-        >
-          {selectedTherapist 
-            ? '🎉 Confirm Booking & Start Activities' 
-            : '📋 Select a Therapist'
-          }
-        </Button>
-      )}
     </div>
   );
 };
