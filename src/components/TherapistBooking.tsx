@@ -1,10 +1,10 @@
-
 import { useState, useMemo } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { MapPin, Phone, Search } from 'lucide-react';
+import { MapPin, Phone, Search, Star, X } from 'lucide-react';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 
 interface Therapist {
   id: string;
@@ -26,6 +26,7 @@ interface TherapistBookingProps {
 
 const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
   const [selectedTherapist, setSelectedTherapist] = useState<string>('');
+  const [selectedForDetails, setSelectedForDetails] = useState<string>('');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [pincodeFilter, setPincodeFilter] = useState<string>('');
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
@@ -39,7 +40,7 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
       rating: 4.9,
       experience: '8 years',
       available: true,
-      image: '👩‍⚕️',
+      image: 'https://images.unsplash.com/photo-1649972904349-6e44c42644a7?w=150&h=150&fit=crop&crop=face',
       area: 'Banjara Hills',
       pincode: '500034',
       phone: '+91 98765 43210',
@@ -52,7 +53,7 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
       rating: 4.7,
       experience: '5 years',
       available: true,
-      image: '👩‍⚕️',
+      image: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=150&h=150&fit=crop&crop=face',
       area: 'Jubilee Hills',
       pincode: '500033',
       phone: '+91 98765 43211',
@@ -65,7 +66,7 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
       rating: 4.8,
       experience: '10 years',
       available: true,
-      image: '👨‍⚕️',
+      image: 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=150&h=150&fit=crop&crop=face',
       area: 'Madhapur',
       pincode: '500081',
       phone: '+91 98765 43212',
@@ -78,7 +79,7 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
       rating: 4.6,
       experience: '6 years',
       available: true,
-      image: '👩‍⚕️',
+      image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=150&h=150&fit=crop&crop=face',
       area: 'Kondapur',
       pincode: '500084',
       phone: '+91 98765 43213',
@@ -91,7 +92,7 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
       rating: 4.8,
       experience: '7 years',
       available: true,
-      image: '👨‍⚕️',
+      image: 'https://images.unsplash.com/photo-1581090464777-f3220bbe1b8b?w=150&h=150&fit=crop&crop=face',
       area: 'Gachibowli',
       pincode: '500032',
       phone: '+91 98765 43214',
@@ -106,7 +107,7 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
       rating: 4.8,
       experience: '6 years',
       available: true,
-      image: '👨‍⚕️',
+      image: 'https://images.unsplash.com/photo-1649972904349-6e44c42644a7?w=150&h=150&fit=crop&crop=face',
       area: 'HITEC City',
       pincode: '500081',
       phone: '+91 98765 43220',
@@ -119,7 +120,7 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
       rating: 4.9,
       experience: '7 years',
       available: true,
-      image: '👩‍⚕️',
+      image: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=150&h=150&fit=crop&crop=face',
       area: 'Kukatpally',
       pincode: '500072',
       phone: '+91 98765 43221',
@@ -132,7 +133,7 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
       rating: 4.6,
       experience: '4 years',
       available: true,
-      image: '👨‍⚕️',
+      image: 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=150&h=150&fit=crop&crop=face',
       area: 'Secunderabad',
       pincode: '500003',
       phone: '+91 98765 43222',
@@ -145,7 +146,7 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
       rating: 4.7,
       experience: '8 years',
       available: true,
-      image: '👩‍⚕️',
+      image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=150&h=150&fit=crop&crop=face',
       area: 'Ameerpet',
       pincode: '500016',
       phone: '+91 98765 43223',
@@ -158,7 +159,7 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
       rating: 4.8,
       experience: '5 years',
       available: true,
-      image: '👨‍⚕️',
+      image: 'https://images.unsplash.com/photo-1581090464777-f3220bbe1b8b?w=150&h=150&fit=crop&crop=face',
       area: 'Miyapur',
       pincode: '500049',
       phone: '+91 98765 43224',
@@ -173,7 +174,7 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
       rating: 4.9,
       experience: '10 years',
       available: true,
-      image: '👩‍⚕️',
+      image: 'https://images.unsplash.com/photo-1649972904349-6e44c42644a7?w=150&h=150&fit=crop&crop=face',
       area: 'Begumpet',
       pincode: '500016',
       phone: '+91 98765 43230',
@@ -186,7 +187,7 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
       rating: 4.7,
       experience: '8 years',
       available: true,
-      image: '👨‍⚕️',
+      image: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=150&h=150&fit=crop&crop=face',
       area: 'Kondapur',
       pincode: '500084',
       phone: '+91 98765 43231',
@@ -199,7 +200,7 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
       rating: 4.8,
       experience: '6 years',
       available: true,
-      image: '👩‍⚕️',
+      image: 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=150&h=150&fit=crop&crop=face',
       area: 'Jubilee Hills',
       pincode: '500033',
       phone: '+91 98765 43232',
@@ -212,7 +213,7 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
       rating: 4.6,
       experience: '7 years',
       available: true,
-      image: '👨‍⚕️',
+      image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=150&h=150&fit=crop&crop=face',
       area: 'Madhapur',
       pincode: '500081',
       phone: '+91 98765 43233',
@@ -225,7 +226,7 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
       rating: 4.8,
       experience: '5 years',
       available: true,
-      image: '👩‍⚕️',
+      image: 'https://images.unsplash.com/photo-1581090464777-f3220bbe1b8b?w=150&h=150&fit=crop&crop=face',
       area: 'Banjara Hills',
       pincode: '500034',
       phone: '+91 98765 43234',
@@ -275,6 +276,8 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
       alert('Please select a therapist');
     }
   };
+
+  const selectedTherapistForDetails = therapists.find(t => t.id === selectedForDetails);
 
   return (
     <div className="space-y-6">
@@ -338,7 +341,7 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
         </div>
       )}
 
-      {/* Therapist Grid */}
+      {/* Therapist Grid - 2 columns responsive */}
       <div className="space-y-6">        
         {filteredTherapists.length === 0 ? (
           <div className="text-center py-8">
@@ -346,61 +349,121 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
             <p className="text-gray-400 text-sm mt-2">Try adjusting your search terms, pincode, or category.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 gap-4">
             {filteredTherapists.map((therapist) => (
               <Card 
                 key={therapist.id}
-                className={`border-2 cursor-pointer transition-all duration-200 bold-card aspect-square ${
+                className={`border-2 cursor-pointer transition-all duration-200 bold-card ${
                   selectedTherapist === therapist.id 
                     ? 'border-purple-400 shadow-lg scale-105' 
                     : 'border-gray-200 hover:border-gray-300'
                 }`}
-                onClick={() => setSelectedTherapist(therapist.id)}
+                onClick={() => {
+                  setSelectedTherapist(therapist.id);
+                  setSelectedForDetails(therapist.id);
+                }}
               >
-                <CardContent className="p-4 h-full flex flex-col justify-between">
-                  <div className="space-y-3">
-                    {/* Header */}
-                    <div className="flex items-center justify-between">
-                      <div className="text-3xl">{therapist.image}</div>
-                      <span className="text-green-400 text-xs font-black">Available</span>
-                    </div>
+                <CardContent className="p-4 flex flex-col items-center text-center space-y-3">
+                  {/* Profile Picture */}
+                  <Avatar className="w-16 h-16 sm:w-20 sm:h-20">
+                    <AvatarImage src={therapist.image} alt={therapist.name} />
+                    <AvatarFallback className="bg-purple-500 text-white font-bold">
+                      {therapist.name.split(' ').map(n => n[0]).join('')}
+                    </AvatarFallback>
+                  </Avatar>
 
-                    {/* Name and Specialization */}
-                    <div>
-                      <h4 className="font-black text-white text-sm">{therapist.name}</h4>
-                      <p className="text-xs font-bold text-purple-300">{therapist.specialization}</p>
-                    </div>
-
-                    {/* Rating and Experience */}
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="text-yellow-400 font-bold">⭐ {therapist.rating}</span>
-                      <span className="text-white font-bold">{therapist.experience}</span>
-                    </div>
-
-                    {/* Location */}
-                    <div className="space-y-1">
-                      <div className="flex items-center space-x-1">
-                        <MapPin className="w-3 h-3 text-blue-400" />
-                        <span className="text-white font-bold text-xs">{therapist.area}</span>
-                      </div>
-                      <div className="flex items-center justify-between text-xs">
-                        <span className="text-blue-300 font-bold">{therapist.pincode}</span>
-                        <span className="text-green-400 font-bold">{therapist.distance}</span>
-                      </div>
-                    </div>
+                  {/* Doctor Name */}
+                  <div>
+                    <h4 className="font-black text-white text-sm sm:text-base">{therapist.name}</h4>
+                    <p className="text-xs sm:text-sm font-bold text-purple-300">{therapist.specialization}</p>
                   </div>
 
-                  {/* Contact */}
-                  <div className="flex items-center space-x-1 mt-2">
-                    <Phone className="w-3 h-3 text-green-400" />
-                    <span className="text-green-300 font-bold text-xs">{therapist.phone}</span>
-                  </div>
+                  {/* Click for details hint */}
+                  <p className="text-xs text-gray-400">Click for details</p>
                 </CardContent>
               </Card>
             ))}
           </div>
         )}
       </div>
+
+      {/* Detailed Information Modal */}
+      {selectedTherapistForDetails && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <Card className="w-full max-w-md bold-card">
+            <CardContent className="p-6">
+              <div className="flex justify-between items-start mb-4">
+                <h3 className="text-xl font-black text-white">Therapist Details</h3>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setSelectedForDetails('')}
+                  className="text-gray-400 hover:text-white"
+                >
+                  <X className="w-4 h-4" />
+                </Button>
+              </div>
+
+              <div className="space-y-4">
+                {/* Profile Picture */}
+                <div className="flex justify-center">
+                  <Avatar className="w-24 h-24">
+                    <AvatarImage src={selectedTherapistForDetails.image} alt={selectedTherapistForDetails.name} />
+                    <AvatarFallback className="bg-purple-500 text-white font-bold text-lg">
+                      {selectedTherapistForDetails.name.split(' ').map(n => n[0]).join('')}
+                    </AvatarFallback>
+                  </Avatar>
+                </div>
+
+                {/* Details */}
+                <div className="text-center space-y-2">
+                  <h4 className="font-black text-white text-lg">{selectedTherapistForDetails.name}</h4>
+                  <p className="text-purple-300 font-bold">{selectedTherapistForDetails.specialization}</p>
+                </div>
+
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-white font-bold">Rating:</span>
+                    <div className="flex items-center space-x-1">
+                      <Star className="w-4 h-4 text-yellow-400 fill-current" />
+                      <span className="text-yellow-400 font-bold">{selectedTherapistForDetails.rating}</span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <span className="text-white font-bold">Experience:</span>
+                    <span className="text-white font-bold">{selectedTherapistForDetails.experience}</span>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <span className="text-white font-bold">Location:</span>
+                    <div className="text-right">
+                      <div className="flex items-center space-x-1">
+                        <MapPin className="w-3 h-3 text-blue-400" />
+                        <span className="text-white font-bold text-sm">{selectedTherapistForDetails.area}</span>
+                      </div>
+                      <span className="text-blue-300 font-bold text-sm">{selectedTherapistForDetails.pincode}</span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <span className="text-white font-bold">Distance:</span>
+                    <span className="text-green-400 font-bold">{selectedTherapistForDetails.distance}</span>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <span className="text-white font-bold">Phone:</span>
+                    <div className="flex items-center space-x-1">
+                      <Phone className="w-3 h-3 text-green-400" />
+                      <span className="text-green-300 font-bold text-sm">{selectedTherapistForDetails.phone}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
 
       {/* Booking Button */}
       {filteredTherapists.length > 0 && (
