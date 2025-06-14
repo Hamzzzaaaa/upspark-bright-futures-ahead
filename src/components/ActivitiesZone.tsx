@@ -24,8 +24,8 @@ const ActivitiesZone = ({ childName, selectedPlan = 30 }: ActivitiesZoneProps) =
   const [activities, setActivities] = useState<Activity[]>([
     {
       id: 'activity1',
-      title: 'Activity 1: Color Sorting Game',
-      description: 'Sort colored balls into matching jars',
+      title: 'Activity 1',
+      description: 'Color Sorting Game - Sort colored balls into matching jars',
       duration: 15,
       category: 'cognitive',
       emoji: '🔴',
@@ -34,8 +34,8 @@ const ActivitiesZone = ({ childName, selectedPlan = 30 }: ActivitiesZoneProps) =
     },
     {
       id: 'activity2',
-      title: 'Activity 2: Animal Name Game',
-      description: 'Click on animals and learn their names',
+      title: 'Activity 2',
+      description: 'Animal Name Game - Click on animals and learn their names',
       duration: 12,
       category: 'cognitive',
       emoji: '🐶',
@@ -44,8 +44,8 @@ const ActivitiesZone = ({ childName, selectedPlan = 30 }: ActivitiesZoneProps) =
     },
     {
       id: 'activity3',
-      title: 'Activity 3: Alphabet Scribbling',
-      description: 'Draw letters with colorful crayons',
+      title: 'Activity 3',
+      description: 'Alphabet Scribbling - Draw letters with colorful crayons',
       duration: 20,
       category: 'creative',
       emoji: '✏️',
@@ -54,8 +54,8 @@ const ActivitiesZone = ({ childName, selectedPlan = 30 }: ActivitiesZoneProps) =
     },
     {
       id: 'activity4',
-      title: 'Activity 4: Shape Selection',
-      description: 'Identify and name different shapes',
+      title: 'Activity 4',
+      description: 'Shape Selection - Identify and name different shapes',
       duration: 10,
       category: 'cognitive',
       emoji: '🔷',
@@ -64,8 +64,8 @@ const ActivitiesZone = ({ childName, selectedPlan = 30 }: ActivitiesZoneProps) =
     },
     {
       id: 'activity5',
-      title: 'Activity 5: Music Making',
-      description: 'Create beautiful melodies with colorful notes',
+      title: 'Activity 5',
+      description: 'Music Making - Create beautiful melodies with colorful notes',
       duration: 15,
       category: 'creative',
       emoji: '🎵',
@@ -74,8 +74,8 @@ const ActivitiesZone = ({ childName, selectedPlan = 30 }: ActivitiesZoneProps) =
     },
     {
       id: 'activity6',
-      title: 'Activity 6: Balance Walk',
-      description: 'Walk on a line maintaining balance',
+      title: 'Activity 6',
+      description: 'Balance Walk - Walk on a line maintaining balance',
       duration: 8,
       category: 'motor',
       emoji: '🚶‍♀️',
@@ -83,8 +83,8 @@ const ActivitiesZone = ({ childName, selectedPlan = 30 }: ActivitiesZoneProps) =
     },
     {
       id: 'activity7',
-      title: 'Activity 7: Number Counting',
-      description: 'Count objects and match numbers',
+      title: 'Activity 7',
+      description: 'Number Counting - Count objects and match numbers',
       duration: 12,
       category: 'cognitive',
       emoji: '🔢',
@@ -92,8 +92,8 @@ const ActivitiesZone = ({ childName, selectedPlan = 30 }: ActivitiesZoneProps) =
     },
     {
       id: 'activity8',
-      title: 'Activity 8: Singing Time',
-      description: 'Sing simple songs and rhymes',
+      title: 'Activity 8',
+      description: 'Singing Time - Sing simple songs and rhymes',
       duration: 10,
       category: 'speech',
       emoji: '🎵',
@@ -101,8 +101,8 @@ const ActivitiesZone = ({ childName, selectedPlan = 30 }: ActivitiesZoneProps) =
     },
     {
       id: 'activity9',
-      title: 'Activity 9: Puzzle Solving',
-      description: 'Complete colorful jigsaw puzzles',
+      title: 'Activity 9',
+      description: 'Puzzle Solving - Complete colorful jigsaw puzzles',
       duration: 18,
       category: 'cognitive',
       emoji: '🧩',
@@ -110,8 +110,8 @@ const ActivitiesZone = ({ childName, selectedPlan = 30 }: ActivitiesZoneProps) =
     },
     {
       id: 'activity10',
-      title: 'Activity 10: Dance & Movement',
-      description: 'Follow fun dance moves and rhythms',
+      title: 'Activity 10',
+      description: 'Dance & Movement - Follow fun dance moves and rhythms',
       duration: 12,
       category: 'motor',
       emoji: '💃',
@@ -161,17 +161,17 @@ const ActivitiesZone = ({ childName, selectedPlan = 30 }: ActivitiesZoneProps) =
             onClick={() => setActiveActivity(null)}
             variant="outline"
             size="sm"
-            className="flex items-center space-x-2"
+            className="flex items-center space-x-2 activity-text"
           >
             <ArrowLeft className="w-4 h-4" />
-            <span>Back</span>
+            <span className="activity-text">Back</span>
           </Button>
-          <h2 className="text-xl font-bold text-gray-800">
+          <h2 className="text-xl font-black activity-text">
             {activeActivity.title}
           </h2>
         </div>
         
-        {activeActivity.title.includes('Color Sorting Game') && (
+        {activeActivity.title.includes('Activity 1') && (
           <ColorSortingGame 
             onComplete={() => {
               toggleActivity(activeActivity.id);
@@ -180,7 +180,7 @@ const ActivitiesZone = ({ childName, selectedPlan = 30 }: ActivitiesZoneProps) =
           />
         )}
         
-        {activeActivity.title.includes('Animal Name Game') && (
+        {activeActivity.title.includes('Activity 2') && (
           <AnimalNameGame 
             onComplete={() => {
               toggleActivity(activeActivity.id);
@@ -189,7 +189,7 @@ const ActivitiesZone = ({ childName, selectedPlan = 30 }: ActivitiesZoneProps) =
           />
         )}
         
-        {activeActivity.title.includes('Alphabet Scribbling') && (
+        {activeActivity.title.includes('Activity 3') && (
           <AlphabetScribbling 
             onComplete={() => {
               toggleActivity(activeActivity.id);
@@ -198,7 +198,7 @@ const ActivitiesZone = ({ childName, selectedPlan = 30 }: ActivitiesZoneProps) =
           />
         )}
         
-        {activeActivity.title.includes('Shape Selection') && (
+        {activeActivity.title.includes('Activity 4') && (
           <ShapeSelectionGame 
             onComplete={() => {
               toggleActivity(activeActivity.id);
@@ -207,7 +207,7 @@ const ActivitiesZone = ({ childName, selectedPlan = 30 }: ActivitiesZoneProps) =
           />
         )}
         
-        {activeActivity.title.includes('Music Making') && (
+        {activeActivity.title.includes('Activity 5') && (
           <MusicMakingGame 
             onComplete={() => {
               toggleActivity(activeActivity.id);
@@ -223,12 +223,12 @@ const ActivitiesZone = ({ childName, selectedPlan = 30 }: ActivitiesZoneProps) =
     <div className="space-y-6">
       {/* Header */}
       <div className="text-center">
-        <h2 className="text-2xl font-bold text-gray-800 mb-2">
+        <h2 className="text-2xl font-black activity-text mb-2">
           {childName}'s Activities 🌟
         </h2>
 
         <div className="bg-gradient-to-r from-green-100 to-blue-100 p-4 rounded-2xl">
-          <p className="text-lg font-semibold text-gray-700">
+          <p className="text-lg font-black activity-text">
             {completedCount} of {activities.length} activities completed!
           </p>
           <div className="w-full bg-gray-200 rounded-full h-3 mt-2">
@@ -255,10 +255,10 @@ const ActivitiesZone = ({ childName, selectedPlan = 30 }: ActivitiesZoneProps) =
                   <div className="flex items-center space-x-3">
                     <span className="text-3xl">{activity.emoji}</span>
                     <div>
-                      <h3 className="text-lg font-bold text-white">{activity.title}</h3>
-                      <div className="flex items-center text-white/80 text-sm">
+                      <h3 className="text-lg font-black text-white activity-text">{activity.title}</h3>
+                      <div className="flex items-center text-white/90 text-sm activity-text">
                         <Clock className="w-4 h-4 mr-1" />
-                        {activity.duration} min
+                        <span className="activity-text">{activity.duration} min</span>
                       </div>
                     </div>
                   </div>
@@ -269,10 +269,10 @@ const ActivitiesZone = ({ childName, selectedPlan = 30 }: ActivitiesZoneProps) =
               </div>
               
               <div className="p-4 bg-white rounded-b-xl">
-                <p className="text-gray-600 mb-4">{activity.description}</p>
+                <p className="activity-text mb-4">{activity.description}</p>
                 <Button
                   onClick={() => openActivity(activity)}
-                  className={`w-full py-3 text-lg font-semibold rounded-xl transition-all duration-200 ${
+                  className={`w-full py-3 text-lg font-black rounded-xl transition-all duration-200 activity-text ${
                     activity.completed
                       ? 'bg-green-500 hover:bg-green-600 text-white'
                       : activity.interactive
@@ -280,12 +280,14 @@ const ActivitiesZone = ({ childName, selectedPlan = 30 }: ActivitiesZoneProps) =
                       : 'bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white'
                   }`}
                 >
-                  {activity.completed 
-                    ? '🎉 Great Job!' 
-                    : activity.interactive 
-                    ? '🎮 Play Activity'
-                    : '🚀 Start Activity'
-                  }
+                  <span className="activity-text">
+                    {activity.completed 
+                      ? '🎉 Great Job!' 
+                      : activity.interactive 
+                      ? '🎮 Play Activity'
+                      : '🚀 Start Activity'
+                    }
+                  </span>
                 </Button>
               </div>
             </CardContent>

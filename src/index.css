@@ -23,7 +23,7 @@
     --secondary-foreground: 0 0% 100%;
 
     --muted: 0 0% 15%;
-    --muted-foreground: 0 0% 85%;
+    --muted-foreground: 0 0% 95%;
 
     --accent: 45 100% 55%;
     --accent-foreground: 0 0% 10%;
@@ -64,7 +64,7 @@
     --secondary-foreground: 0 0% 100%;
 
     --muted: 0 0% 15%;
-    --muted-foreground: 0 0% 85%;
+    --muted-foreground: 0 0% 95%;
 
     --accent: 45 100% 55%;
     --accent-foreground: 0 0% 10%;
@@ -99,6 +99,7 @@
 
   h1, h2, h3, h4, h5, h6 {
     @apply font-black tracking-tight text-white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
   }
 
   h1 {
@@ -114,15 +115,24 @@
   }
 
   p {
-    @apply font-bold text-white;
+    @apply font-black text-white;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
   }
 
   span {
-    @apply font-bold text-white;
+    @apply font-black text-white;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
   }
 
   button {
     @apply font-black tracking-wide transition-all duration-200 text-white;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+  }
+
+  /* Override any gray text to be bright white */
+  .text-gray-800, .text-gray-700, .text-gray-600, .text-gray-500 {
+    @apply text-white font-black;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
   }
 
   .bold-card {
@@ -135,13 +145,28 @@
 
   .bold-text {
     @apply font-black text-white;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
   }
 
   .card-text {
-    @apply font-bold text-white;
+    @apply font-black text-white;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
   }
 
   .muted-text {
-    @apply font-bold text-gray-200;
+    @apply font-black text-gray-100;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+  }
+
+  /* Force all text to be bright and bold */
+  div, label, a {
+    @apply font-black text-white;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
+  }
+
+  /* Ensure activity page text is bright */
+  .activity-text {
+    @apply font-black text-white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9);
   }
 }
