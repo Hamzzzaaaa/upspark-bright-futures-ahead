@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -96,20 +97,20 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
     <div className="space-y-6">
       {/* Header */}
       <div className="text-center">
-        <h2 className="text-2xl font-bold text-gray-800 mb-2">
+        <h2 className="text-2xl sm:text-3xl font-black text-white mb-2">
           Book a Therapist 👩‍⚕️
         </h2>
-        <p className="text-gray-600">Choose a plan and therapist for personalized care</p>
+        <p className="text-lg sm:text-xl font-bold text-white">Choose a plan and therapist for personalized care</p>
       </div>
 
       {/* Plan Selection */}
       <div className="space-y-4">
-        <h3 className="text-xl font-semibold text-gray-800">Select Your Plan</h3>
+        <h3 className="text-xl sm:text-2xl font-black text-white">Select Your Plan</h3>
         <div className="space-y-3">
           {plans.map((plan) => (
             <Card 
               key={plan.id}
-              className={`border-2 cursor-pointer transition-all duration-200 ${
+              className={`border-2 cursor-pointer transition-all duration-200 bold-card ${
                 selectedPlan === plan.id 
                   ? 'border-purple-400 shadow-lg scale-105' 
                   : 'border-gray-200 hover:border-gray-300'
@@ -123,14 +124,14 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
                       <Calendar className="w-6 h-6 text-white" />
                     </div>
                     <div>
-                      <h4 className="font-semibold text-gray-800">{plan.duration}</h4>
-                      <p className="text-sm text-gray-600">{plan.sessions}</p>
+                      <h4 className="font-black text-white text-lg sm:text-xl">{plan.duration}</h4>
+                      <p className="text-base sm:text-lg font-bold text-white">{plan.sessions}</p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="text-2xl font-bold text-gray-800">{plan.price}</div>
+                    <div className="text-2xl sm:text-3xl font-black text-white">{plan.price}</div>
                     {plan.popular && (
-                      <span className="text-xs bg-yellow-400 text-yellow-800 px-2 py-1 rounded-full font-medium">
+                      <span className="text-xs bg-yellow-400 text-yellow-800 px-2 py-1 rounded-full font-black">
                         Most Popular
                       </span>
                     )}
@@ -144,12 +145,12 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
 
       {/* Therapist Selection */}
       <div className="space-y-4">
-        <h3 className="text-xl font-semibold text-gray-800">Choose Your Therapist</h3>
+        <h3 className="text-xl sm:text-2xl font-black text-white">Choose Your Therapist</h3>
         <div className="space-y-3">
           {therapists.map((therapist) => (
             <Card 
               key={therapist.id}
-              className={`border-2 cursor-pointer transition-all duration-200 ${
+              className={`border-2 cursor-pointer transition-all duration-200 bold-card ${
                 selectedTherapist === therapist.id 
                   ? 'border-purple-400 shadow-lg scale-105' 
                   : 'border-gray-200 hover:border-gray-300'
@@ -160,18 +161,18 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
                 <div className="flex items-center space-x-4">
                   <div className="text-4xl">{therapist.image}</div>
                   <div className="flex-1">
-                    <h4 className="font-semibold text-gray-800">{therapist.name}</h4>
-                    <p className="text-sm text-gray-600">{therapist.specialization}</p>
+                    <h4 className="font-black text-white text-lg sm:text-xl">{therapist.name}</h4>
+                    <p className="text-base sm:text-lg font-bold text-white">{therapist.specialization}</p>
                     <div className="flex items-center space-x-4 mt-1">
-                      <span className="text-sm text-yellow-600">⭐ {therapist.rating}</span>
-                      <span className="text-sm text-gray-500">{therapist.experience}</span>
+                      <span className="text-base font-bold text-yellow-400">⭐ {therapist.rating}</span>
+                      <span className="text-base font-bold text-white">{therapist.experience}</span>
                     </div>
                   </div>
                   <div className="text-right">
                     {therapist.available ? (
-                      <span className="text-green-600 text-sm font-medium">Available</span>
+                      <span className="text-green-400 text-base font-black">Available</span>
                     ) : (
-                      <span className="text-red-600 text-sm font-medium">Busy</span>
+                      <span className="text-red-400 text-base font-black">Busy</span>
                     )}
                   </div>
                 </div>
@@ -185,7 +186,7 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
       <Button
         onClick={handleBooking}
         disabled={!selectedPlan || !selectedTherapist}
-        className="w-full py-4 text-lg font-semibold bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white rounded-xl transition-all duration-200 disabled:opacity-50"
+        className="w-full py-4 text-lg font-black bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white rounded-xl transition-all duration-200 disabled:opacity-50"
       >
         {selectedPlan && selectedTherapist 
           ? '🎉 Confirm Booking & Start Activities' 
