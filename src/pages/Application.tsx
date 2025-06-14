@@ -57,10 +57,12 @@ const Application = () => {
     e.preventDefault();
     console.log('Application submitted:', formData);
     
-    // Store the child's name in localStorage for use on the home page
-    if (formData.childName) {
-      localStorage.setItem('childName', formData.childName);
-    }
+    // Save application data to localStorage for profile page
+    localStorage.setItem('childName', formData.childName);
+    localStorage.setItem('parentName', formData.parentName);
+    localStorage.setItem('parentPhone', formData.parentPhone);
+    localStorage.setItem('parentEmail', formData.parentEmail);
+    localStorage.setItem('address', formData.address);
     
     toast({
       title: "Application Submitted Successfully!",

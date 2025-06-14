@@ -1,24 +1,72 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { User, Mail, Phone, MapPin, Edit, Save, LogOut, Home, Activity, TrendingUp, UserCheck, Pill, Camera } from 'lucide-react';
+import { User, Mail, Phone, MapPin, Edit, Save, LogOut, Home, Activity, TrendingUp, UserCheck, Pill, Camera, Star, Calendar } from 'lucide-react';
 
 const Profile = () => {
   const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
-  const [parentName, setParentName] = useState('Sarah Johnson');
-  const [childName, setChildName] = useState('Emma');
-  const [email, setEmail] = useState('sarah.johnson@email.com');
-  const [phone, setPhone] = useState('+1 (555) 123-4567');
-  const [address, setAddress] = useState('123 Main St, Anytown, USA');
+  
+  // Load data from localStorage (application form and any saved profile data)
+  const [parentName, setParentName] = useState('');
+  const [childName, setChildName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [address, setAddress] = useState('');
   const [profileImage, setProfileImage] = useState<string>('');
+  
+  // Current plan information
+  const [currentPlan, setCurrentPlan] = useState({
+    therapistName: '',
+    planName: '',
+    planPrice: '',
+    startDate: ''
+  });
+
+  useEffect(() => {
+    // Load application data from localStorage
+    const savedChildName = localStorage.getItem('childName') || '';
+    const savedParentName = localStorage.getItem('parentName') || 'Sarah Johnson';
+    const savedEmail = localStorage.getItem('parentEmail') || 'sarah.johnson@email.com';
+    const savedPhone = localStorage.getItem('parentPhone') || '+1 (555) 123-4567';
+    const savedAddress = localStorage.getItem('address') || '123 Main St, Anytown, USA';
+    const savedProfileImage = localStorage.getItem('profileImage') || '';
+    
+    // Load current booking information
+    const savedTherapistName = localStorage.getItem('bookedTherapistName') || '';
+    const savedPlanName = localStorage.getItem('bookedPlanName') || '';
+    const savedPlanPrice = localStorage.getItem('bookedPlanPrice') || '';
+    const savedStartDate = localStorage.getItem('bookingDate') || '';
+    
+    setChildName(savedChildName);
+    setParentName(savedParentName);
+    setEmail(savedEmail);
+    setPhone(savedPhone);
+    setAddress(savedAddress);
+    setProfileImage(savedProfileImage);
+    
+    setCurrentPlan({
+      therapistName: savedTherapistName,
+      planName: savedPlanName,
+      planPrice: savedPlanPrice,
+      startDate: savedStartDate
+    });
+  }, []);
 
   const handleSave = () => {
+    // Save to localStorage
+    localStorage.setItem('parentName', parentName);
+    localStorage.setItem('childName', childName);
+    localStorage.setItem('parentEmail', email);
+    localStorage.setItem('parentPhone', phone);
+    localStorage.setItem('address', address);
+    localStorage.setItem('profileImage', profileImage);
+    
     setIsEditing(false);
     console.log('Profile updated');
   };
@@ -40,7 +88,11 @@ const Profile = () => {
     if (file) {
       const reader = new FileReader();
       reader.onload = (e) => {
-        setProfileImage(e.target?.result as string);
+        const imageUrl = e.target?.result as string;
+        setProfileImage(imageUrl);
+        if (!isEditing) {
+          localStorage.setItem('profileImage', imageUrl);
+        }
       };
       reader.readAsDataURL(file);
     }
@@ -66,21 +118,56 @@ const Profile = () => {
                   {parentName.split(' ').map(n => n[0]).join('')}
                 </AvatarFallback>
               </Avatar>
-              {isEditing && (
-                <label className="absolute bottom-0 right-0 bg-primary hover:bg-primary/90 text-white p-2 rounded-full cursor-pointer transition-all duration-200 hover:scale-105">
-                  <Camera className="w-4 h-4" />
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageUpload}
-                    className="hidden"
-                  />
-                </label>
-              )}
+              <label className="absolute bottom-0 right-0 bg-primary hover:bg-primary/90 text-white p-2 rounded-full cursor-pointer transition-all duration-200 hover:scale-105">
+                <Camera className="w-4 h-4" />
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  className="hidden"
+                />
+              </label>
             </div>
           </div>
 
-          {/* Profile Card */}
+          {/* Current Plan Card */}
+          {currentPlan.therapistName && (
+            <Card className="bold-card mb-6 bg-gradient-to-r from-green-900/50 to-blue-900/50 border-green-500/30">
+              <CardHeader className="text-center pb-4">
+                <CardTitle className="text-xl card-text flex items-center justify-center">
+                  <Star className="w-5 h-5 mr-2 text-yellow-400" />
+                  Current Plan
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-300">Therapist:</span>
+                  <span className="text-white font-black">{currentPlan.therapistName}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-300">Plan:</span>
+                  <span className="text-green-400 font-black">{currentPlan.planName}</span>
+                </div>
+                {currentPlan.planPrice && (
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-300">Price:</span>
+                    <span className="text-yellow-400 font-black">₹{currentPlan.planPrice}</span>
+                  </div>
+                )}
+                {currentPlan.startDate && (
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-300">Started:</span>
+                    <span className="text-blue-400 font-black flex items-center">
+                      <Calendar className="w-4 h-4 mr-1" />
+                      {currentPlan.startDate}
+                    </span>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Profile Details Card */}
           <Card className="bold-card mb-6">
             <CardHeader className="text-center pb-4">
               <div className="flex items-center justify-between">
