@@ -39,30 +39,30 @@ const Index = () => {
         return (
           <div className="space-y-6">
             {/* Welcome Header with Logo */}
-            <div className="bg-gradient-to-r from-purple-400 via-pink-400 to-orange-400 p-6 rounded-3xl text-white text-center">
-              <UpSparkLogo size="medium" className="mb-4" />
-              <h1 className="text-2xl font-bold mb-2">Welcome to UpSpark!</h1>
-              <p className="text-lg opacity-90">Let's make today amazing for {childName} ✨</p>
+            <div className="bold-card p-8 rounded-3xl text-center">
+              <UpSparkLogo size="medium" className="mb-6" />
+              <h1 className="bold-text text-4xl mb-4">Welcome to UpSpark!</h1>
+              <p className="text-2xl text-muted-foreground font-bold">Let's make today amazing for {childName} ✨</p>
             </div>
 
             {/* Quick Stats */}
-            <div className="grid grid-cols-2 gap-4">
-              <Card className="bg-gradient-to-br from-green-100 to-green-200 border-0">
-                <CardContent className="p-4 text-center">
-                  <div className="text-2xl font-bold text-green-700">7</div>
-                  <div className="text-sm text-green-600">Activities Done Today</div>
+            <div className="grid grid-cols-2 gap-6">
+              <Card className="bold-card">
+                <CardContent className="p-6 text-center">
+                  <div className="text-4xl font-black text-primary">7</div>
+                  <div className="text-lg font-bold text-muted-foreground">Activities Done Today</div>
                 </CardContent>
               </Card>
-              <Card className="bg-gradient-to-br from-blue-100 to-blue-200 border-0">
-                <CardContent className="p-4 text-center">
-                  <div className="text-2xl font-bold text-blue-700">{selectedPlan}</div>
-                  <div className="text-sm text-blue-600">Day Program Active</div>
+              <Card className="bold-card">
+                <CardContent className="p-6 text-center">
+                  <div className="text-4xl font-black text-secondary">{selectedPlan}</div>
+                  <div className="text-lg font-bold text-muted-foreground">Day Program Active</div>
                 </CardContent>
               </Card>
             </div>
 
             {/* Main Dashboard Cards */}
-            <div className="space-y-4">
+            <div className="space-y-6">
               <DashboardCard
                 title="Daily Activities"
                 description={`Fun learning games for ${selectedPlan}-day program`}
@@ -101,17 +101,17 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
+    <div className="min-h-screen">
       {/* Main Content */}
-      <div className="pb-20">
-        <div className="p-4 max-w-md mx-auto">
+      <div className="pb-24">
+        <div className="p-6 max-w-md mx-auto">
           {renderActiveTab()}
         </div>
       </div>
 
       {/* Bottom Navigation */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t border-gray-200">
-        <div className="max-w-md mx-auto px-4 py-2">
+      <div className="fixed bottom-0 left-0 right-0 bold-card border-t-4 border-primary">
+        <div className="max-w-md mx-auto px-6 py-4">
           <div className="flex justify-around">
             {[
               { id: 'dashboard', icon: Home, label: 'Home' },
@@ -123,22 +123,22 @@ const Index = () => {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex flex-col items-center py-2 px-2 rounded-xl transition-all duration-200 ${
+                className={`flex flex-col items-center py-3 px-4 rounded-2xl transition-all duration-300 font-bold ${
                   activeTab === tab.id
-                    ? 'bg-gradient-to-r from-purple-400 to-pink-400 text-white shadow-lg scale-105'
-                    : 'text-gray-500 hover:text-gray-700'
+                    ? 'bold-button text-white shadow-2xl scale-110'
+                    : 'text-muted-foreground hover:text-primary hover:scale-105'
                 }`}
               >
-                <tab.icon className="w-4 h-4 mb-1" />
-                <span className="text-xs font-medium">{tab.label}</span>
+                <tab.icon className="w-6 h-6 mb-2" />
+                <span className="text-sm font-black tracking-wide">{tab.label}</span>
               </button>
             ))}
             <button
               onClick={handleProfileClick}
-              className="flex flex-col items-center py-2 px-2 rounded-xl transition-all duration-200 text-gray-500 hover:text-gray-700"
+              className="flex flex-col items-center py-3 px-4 rounded-2xl transition-all duration-300 font-bold text-muted-foreground hover:text-primary hover:scale-105"
             >
-              <User className="w-4 h-4 mb-1" />
-              <span className="text-xs font-medium">Profile</span>
+              <User className="w-6 h-6 mb-2" />
+              <span className="text-sm font-black tracking-wide">Profile</span>
             </button>
           </div>
         </div>
