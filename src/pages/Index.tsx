@@ -1,19 +1,11 @@
+
 import { useState, useEffect } from 'react';
-import { Calendar, Activity, TrendingUp, UserCheck, Pill, Home, User } from 'lucide-react';
+import { Calendar, Activity, TrendingUp, CheckCircle, Target, Clock } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { useNavigate } from 'react-router-dom';
-import DashboardCard from '@/components/DashboardCard';
-import ActivitiesZone from '@/components/ActivitiesZone';
-import ProgressTracker from '@/components/ProgressTracker';
-import TherapistBooking from '@/components/TherapistBooking';
-import MedicineDelivery from '@/components/MedicineDelivery';
 import UpSparkLogo from '@/components/UpSparkLogo';
 
 const Index = () => {
-  const [activeTab, setActiveTab] = useState('dashboard');
   const [childName, setChildName] = useState('Emma'); // Default fallback
-  const [selectedPlan, setSelectedPlan] = useState(30); // Default 30-day plan
-  const navigate = useNavigate();
 
   // Load child name from localStorage on component mount
   useEffect(() => {
@@ -23,131 +15,128 @@ const Index = () => {
     }
   }, []);
 
-  const handleProfileClick = () => {
-    navigate('/profile');
+  // Mock progress data - in a real app, this would come from your backend
+  const therapyData = {
+    totalDays: 30,
+    completedDays: 18,
+    activitiesCompleted: 85,
+    totalActivities: 120,
+    weeklyProgress: [
+      { week: 'Week 1', completed: 95 },
+      { week: 'Week 2', completed: 88 },
+      { week: 'Week 3', completed: 92 },
+      { week: 'Current', completed: 73 }
+    ]
   };
 
-  const handlePlanSelected = (planDays: number) => {
-    setSelectedPlan(planDays);
-    setActiveTab('activities'); // Switch to activities after booking
-  };
-
-  const renderActiveTab = () => {
-    switch (activeTab) {
-      case 'activities':
-        return <ActivitiesZone childName={childName} selectedPlan={selectedPlan} />;
-      case 'progress':
-        return <ProgressTracker childName={childName} />;
-      case 'therapist':
-        return <TherapistBooking onPlanSelected={handlePlanSelected} />;
-      case 'medicine':
-        return <MedicineDelivery />;
-      default:
-        return (
-          <div className="space-y-6">
-            {/* Welcome Header with Logo */}
-            <div className="bold-card p-6 sm:p-8 rounded-3xl text-center">
-              <UpSparkLogo size="medium" className="mb-4 sm:mb-6" />
-              <h1 className="text-3xl sm:text-5xl mb-3 sm:mb-4 font-black text-white">Welcome to UpSpark!</h1>
-              <p className="text-xl sm:text-3xl font-black text-white">Let's make today amazing for {childName} ✨</p>
-            </div>
-
-            {/* Quick Stats */}
-            <div className="grid grid-cols-2 gap-4 sm:gap-6">
-              <Card className="bold-card">
-                <CardContent className="p-4 sm:p-6 text-center">
-                  <div className="text-3xl sm:text-5xl font-black text-primary">7</div>
-                  <div className="text-base sm:text-xl font-black text-white">Activities Done Today</div>
-                </CardContent>
-              </Card>
-              <Card className="bold-card">
-                <CardContent className="p-4 sm:p-6 text-center">
-                  <div className="text-3xl sm:text-5xl font-black text-secondary">{selectedPlan}</div>
-                  <div className="text-base sm:text-xl font-black text-white">Day Program Active</div>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Main Dashboard Cards */}
-            <div className="space-y-4 sm:space-y-6">
-              <DashboardCard
-                title="Daily Activities"
-                description={`Fun learning games for ${selectedPlan}-day program`}
-                icon={Activity}
-                gradient="from-yellow-400 to-orange-500"
-                onClick={() => setActiveTab('activities')}
-              />
-              
-              <DashboardCard
-                title="Progress Tracking"
-                description="View detailed progress reports"
-                icon={TrendingUp}
-                gradient="from-green-400 to-blue-500"
-                onClick={() => setActiveTab('progress')}
-              />
-              
-              <DashboardCard
-                title="Book Therapist"
-                description="Schedule therapy sessions & choose program"
-                icon={UserCheck}
-                gradient="from-purple-400 to-pink-500"
-                onClick={() => setActiveTab('therapist')}
-              />
-              
-              <DashboardCard
-                title="Medicine Delivery"
-                description="Order medication refills"
-                icon={Pill}
-                gradient="from-teal-400 to-cyan-500"
-                onClick={() => setActiveTab('medicine')}
-              />
-            </div>
-          </div>
-        );
-    }
-  };
+  const completionPercentage = Math.round((therapyData.activitiesCompleted / therapyData.totalActivities) * 100);
+  const daysPercentage = Math.round((therapyData.completedDays / therapyData.totalDays) * 100);
 
   return (
     <div className="min-h-screen">
-      {/* Main Content */}
-      <div className="pb-24">
-        <div className="p-4 sm:p-6 max-w-md mx-auto">
-          {renderActiveTab()}
+      <div className="p-4 sm:p-6 max-w-md mx-auto space-y-6">
+        {/* Welcome Header with Logo */}
+        <div className="bold-card p-6 sm:p-8 rounded-3xl text-center">
+          <UpSparkLogo size="medium" className="mb-4 sm:mb-6" />
+          <h1 className="text-3xl sm:text-5xl mb-3 sm:mb-4 font-black text-white">Progress Dashboard</h1>
+          <p className="text-xl sm:text-3xl font-black text-white">{childName}'s Therapy Journey ✨</p>
         </div>
-      </div>
 
-      {/* Bottom Navigation */}
-      <div className="fixed bottom-0 left-0 right-0 bold-card border-t-4 border-primary">
-        <div className="max-w-md mx-auto px-4 sm:px-6 py-3 sm:py-4">
-          <div className="flex justify-around">
-            {[
-              { id: 'dashboard', icon: Home, label: 'Home' },
-              { id: 'activities', icon: Activity, label: 'Activities' },
-              { id: 'progress', icon: TrendingUp, label: 'Progress' },
-              { id: 'therapist', icon: UserCheck, label: 'Therapist' },
-              { id: 'medicine', icon: Pill, label: 'Medicine' },
-            ].map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`flex flex-col items-center py-2 sm:py-3 px-2 sm:px-4 rounded-2xl transition-all duration-300 font-black ${
-                  activeTab === tab.id
-                    ? 'bold-button shadow-2xl scale-110'
-                    : 'text-white hover:text-white hover:scale-105'
-                }`}
-              >
-                <tab.icon className="w-6 h-6 sm:w-8 sm:h-8 mb-1 sm:mb-2" />
-                <span className="text-sm sm:text-base font-black tracking-wide">{tab.label}</span>
-              </button>
-            ))}
-            <button
-              onClick={handleProfileClick}
-              className="flex flex-col items-center py-2 sm:py-3 px-2 sm:px-4 rounded-2xl transition-all duration-300 font-black text-white hover:text-white hover:scale-105"
-            >
-              <User className="w-6 h-6 sm:w-8 sm:h-8 mb-1 sm:mb-2" />
-              <span className="text-sm sm:text-base font-black tracking-wide">Profile</span>
-            </button>
-          </div>
+        {/* Days of Therapy Progress */}
+        <Card className="bold-card">
+          <CardHeader className="pb-3 sm:pb-6">
+            <CardTitle className="flex items-center text-white text-xl sm:text-2xl font-black">
+              <Calendar className="w-6 h-6 sm:w-8 sm:h-8 mr-2" />
+              Therapy Days Progress
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="pt-0">
+            <div className="text-center mb-4">
+              <div className="text-4xl sm:text-5xl font-black text-primary mb-2">
+                {therapyData.completedDays}/{therapyData.totalDays}
+              </div>
+              <p className="text-lg sm:text-xl font-bold text-white">Days Completed</p>
+              <div className="text-2xl sm:text-3xl font-black text-secondary mt-2">{daysPercentage}%</div>
+            </div>
+            
+            <div className="w-full bg-gray-600 rounded-full h-4 sm:h-6">
+              <div 
+                className="bg-gradient-to-r from-blue-400 to-purple-500 h-4 sm:h-6 rounded-full transition-all duration-1000"
+                style={{ width: `${daysPercentage}%` }}
+              />
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Activities Completion Progress */}
+        <Card className="bold-card">
+          <CardHeader className="pb-3 sm:pb-6">
+            <CardTitle className="flex items-center text-white text-xl sm:text-2xl font-black">
+              <Activity className="w-6 h-6 sm:w-8 sm:h-8 mr-2" />
+              Activities Completed
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="pt-0">
+            <div className="text-center mb-4">
+              <div className="text-4xl sm:text-5xl font-black text-primary mb-2">
+                {therapyData.activitiesCompleted}/{therapyData.totalActivities}
+              </div>
+              <p className="text-lg sm:text-xl font-bold text-white">Activities Done</p>
+              <div className="text-2xl sm:text-3xl font-black text-secondary mt-2">{completionPercentage}%</div>
+            </div>
+            
+            <div className="w-full bg-gray-600 rounded-full h-4 sm:h-6">
+              <div 
+                className="bg-gradient-to-r from-green-400 to-teal-500 h-4 sm:h-6 rounded-full transition-all duration-1000"
+                style={{ width: `${completionPercentage}%` }}
+              />
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Weekly Progress Breakdown */}
+        <Card className="bold-card">
+          <CardHeader className="pb-3 sm:pb-6">
+            <CardTitle className="flex items-center text-white text-xl sm:text-2xl font-black">
+              <TrendingUp className="w-6 h-6 sm:w-8 sm:h-8 mr-2" />
+              Weekly Progress
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="pt-0">
+            <div className="space-y-4">
+              {therapyData.weeklyProgress.map((week, index) => (
+                <div key={week.week} className="flex items-center justify-between">
+                  <div className="flex items-center space-x-3">
+                    <div className={`w-3 h-3 rounded-full ${index === therapyData.weeklyProgress.length - 1 ? 'bg-yellow-400' : 'bg-green-400'}`} />
+                    <span className="text-lg font-black text-white">{week.week}</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-xl font-black text-white">{week.completed}%</span>
+                    {week.completed >= 90 && <CheckCircle className="w-5 h-5 text-green-400" />}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Quick Stats Grid */}
+        <div className="grid grid-cols-2 gap-4">
+          <Card className="bold-card">
+            <CardContent className="p-4 text-center">
+              <Target className="w-8 h-8 text-primary mx-auto mb-2" />
+              <div className="text-2xl font-black text-white">12</div>
+              <div className="text-sm font-bold text-white">Days Remaining</div>
+            </CardContent>
+          </Card>
+          
+          <Card className="bold-card">
+            <CardContent className="p-4 text-center">
+              <Clock className="w-8 h-8 text-secondary mx-auto mb-2" />
+              <div className="text-2xl font-black text-white">35</div>
+              <div className="text-sm font-bold text-white">Activities Left</div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>
