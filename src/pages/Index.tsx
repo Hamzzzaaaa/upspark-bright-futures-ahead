@@ -63,7 +63,7 @@ const Index = () => {
                 onClick={() => setActiveTab('therapist')}
               >
                 <CardContent className="p-4 sm:p-6 text-center">
-                  <Calendar className="w-8 h-8 sm:w-10 sm:h-10 text-purple-400 mx-auto mb-2" />
+                  <Calendar className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 text-purple-400 mx-auto mb-1 sm:mb-2" />
                   <div className="text-2xl sm:text-3xl font-black text-white">12/16</div>
                   <div className="text-base sm:text-lg font-black text-white">Therapist Sessions</div>
                   <div className="text-sm sm:text-base font-bold text-purple-300">{therapistProgress}% Complete</div>
@@ -76,7 +76,7 @@ const Index = () => {
                 onClick={() => setActiveTab('activities')}
               >
                 <CardContent className="p-4 sm:p-6 text-center">
-                  <Target className="w-8 h-8 sm:w-10 sm:h-10 text-green-400 mx-auto mb-2" />
+                  <Target className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 text-green-400 mx-auto mb-1 sm:mb-2" />
                   <div className="text-2xl sm:text-3xl font-black text-white">{activitiesProgress}%</div>
                   <div className="text-base sm:text-lg font-black text-white">Activities Done</div>
                   <div className="text-sm sm:text-base font-bold text-green-300">Great Progress!</div>
@@ -86,7 +86,7 @@ const Index = () => {
               {/* Development Progress - Calculated from above */}
               <Card className="bold-card sm:col-span-2">
                 <CardContent className="p-4 sm:p-6 text-center">
-                  <TrendingUp className="w-8 h-8 sm:w-10 sm:h-10 text-yellow-400 mx-auto mb-2" />
+                  <TrendingUp className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 text-yellow-400 mx-auto mb-1 sm:mb-2" />
                   <div className="text-2xl sm:text-3xl font-black text-white">{overallDevelopment}%</div>
                   <div className="text-base sm:text-lg font-black text-white">Overall Development</div>
                   <div className="text-sm sm:text-base font-bold text-yellow-300">Excellent Progress This Month</div>
@@ -126,16 +126,16 @@ const Index = () => {
                     : 'text-white hover:text-white hover:scale-105'
                 }`}
               >
-                <tab.icon className="w-6 h-6 sm:w-8 sm:h-8 mb-1 sm:mb-2" />
-                <span className="text-sm sm:text-base font-black tracking-wide">{tab.label}</span>
+                <tab.icon className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 mb-1 sm:mb-2" />
+                <span className="text-xs sm:text-sm md:text-base font-black tracking-wide">{tab.label}</span>
               </button>
             ))}
             <button
               onClick={handleProfileClick}
               className="flex flex-col items-center py-2 sm:py-3 px-2 sm:px-4 rounded-2xl transition-all duration-300 font-black text-white hover:text-white hover:scale-105"
             >
-              <User className="w-6 h-6 sm:w-8 sm:h-8 mb-1 sm:mb-2" />
-              <span className="text-sm sm:text-base font-black tracking-wide">Profile</span>
+              <User className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 mb-1 sm:mb-2" />
+              <span className="text-xs sm:text-sm md:text-base font-black tracking-wide">Profile</span>
             </button>
           </div>
         </div>
