@@ -11,7 +11,8 @@ import MedicineDelivery from '@/components/MedicineDelivery';
 import UpSparkLogo from '@/components/UpSparkLogo';
 import AILearningSystem from '@/components/AILearningSystem';
 import VoiceController from '@/components/VoiceController';
-import EmotionDetector from '@/components/EmotionDetector';
+import AINavigator from '@/components/AINavigator';
+import MoodDetector from '@/components/MoodDetector';
 import StoryTherapy from '@/components/StoryTherapy';
 import AdvancedAnalytics from '@/components/AdvancedAnalytics';
 
@@ -20,6 +21,7 @@ const Index = () => {
   const [childName] = useState('Emma');
   const [selectedPlan, setSelectedPlan] = useState(30); // Default 30-day plan
   const [voiceEnabled, setVoiceEnabled] = useState(true);
+  const [moodDetectionActive, setMoodDetectionActive] = useState(true);
   const [activitiesCompleted, setActivitiesCompleted] = useState(7);
   const navigate = useNavigate();
 
@@ -53,14 +55,18 @@ const Index = () => {
     }
   };
 
+  const handleNavigationSuggestion = (section: string) => {
+    setActiveTab(section);
+  };
+
   const handleLearningPatternUpdate = (pattern: any) => {
     console.log('Learning pattern updated:', pattern);
     // Here you would typically save to backend or local storage
   };
 
-  const handleEmotionChange = (emotion: any) => {
-    console.log('Emotion detected:', emotion);
-    // Here you would typically adjust activities based on emotion
+  const handleMoodChange = (mood: any) => {
+    console.log('Mood detected:', mood);
+    // Here you would typically adjust activities based on mood
   };
 
   const renderActiveTab = () => {
@@ -89,11 +95,22 @@ const Index = () => {
               <p className="text-lg opacity-90">Let's make today amazing for {childName} ✨</p>
             </div>
 
+            {/* AI Navigator */}
+            <AINavigator 
+              currentSection={activeTab} 
+              onNavigationSuggestion={handleNavigationSuggestion}
+              childName={childName}
+            />
+
             {/* Voice Controller */}
             <VoiceController onVoiceCommand={handleVoiceCommand} isEnabled={voiceEnabled} />
 
-            {/* Emotion Detector */}
-            <EmotionDetector childName={childName} onEmotionChange={handleEmotionChange} />
+            {/* Mood Detector */}
+            <MoodDetector 
+              childName={childName} 
+              onMoodChange={handleMoodChange}
+              isActive={moodDetectionActive}
+            />
 
             {/* Quick Stats */}
             <div className="grid grid-cols-2 gap-4">
