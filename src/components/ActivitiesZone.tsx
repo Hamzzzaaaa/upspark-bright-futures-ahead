@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Clock, Calendar, ArrowLeft, RefreshCw } from 'lucide-react';
+import { Canvas as FabricCanvas, PencilBrush } from 'fabric';
 
 interface Activity {
   id: string;
@@ -62,11 +63,11 @@ const ActivitiesZone = ({ childName, selectedPlan = 30 }: ActivitiesZoneProps) =
           interactive: true
         },
         {
-          title: 'Bird Selection Game',
-          description: 'Click on birds and learn their names',
+          title: 'Bird Coloring',
+          description: 'Color beautiful birds with different colors',
           duration: 15,
-          category: 'sensory' as const,
-          emoji: '🐦',
+          category: 'creative' as const,
+          emoji: '🎨',
           interactive: true
         },
         {
@@ -196,8 +197,8 @@ const ActivitiesZone = ({ childName, selectedPlan = 30 }: ActivitiesZoneProps) =
           />
         )}
         
-        {activeActivity.title === 'Bird Selection Game' && (
-          <BirdSelectionGame 
+        {activeActivity.title === 'Bird Coloring' && (
+          <BirdColoringGame 
             onComplete={() => {
               toggleActivity(activeActivity.id);
               setActiveActivity(null);
@@ -519,24 +520,55 @@ const AnimalNameGame = ({ onComplete }: { onComplete: () => void }) => {
   );
 };
 
-// Alphabet Scribbling Component
+// Updated Alphabet Scribbling Component with proper drawing functionality
 const AlphabetScribbling = ({ onComplete }: { onComplete: () => void }) => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [fabricCanvas, setFabricCanvas] = useState<FabricCanvas | null>(null);
   const [currentLetter, setCurrentLetter] = useState('A');
-  const [currentColor, setCurrentColor] = useState('red');
+  const [currentColor, setCurrentColor] = useState('#ff0000');
   const [completedLetters, setCompletedLetters] = useState<string[]>([]);
-  const [isDrawing, setIsDrawing] = useState(false);
   
-  const colors = ['red', 'blue', 'green', 'yellow', 'purple', 'orange'];
+  const colors = ['#ff0000', '#0000ff', '#00ff00', '#ffff00', '#ff00ff', '#ffa500'];
   const letters = ['A', 'B', 'C', 'D', 'E'];
+
+  useEffect(() => {
+    if (!canvasRef.current) return;
+
+    const canvas = new FabricCanvas(canvasRef.current, {
+      width: 400,
+      height: 300,
+      backgroundColor: '#ffffff',
+    });
+
+    canvas.isDrawingMode = true;
+    canvas.freeDrawingBrush = new PencilBrush(canvas);
+    canvas.freeDrawingBrush.color = currentColor;
+    canvas.freeDrawingBrush.width = 8;
+
+    setFabricCanvas(canvas);
+
+    return () => {
+      canvas.dispose();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (fabricCanvas) {
+      fabricCanvas.freeDrawingBrush.color = currentColor;
+    }
+  }, [currentColor, fabricCanvas]);
 
   const getRandomColor = () => {
     const randomColor = colors[Math.floor(Math.random() * colors.length)];
     setCurrentColor(randomColor);
   };
 
-  const startDrawing = () => {
-    setIsDrawing(true);
-    getRandomColor();
+  const clearCanvas = () => {
+    if (fabricCanvas) {
+      fabricCanvas.clear();
+      fabricCanvas.backgroundColor = '#ffffff';
+      fabricCanvas.renderAll();
+    }
   };
 
   const finishLetter = () => {
@@ -559,7 +591,7 @@ const AlphabetScribbling = ({ onComplete }: { onComplete: () => void }) => {
         }, 2000);
       }
     }
-    setIsDrawing(false);
+    clearCanvas();
   };
 
   const nextLetter = () => {
@@ -567,13 +599,14 @@ const AlphabetScribbling = ({ onComplete }: { onComplete: () => void }) => {
     const nextIndex = (currentIndex + 1) % letters.length;
     setCurrentLetter(letters[nextIndex]);
     getRandomColor();
+    clearCanvas();
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       <div className="text-center">
         <h3 className="text-2xl font-bold text-gray-800 mb-2">Alphabet Scribbling ✏️</h3>
-        <p className="text-gray-600">Draw the letter with the given color!</p>
+        <p className="text-gray-600">Draw the letter with your mouse or finger!</p>
         <div className="text-3xl font-bold text-purple-600 mt-4">
           Letters Done: {completedLetters.length} / {letters.length}
         </div>
@@ -585,42 +618,37 @@ const AlphabetScribbling = ({ onComplete }: { onComplete: () => void }) => {
         </h4>
         <p className="text-lg mb-4">
           Use this color: <span 
-            className="font-bold text-2xl" 
-            style={{ color: currentColor }}
-          >
-            {currentColor.toUpperCase()}
-          </span>
+            className="font-bold text-2xl inline-block w-8 h-8 rounded-full border-2 border-gray-400" 
+            style={{ backgroundColor: currentColor }}
+          ></span>
         </p>
       </div>
 
-      {/* Drawing Area */}
-      <div className="bg-white border-4 border-dashed border-gray-300 rounded-2xl p-8 min-h-64 flex flex-col items-center justify-center">
-        <div className="text-8xl font-bold mb-4" style={{ color: currentColor, opacity: 0.3 }}>
-          {currentLetter}
+      {/* Drawing Canvas */}
+      <div className="flex justify-center">
+        <div className="bg-white border-4 border-dashed border-gray-300 rounded-2xl p-4">
+          <canvas ref={canvasRef} className="border border-gray-200 rounded-xl" />
         </div>
-        
-        {!isDrawing ? (
-          <Button
-            onClick={startDrawing}
-            className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold py-4 px-8 rounded-xl text-lg"
-          >
-            Start Drawing! 🖍️
-          </Button>
-        ) : (
-          <div className="text-center">
-            <div className="text-2xl mb-4">✏️ Keep drawing...</div>
-            <Button
-              onClick={finishLetter}
-              className="bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white font-bold py-3 px-6 rounded-xl"
-            >
-              Finished Drawing!
-            </Button>
-          </div>
-        )}
       </div>
 
-      {/* Navigation */}
+      {/* Controls */}
       <div className="flex justify-center space-x-4">
+        <Button
+          onClick={clearCanvas}
+          variant="outline"
+          className="flex items-center space-x-2"
+        >
+          <RefreshCw className="w-4 h-4" />
+          <span>Clear</span>
+        </Button>
+        
+        <Button
+          onClick={finishLetter}
+          className="bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white font-bold py-3 px-6 rounded-xl"
+        >
+          Finished Drawing!
+        </Button>
+        
         <Button
           onClick={nextLetter}
           variant="outline"
@@ -742,82 +770,219 @@ const ShapeSelectionGame = ({ onComplete }: { onComplete: () => void }) => {
   );
 };
 
-// Bird Selection Game Component
-const BirdSelectionGame = ({ onComplete }: { onComplete: () => void }) => {
-  const [birds] = useState([
-    { id: 1, name: 'Eagle', emoji: '🦅' },
-    { id: 2, name: 'Owl', emoji: '🦉' },
-    { id: 3, name: 'Parrot', emoji: '🦜' },
-    { id: 4, name: 'Penguin', emoji: '🐧' },
-    { id: 5, name: 'Flamingo', emoji: '🦩' }
-  ]);
+// NEW: Bird Coloring Game Component
+const BirdColoringGame = ({ onComplete }: { onComplete: () => void }) => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [fabricCanvas, setFabricCanvas] = useState<FabricCanvas | null>(null);
+  const [selectedColor, setSelectedColor] = useState('#ff0000');
+  const [currentBird, setCurrentBird] = useState(0);
+  const [coloredBirds, setColoredBirds] = useState<number[]>([]);
   
-  const [score, setScore] = useState(0);
-  const [selectedBirds, setSelectedBirds] = useState<number[]>([]);
+  const colors = [
+    { name: 'Red', value: '#ff0000' },
+    { name: 'Blue', value: '#0000ff' },
+    { name: 'Green', value: '#00ff00' },
+    { name: 'Yellow', value: '#ffff00' },
+    { name: 'Purple', value: '#ff00ff' },
+    { name: 'Orange', value: '#ffa500' }
+  ];
 
-  const selectBird = (bird: typeof birds[0]) => {
-    if (selectedBirds.includes(bird.id)) return;
+  const birds = [
+    { id: 1, name: 'Parrot', emoji: '🦜' },
+    { id: 2, name: 'Eagle', emoji: '🦅' },
+    { id: 3, name: 'Flamingo', emoji: '🦩' }
+  ];
+
+  useEffect(() => {
+    if (!canvasRef.current) return;
+
+    const canvas = new FabricCanvas(canvasRef.current, {
+      width: 400,
+      height: 300,
+      backgroundColor: '#ffffff',
+    });
+
+    canvas.isDrawingMode = true;
+    canvas.freeDrawingBrush = new PencilBrush(canvas);
+    canvas.freeDrawingBrush.color = selectedColor;
+    canvas.freeDrawingBrush.width = 12;
+
+    // Draw bird outline
+    drawBirdOutline(canvas);
     
-    setSelectedBirds(prev => [...prev, bird.id]);
-    setScore(prev => prev + 1);
-    
-    // Speak the bird name
-    if ('speechSynthesis' in window) {
-      const utterance = new SpeechSynthesisUtterance(`This is an ${bird.name}!`);
-      utterance.rate = 0.8;
-      speechSynthesis.speak(utterance);
+    setFabricCanvas(canvas);
+
+    return () => {
+      canvas.dispose();
+    };
+  }, [currentBird]);
+
+  useEffect(() => {
+    if (fabricCanvas) {
+      fabricCanvas.freeDrawingBrush.color = selectedColor;
     }
+  }, [selectedColor, fabricCanvas]);
 
-    if (score + 1 === birds.length) {
-      setTimeout(() => {
-        if ('speechSynthesis' in window) {
-          const utterance = new SpeechSynthesisUtterance('Excellent! You learned all the bird names!');
-          speechSynthesis.speak(utterance);
-        }
-        onComplete();
-      }, 2000);
+  const drawBirdOutline = (canvas: FabricCanvas) => {
+    // Simple bird outline (you could make this more detailed)
+    const ctx = canvas.getContext();
+    ctx.strokeStyle = '#000000';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    
+    // Bird body (oval)
+    ctx.ellipse(200, 180, 80, 50, 0, 0, 2 * Math.PI);
+    
+    // Bird head (circle)
+    ctx.ellipse(200, 120, 40, 40, 0, 0, 2 * Math.PI);
+    
+    // Beak (triangle)
+    ctx.moveTo(160, 120);
+    ctx.lineTo(140, 125);
+    ctx.lineTo(160, 130);
+    ctx.closePath();
+    
+    // Wing
+    ctx.ellipse(180, 160, 30, 20, -0.5, 0, 2 * Math.PI);
+    
+    // Tail
+    ctx.ellipse(280, 180, 40, 15, 0, 0, 2 * Math.PI);
+    
+    ctx.stroke();
+  };
+
+  const finishColoring = () => {
+    if (!coloredBirds.includes(currentBird)) {
+      setColoredBirds(prev => [...prev, currentBird]);
+      
+      if ('speechSynthesis' in window) {
+        const utterance = new SpeechSynthesisUtterance(`Beautiful coloring of the ${birds[currentBird].name}!`);
+        utterance.rate = 0.8;
+        speechSynthesis.speak(utterance);
+      }
+
+      if (coloredBirds.length + 1 === birds.length) {
+        setTimeout(() => {
+          if ('speechSynthesis' in window) {
+            const utterance = new SpeechSynthesisUtterance('Excellent! You colored all the birds!');
+            speechSynthesis.speak(utterance);
+          }
+          onComplete();
+        }, 2000);
+      }
+    }
+  };
+
+  const nextBird = () => {
+    const nextIndex = (currentBird + 1) % birds.length;
+    setCurrentBird(nextIndex);
+    if (fabricCanvas) {
+      fabricCanvas.clear();
+      fabricCanvas.backgroundColor = '#ffffff';
+      drawBirdOutline(fabricCanvas);
+      fabricCanvas.renderAll();
+    }
+  };
+
+  const clearCanvas = () => {
+    if (fabricCanvas) {
+      fabricCanvas.clear();
+      fabricCanvas.backgroundColor = '#ffffff';
+      drawBirdOutline(fabricCanvas);
+      fabricCanvas.renderAll();
     }
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       <div className="text-center">
-        <h3 className="text-2xl font-bold text-gray-800 mb-2">Bird Selection Game 🐦</h3>
-        <p className="text-gray-600">Click on the birds to learn their names!</p>
+        <h3 className="text-2xl font-bold text-gray-800 mb-2">Bird Coloring 🎨</h3>
+        <p className="text-gray-600">Color the beautiful birds with different colors!</p>
         <div className="text-3xl font-bold text-indigo-600 mt-4">
-          Birds Found: {score} / {birds.length}
+          Birds Colored: {coloredBirds.length} / {birds.length}
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-6">
-        {birds.map((bird) => {
-          const isSelected = selectedBirds.includes(bird.id);
-          return (
-            <button
-              key={bird.id}
-              onClick={() => selectBird(bird)}
-              disabled={isSelected}
-              className={`p-6 rounded-2xl transition-all duration-300 ${
-                isSelected 
-                  ? 'bg-green-200 scale-95 opacity-75' 
-                  : 'bg-gradient-to-br from-sky-100 to-blue-100 hover:scale-105 hover:shadow-lg'
-              }`}
-            >
-              <div className="text-6xl mb-2">{bird.emoji}</div>
-              <div className={`text-xl font-bold ${isSelected ? 'text-green-700' : 'text-gray-700'}`}>
-                {isSelected ? bird.name : '?'}
-              </div>
-              {isSelected && <div className="text-2xl mt-2">✅</div>}
-            </button>
-          );
-        })}
+      <div className="text-center">
+        <h4 className="text-lg font-semibold text-gray-700 mb-4">
+          Color the {birds[currentBird].name}: <span className="text-4xl">{birds[currentBird].emoji}</span>
+        </h4>
       </div>
 
-      {score === birds.length && (
+      {/* Color Palette */}
+      <div className="flex justify-center space-x-2 mb-4">
+        {colors.map((color) => (
+          <button
+            key={color.value}
+            onClick={() => setSelectedColor(color.value)}
+            className={`w-10 h-10 rounded-full border-4 transition-all duration-200 ${
+              selectedColor === color.value ? 'border-gray-800 scale-110' : 'border-gray-300'
+            }`}
+            style={{ backgroundColor: color.value }}
+            title={color.name}
+          />
+        ))}
+      </div>
+
+      {/* Drawing Canvas */}
+      <div className="flex justify-center">
+        <div className="bg-white border-4 border-dashed border-gray-300 rounded-2xl p-4">
+          <canvas ref={canvasRef} className="border border-gray-200 rounded-xl" />
+        </div>
+      </div>
+
+      {/* Controls */}
+      <div className="flex justify-center space-x-4">
+        <Button
+          onClick={clearCanvas}
+          variant="outline"
+          className="flex items-center space-x-2"
+        >
+          <RefreshCw className="w-4 h-4" />
+          <span>Clear</span>
+        </Button>
+        
+        <Button
+          onClick={finishColoring}
+          className="bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white font-bold py-3 px-6 rounded-xl"
+        >
+          Finished Coloring!
+        </Button>
+        
+        <Button
+          onClick={nextBird}
+          variant="outline"
+          className="flex items-center space-x-2"
+        >
+          <RefreshCw className="w-4 h-4" />
+          <span>Next Bird</span>
+        </Button>
+      </div>
+
+      {/* Progress */}
+      <div className="flex justify-center space-x-2">
+        {birds.map((bird, index) => (
+          <div
+            key={bird.id}
+            className={`w-16 h-16 rounded-full flex flex-col items-center justify-center font-bold text-xs ${
+              coloredBirds.includes(index)
+                ? 'bg-green-500 text-white'
+                : index === currentBird
+                ? 'bg-blue-500 text-white'
+                : 'bg-gray-200 text-gray-500'
+            }`}
+          >
+            <div className="text-lg">{bird.emoji}</div>
+            <div>{bird.name}</div>
+          </div>
+        ))}
+      </div>
+
+      {coloredBirds.length === birds.length && (
         <div className="text-center p-6 bg-gradient-to-r from-sky-400 to-indigo-400 rounded-2xl">
           <div className="text-4xl mb-2">🎉</div>
           <h3 className="text-2xl font-bold text-white">Amazing Job!</h3>
-          <p className="text-white text-lg">You learned all {birds.length} bird names!</p>
+          <p className="text-white text-lg">You colored all {birds.length} birds beautifully!</p>
         </div>
       )}
     </div>
