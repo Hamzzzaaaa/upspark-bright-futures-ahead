@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -9,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Sparkles, FileText, User, Calendar, Pill } from 'lucide-react';
+import { toast } from '@/components/ui/use-toast';
 
 const Application = () => {
   const [formData, setFormData] = useState({
@@ -56,8 +56,21 @@ const Application = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log('Application submitted:', formData);
+    
+    // Store the child's name in localStorage for use on the home page
+    if (formData.childName) {
+      localStorage.setItem('childName', formData.childName);
+    }
+    
+    toast({
+      title: "Application Submitted Successfully!",
+      description: `Thank you for submitting ${formData.childName}'s application. You will be redirected to the main app.`,
+    });
+    
     // Navigate to main app after submission
-    navigate('/');
+    setTimeout(() => {
+      navigate('/');
+    }, 2000);
   };
 
   const renderDynamicFields = () => {

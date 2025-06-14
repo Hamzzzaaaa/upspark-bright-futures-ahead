@@ -1,5 +1,4 @@
-
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Calendar, Activity, TrendingUp, UserCheck, Pill, Home, User } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useNavigate } from 'react-router-dom';
@@ -12,9 +11,17 @@ import UpSparkLogo from '@/components/UpSparkLogo';
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
-  const [childName] = useState('Emma');
+  const [childName, setChildName] = useState('Emma'); // Default fallback
   const [selectedPlan, setSelectedPlan] = useState(30); // Default 30-day plan
   const navigate = useNavigate();
+
+  // Load child name from localStorage on component mount
+  useEffect(() => {
+    const storedChildName = localStorage.getItem('childName');
+    if (storedChildName) {
+      setChildName(storedChildName);
+    }
+  }, []);
 
   const handleProfileClick = () => {
     navigate('/profile');
