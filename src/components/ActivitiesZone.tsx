@@ -13,7 +13,6 @@ interface Activity {
   completed: boolean;
   emoji: string;
   interactive?: boolean;
-  day: number;
 }
 
 interface ActivitiesZoneProps {
@@ -22,93 +21,105 @@ interface ActivitiesZoneProps {
 }
 
 const ActivitiesZone = ({ childName, selectedPlan = 30 }: ActivitiesZoneProps) => {
-  const [activities, setActivities] = useState<Activity[]>([]);
-  const [currentDay, setCurrentDay] = useState(1);
+  const [activities, setActivities] = useState<Activity[]>([
+    {
+      id: 'activity1',
+      title: 'Activity 1: Color Sorting Game',
+      description: 'Sort colored balls into matching jars',
+      duration: 15,
+      category: 'cognitive',
+      emoji: '🔴',
+      completed: false,
+      interactive: true
+    },
+    {
+      id: 'activity2',
+      title: 'Activity 2: Animal Name Game',
+      description: 'Click on animals and learn their names',
+      duration: 12,
+      category: 'cognitive',
+      emoji: '🐶',
+      completed: false,
+      interactive: true
+    },
+    {
+      id: 'activity3',
+      title: 'Activity 3: Alphabet Scribbling',
+      description: 'Draw letters with colorful crayons',
+      duration: 20,
+      category: 'creative',
+      emoji: '✏️',
+      completed: false,
+      interactive: true
+    },
+    {
+      id: 'activity4',
+      title: 'Activity 4: Shape Selection',
+      description: 'Identify and name different shapes',
+      duration: 10,
+      category: 'cognitive',
+      emoji: '🔷',
+      completed: false,
+      interactive: true
+    },
+    {
+      id: 'activity5',
+      title: 'Activity 5: Music Making',
+      description: 'Create beautiful melodies with colorful notes',
+      duration: 15,
+      category: 'creative',
+      emoji: '🎵',
+      completed: false,
+      interactive: true
+    },
+    {
+      id: 'activity6',
+      title: 'Activity 6: Balance Walk',
+      description: 'Walk on a line maintaining balance',
+      duration: 8,
+      category: 'motor',
+      emoji: '🚶‍♀️',
+      completed: false
+    },
+    {
+      id: 'activity7',
+      title: 'Activity 7: Number Counting',
+      description: 'Count objects and match numbers',
+      duration: 12,
+      category: 'cognitive',
+      emoji: '🔢',
+      completed: false
+    },
+    {
+      id: 'activity8',
+      title: 'Activity 8: Singing Time',
+      description: 'Sing simple songs and rhymes',
+      duration: 10,
+      category: 'speech',
+      emoji: '🎵',
+      completed: false
+    },
+    {
+      id: 'activity9',
+      title: 'Activity 9: Puzzle Solving',
+      description: 'Complete colorful jigsaw puzzles',
+      duration: 18,
+      category: 'cognitive',
+      emoji: '🧩',
+      completed: false
+    },
+    {
+      id: 'activity10',
+      title: 'Activity 10: Dance & Movement',
+      description: 'Follow fun dance moves and rhythms',
+      duration: 12,
+      category: 'motor',
+      emoji: '💃',
+      completed: false
+    }
+  ]);
+
   const [activeActivity, setActiveActivity] = useState<Activity | null>(null);
-
-  // Generate activities based on selected plan
-  useEffect(() => {
-    const generateActivities = (days: number) => {
-      const baseActivities = [
-        {
-          title: 'Color Sorting Game',
-          description: 'Sort colored balls into matching jars',
-          duration: 15,
-          category: 'cognitive' as const,
-          emoji: '🔴',
-          interactive: true
-        },
-        {
-          title: 'Animal Name Game',
-          description: 'Click on animals and learn their names',
-          duration: 12,
-          category: 'cognitive' as const,
-          emoji: '🐶',
-          interactive: true
-        },
-        {
-          title: 'Alphabet Scribbling',
-          description: 'Draw letters with colorful crayons',
-          duration: 20,
-          category: 'creative' as const,
-          emoji: '✏️',
-          interactive: true
-        },
-        {
-          title: 'Shape Selection',
-          description: 'Identify and name different shapes',
-          duration: 10,
-          category: 'cognitive' as const,
-          emoji: '🔷',
-          interactive: true
-        },
-        {
-          title: 'Music Making',
-          description: 'Create beautiful melodies with colorful notes',
-          duration: 15,
-          category: 'creative' as const,
-          emoji: '🎵',
-          interactive: true
-        },
-        {
-          title: 'Balance Walk',
-          description: 'Walk on a line maintaining balance',
-          duration: 8,
-          category: 'motor' as const,
-          emoji: '🚶‍♀️'
-        },
-        {
-          title: 'Number Counting',
-          description: 'Count objects and match numbers',
-          duration: 12,
-          category: 'cognitive' as const,
-          emoji: '🔢'
-        },
-        {
-          title: 'Singing Time',
-          description: 'Sing simple songs and rhymes',
-          duration: 10,
-          category: 'speech' as const,
-          emoji: '🎵'
-        }
-      ];
-
-      const generatedActivities: Activity[] = [];
-      for (let day = 1; day <= days; day++) {
-        const activityIndex = (day - 1) % baseActivities.length;
-        const baseActivity = baseActivities[activityIndex];
-        generatedActivities.push({
-          id: `${day}-${activityIndex}`,
-          ...baseActivity,
-          completed: false,
-          day: day
-        });
-      }
-      return generatedActivities;
-    };
-
-    setActivities(generateActivities(selectedPlan));
-  }, [selectedPlan]);
 
   const toggleActivity = (id: string) => {
     setActivities(prev => 
@@ -139,8 +150,7 @@ const ActivitiesZone = ({ childName, selectedPlan = 30 }: ActivitiesZoneProps) =
     return colors[category as keyof typeof colors] || 'from-gray-400 to-gray-500';
   };
 
-  const currentDayActivities = activities.filter(a => a.day === currentDay);
-  const completedCount = currentDayActivities.filter(a => a.completed).length;
+  const completedCount = activities.filter(a => a.completed).length;
 
   // If interactive activity is active, show the interactive component
   if (activeActivity) {
@@ -161,7 +171,7 @@ const ActivitiesZone = ({ childName, selectedPlan = 30 }: ActivitiesZoneProps) =
           </h2>
         </div>
         
-        {activeActivity.title === 'Color Sorting Game' && (
+        {activeActivity.title.includes('Color Sorting Game') && (
           <ColorSortingGame 
             onComplete={() => {
               toggleActivity(activeActivity.id);
@@ -170,7 +180,7 @@ const ActivitiesZone = ({ childName, selectedPlan = 30 }: ActivitiesZoneProps) =
           />
         )}
         
-        {activeActivity.title === 'Animal Name Game' && (
+        {activeActivity.title.includes('Animal Name Game') && (
           <AnimalNameGame 
             onComplete={() => {
               toggleActivity(activeActivity.id);
@@ -179,7 +189,7 @@ const ActivitiesZone = ({ childName, selectedPlan = 30 }: ActivitiesZoneProps) =
           />
         )}
         
-        {activeActivity.title === 'Alphabet Scribbling' && (
+        {activeActivity.title.includes('Alphabet Scribbling') && (
           <AlphabetScribbling 
             onComplete={() => {
               toggleActivity(activeActivity.id);
@@ -188,7 +198,7 @@ const ActivitiesZone = ({ childName, selectedPlan = 30 }: ActivitiesZoneProps) =
           />
         )}
         
-        {activeActivity.title === 'Shape Selection' && (
+        {activeActivity.title.includes('Shape Selection') && (
           <ShapeSelectionGame 
             onComplete={() => {
               toggleActivity(activeActivity.id);
@@ -197,7 +207,7 @@ const ActivitiesZone = ({ childName, selectedPlan = 30 }: ActivitiesZoneProps) =
           />
         )}
         
-        {activeActivity.title === 'Music Making' && (
+        {activeActivity.title.includes('Music Making') && (
           <MusicMakingGame 
             onComplete={() => {
               toggleActivity(activeActivity.id);
@@ -214,50 +224,25 @@ const ActivitiesZone = ({ childName, selectedPlan = 30 }: ActivitiesZoneProps) =
       {/* Header */}
       <div className="text-center">
         <h2 className="text-2xl font-bold text-gray-800 mb-2">
-          {childName}'s {selectedPlan}-Day Program 🌟
+          {childName}'s Activities 🌟
         </h2>
-        
-        {/* Day Navigation */}
-        <div className="flex items-center justify-center space-x-4 mb-4">
-          <Button
-            onClick={() => setCurrentDay(Math.max(1, currentDay - 1))}
-            disabled={currentDay === 1}
-            variant="outline"
-            size="sm"
-          >
-            Previous
-          </Button>
-          <div className="bg-gradient-to-r from-purple-100 to-pink-100 px-6 py-2 rounded-xl">
-            <span className="text-lg font-semibold text-gray-800">
-              Day {currentDay} of {selectedPlan}
-            </span>
-          </div>
-          <Button
-            onClick={() => setCurrentDay(Math.min(selectedPlan, currentDay + 1))}
-            disabled={currentDay === selectedPlan}
-            variant="outline"
-            size="sm"
-          >
-            Next
-          </Button>
-        </div>
 
         <div className="bg-gradient-to-r from-green-100 to-blue-100 p-4 rounded-2xl">
           <p className="text-lg font-semibold text-gray-700">
-            {completedCount} of {currentDayActivities.length} activities completed today!
+            {completedCount} of {activities.length} activities completed!
           </p>
           <div className="w-full bg-gray-200 rounded-full h-3 mt-2">
             <div 
               className="bg-gradient-to-r from-green-400 to-blue-500 h-3 rounded-full transition-all duration-500"
-              style={{ width: `${currentDayActivities.length > 0 ? (completedCount / currentDayActivities.length) * 100 : 0}%` }}
+              style={{ width: `${(completedCount / activities.length) * 100}%` }}
             />
           </div>
         </div>
       </div>
 
-      {/* Activities for Current Day */}
+      {/* Activities Grid */}
       <div className="space-y-4">
-        {currentDayActivities.map((activity) => (
+        {activities.map((activity) => (
           <Card 
             key={activity.id} 
             className={`border-0 shadow-lg transition-all duration-300 ${
