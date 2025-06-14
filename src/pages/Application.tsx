@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -7,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Sparkles, FileText, User, Calendar, Pill } from 'lucide-react';
 
 const Application = () => {
@@ -38,6 +38,7 @@ const Application = () => {
     
     // Support Requirements
     assistanceLevel: '',
+    requirementType: '',
     therapyNeeds: '',
     equipmentNeeds: '',
     caregiverSupport: ''
@@ -351,6 +352,23 @@ const Application = () => {
                     <Label htmlFor="intensive" className="font-bold text-gray-700">Intensive</Label>
                   </div>
                 </RadioGroup>
+              </div>
+
+              <div className="space-y-1 sm:space-y-2">
+                <Label className="text-gray-700 font-black text-sm sm:text-base">Primary Requirement Type</Label>
+                <Select value={formData.requirementType} onValueChange={(value) => handleInputChange('requirementType', value)}>
+                  <SelectTrigger className="border-2 border-gray-200 focus:border-purple-400 h-10 sm:h-12 text-sm sm:text-base font-bold">
+                    <SelectValue placeholder="Select primary support requirement" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-white border-2 border-gray-200 shadow-lg z-50">
+                    <SelectItem value="therapist" className="font-bold text-gray-700 hover:bg-purple-50">Therapist Services</SelectItem>
+                    <SelectItem value="medicine" className="font-bold text-gray-700 hover:bg-purple-50">Medicine Management</SelectItem>
+                    <SelectItem value="online-session" className="font-bold text-gray-700 hover:bg-purple-50">Online Sessions</SelectItem>
+                    <SelectItem value="home-visit" className="font-bold text-gray-700 hover:bg-purple-50">Home Visit Services</SelectItem>
+                    <SelectItem value="equipment" className="font-bold text-gray-700 hover:bg-purple-50">Medical Equipment</SelectItem>
+                    <SelectItem value="respite-care" className="font-bold text-gray-700 hover:bg-purple-50">Respite Care</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
 
               <div className="space-y-1 sm:space-y-2">
