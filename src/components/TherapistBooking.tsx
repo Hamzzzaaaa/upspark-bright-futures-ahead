@@ -1,8 +1,9 @@
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { UserCheck, Clock, Calendar, MapPin, Phone } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { UserCheck, Clock, Calendar, MapPin, Phone, Search } from 'lucide-react';
 
 interface Therapist {
   id: string;
@@ -24,6 +25,8 @@ interface TherapistBookingProps {
 
 const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
   const [selectedTherapist, setSelectedTherapist] = useState<string>('');
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [pincodeFilter, setPincodeFilter] = useState<string>('');
 
   const therapists: Therapist[] = [
     // Speech Therapists - 10 available
@@ -423,12 +426,42 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
     }
   ];
 
-  // Group available therapists by specialization
-  const groupedTherapists = {
-    'Speech Therapy': therapists.filter(t => t.specialization === 'Speech Therapy' && t.available),
-    'Behavioral Therapy': therapists.filter(t => t.specialization === 'Behavioral Therapy' && t.available),
-    'Occupational Therapy': therapists.filter(t => t.specialization === 'Occupational Therapy' && t.available)
-  };
+  // Filter therapists based on search query and pincode
+  const filteredTherapists = useMemo(() => {
+    let filtered = therapists.filter(t => t.available);
+
+    // Filter by search query (therapist type)
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter(therapist => 
+        therapist.specialization.toLowerCase().includes(query) ||
+        therapist.name.toLowerCase().includes(query)
+      );
+    }
+
+    // Filter by pincode
+    if (pincodeFilter.trim()) {
+      filtered = filtered.filter(therapist => 
+        therapist.pincode.includes(pincodeFilter.trim())
+      );
+    }
+
+    return filtered;
+  }, [searchQuery, pincodeFilter]);
+
+  // Group filtered therapists by specialization
+  const groupedTherapists = useMemo(() => {
+    const groups: Record<string, Therapist[]> = {};
+    
+    filteredTherapists.forEach(therapist => {
+      if (!groups[therapist.specialization]) {
+        groups[therapist.specialization] = [];
+      }
+      groups[therapist.specialization].push(therapist);
+    });
+
+    return groups;
+  }, [filteredTherapists]);
 
   const handleBooking = () => {
     if (selectedTherapist) {
@@ -451,88 +484,135 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
           Find Therapists Near You 📍
         </h2>
         <p className="text-lg sm:text-xl font-bold text-white">
-          Hyderabad - Choose from specialists in your area
+          Hyderabad - Search by therapy type and pincode
         </p>
       </div>
 
+      {/* Search Filters */}
+      <div className="space-y-4">
+        <div className="flex flex-col sm:flex-row gap-4">
+          <div className="flex-1 relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+            <Input
+              type="text"
+              placeholder="Search therapist type (e.g., speech therapist, behavioral therapy...)"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10 bg-card border-gray-600 text-white placeholder-gray-400"
+            />
+          </div>
+          <div className="sm:w-48">
+            <Input
+              type="text"
+              placeholder="Enter pincode"
+              value={pincodeFilter}
+              onChange={(e) => setPincodeFilter(e.target.value)}
+              className="bg-card border-gray-600 text-white placeholder-gray-400"
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Results Count */}
+      {(searchQuery || pincodeFilter) && (
+        <div className="text-center">
+          <p className="text-purple-300 font-bold">
+            Found {filteredTherapists.length} therapist{filteredTherapists.length !== 1 ? 's' : ''} 
+            {searchQuery && ` for "${searchQuery}"`}
+            {pincodeFilter && ` in pincode "${pincodeFilter}"`}
+          </p>
+        </div>
+      )}
+
       {/* Therapist Selection by Specialization */}
       <div className="space-y-6">        
-        {Object.entries(groupedTherapists).map(([specialization, specialists]) => (
-          <div key={specialization} className="space-y-3">
-            <h4 className="text-lg sm:text-xl font-black text-purple-300">{specialization} Specialists</h4>
-            <div className="space-y-3">
-              {specialists.map((therapist) => (
-                <Card 
-                  key={therapist.id}
-                  className={`border-2 cursor-pointer transition-all duration-200 bold-card ${
-                    selectedTherapist === therapist.id 
-                      ? 'border-purple-400 shadow-lg scale-105' 
-                      : 'border-gray-200 hover:border-gray-300'
-                  }`}
-                  onClick={() => setSelectedTherapist(therapist.id)}
-                >
-                  <CardContent className="p-4">
-                    <div className="space-y-3">
-                      {/* Header Row */}
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-3">
-                          <div className="text-3xl">{therapist.image}</div>
-                          <div>
-                            <h4 className="font-black text-white text-lg">{therapist.name}</h4>
-                            <p className="text-sm font-bold text-purple-300">{therapist.specialization}</p>
+        {Object.keys(groupedTherapists).length === 0 ? (
+          <div className="text-center py-8">
+            <p className="text-gray-300 text-lg">No therapists found matching your search criteria.</p>
+            <p className="text-gray-400 text-sm mt-2">Try adjusting your search terms or pincode.</p>
+          </div>
+        ) : (
+          Object.entries(groupedTherapists).map(([specialization, specialists]) => (
+            <div key={specialization} className="space-y-3">
+              <h4 className="text-lg sm:text-xl font-black text-purple-300">
+                {specialization} Specialists ({specialists.length})
+              </h4>
+              <div className="space-y-3">
+                {specialists.map((therapist) => (
+                  <Card 
+                    key={therapist.id}
+                    className={`border-2 cursor-pointer transition-all duration-200 bold-card ${
+                      selectedTherapist === therapist.id 
+                        ? 'border-purple-400 shadow-lg scale-105' 
+                        : 'border-gray-200 hover:border-gray-300'
+                    }`}
+                    onClick={() => setSelectedTherapist(therapist.id)}
+                  >
+                    <CardContent className="p-4">
+                      <div className="space-y-3">
+                        {/* Header Row */}
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center space-x-3">
+                            <div className="text-3xl">{therapist.image}</div>
+                            <div>
+                              <h4 className="font-black text-white text-lg">{therapist.name}</h4>
+                              <p className="text-sm font-bold text-purple-300">{therapist.specialization}</p>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <span className="text-green-400 text-sm font-black">Available</span>
                           </div>
                         </div>
-                        <div className="text-right">
-                          <span className="text-green-400 text-sm font-black">Available</span>
-                        </div>
-                      </div>
 
-                      {/* Details Row */}
-                      <div className="flex items-center justify-between text-sm">
-                        <div className="flex items-center space-x-4">
-                          <span className="text-yellow-400 font-bold">⭐ {therapist.rating}</span>
-                          <span className="text-white font-bold">{therapist.experience}</span>
+                        {/* Details Row */}
+                        <div className="flex items-center justify-between text-sm">
+                          <div className="flex items-center space-x-4">
+                            <span className="text-yellow-400 font-bold">⭐ {therapist.rating}</span>
+                            <span className="text-white font-bold">{therapist.experience}</span>
+                          </div>
                         </div>
-                      </div>
 
-                      {/* Location Row */}
-                      <div className="flex items-center justify-between">
+                        {/* Location Row */}
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center space-x-2">
+                            <MapPin className="w-4 h-4 text-blue-400" />
+                            <span className="text-white font-bold">{therapist.area}</span>
+                            <span className="text-gray-300">|</span>
+                            <span className="text-blue-300 font-bold">{therapist.pincode}</span>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <span className="text-green-400 font-bold">{therapist.distance} away</span>
+                          </div>
+                        </div>
+
+                        {/* Contact Row */}
                         <div className="flex items-center space-x-2">
-                          <MapPin className="w-4 h-4 text-blue-400" />
-                          <span className="text-white font-bold">{therapist.area}</span>
-                          <span className="text-gray-300">|</span>
-                          <span className="text-blue-300 font-bold">{therapist.pincode}</span>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <span className="text-green-400 font-bold">{therapist.distance} away</span>
+                          <Phone className="w-4 h-4 text-green-400" />
+                          <span className="text-green-300 font-bold">{therapist.phone}</span>
                         </div>
                       </div>
-
-                      {/* Contact Row */}
-                      <div className="flex items-center space-x-2">
-                        <Phone className="w-4 h-4 text-green-400" />
-                        <span className="text-green-300 font-bold">{therapist.phone}</span>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
             </div>
-          </div>
-        ))}
+          ))
+        )}
       </div>
 
       {/* Booking Button */}
-      <Button
-        onClick={handleBooking}
-        disabled={!selectedTherapist}
-        className="w-full py-4 text-lg font-black bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white rounded-xl transition-all duration-200 disabled:opacity-50"
-      >
-        {selectedTherapist 
-          ? '🎉 Confirm Booking & Start Activities' 
-          : '📋 Select a Therapist'
-        }
-      </Button>
+      {filteredTherapists.length > 0 && (
+        <Button
+          onClick={handleBooking}
+          disabled={!selectedTherapist}
+          className="w-full py-4 text-lg font-black bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white rounded-xl transition-all duration-200 disabled:opacity-50"
+        >
+          {selectedTherapist 
+            ? '🎉 Confirm Booking & Start Activities' 
+            : '📋 Select a Therapist'
+          }
+        </Button>
+      )}
     </div>
   );
 };
