@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -5,13 +6,11 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { User, Mail, Phone, MapPin, Edit, Save, LogOut, Home, Activity, TrendingUp, UserCheck, Pill, Camera, Star, Calendar, Upload, CheckCircle } from 'lucide-react';
+import { User, Mail, Phone, MapPin, Edit, Save, LogOut, Home, Activity, TrendingUp, UserCheck, Pill, Camera, Star, Calendar } from 'lucide-react';
 import ActivitiesZone from '@/components/ActivitiesZone';
 import TherapistBooking from '@/components/TherapistBooking';
 import MedicineDelivery from '@/components/MedicineDelivery';
 import UpSparkLogo from '@/components/UpSparkLogo';
-import { Badge } from '@/components/ui/badge';
-import { extractMedicinesFromImage } from '@/utils/prescriptionReader';
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -26,13 +25,6 @@ const Profile = () => {
   const [phone, setPhone] = useState('');
   const [address, setAddress] = useState('');
   const [profileImage, setProfileImage] = useState<string>('');
-  
-  // Prescription verification state
-  const [isVerified, setIsVerified] = useState(false);
-  const [prescriptionImage, setPrescriptionImage] = useState<string>('');
-  const [extractedMedicines, setExtractedMedicines] = useState<string[]>([]);
-  const [isEditingPrescription, setIsEditingPrescription] = useState(false);
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
   
   // Current plan information
   const [currentPlan, setCurrentPlan] = useState({
@@ -56,11 +48,6 @@ const Profile = () => {
     const savedAddress = localStorage.getItem('address') || '123 Main St, Anytown, USA';
     const savedProfileImage = localStorage.getItem('profileImage') || '';
     
-    // Load verification status and prescription data
-    const savedIsVerified = localStorage.getItem('isVerified') === 'true';
-    const savedPrescriptionImage = localStorage.getItem('prescriptionImage') || '';
-    const savedExtractedMedicines = JSON.parse(localStorage.getItem('extractedMedicines') || '[]');
-    
     // Load current booking information
     const savedTherapistName = localStorage.getItem('bookedTherapistName') || '';
     const savedPlanName = localStorage.getItem('bookedPlanName') || '';
@@ -73,9 +60,6 @@ const Profile = () => {
     setPhone(savedPhone);
     setAddress(savedAddress);
     setProfileImage(savedProfileImage);
-    setIsVerified(savedIsVerified);
-    setPrescriptionImage(savedPrescriptionImage);
-    setExtractedMedicines(savedExtractedMedicines);
     
     setCurrentPlan({
       therapistName: savedTherapistName,
@@ -120,61 +104,6 @@ const Profile = () => {
       };
       reader.readAsDataURL(file);
     }
-  };
-
-  const handlePrescriptionUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = async (e) => {
-        const imageUrl = e.target?.result as string;
-        setPrescriptionImage(imageUrl);
-        setIsAnalyzing(true);
-        
-        try {
-          console.log('Starting prescription analysis...');
-          
-          // Use AI to extract medicine names from the image
-          const medicines = await extractMedicinesFromImage(imageUrl);
-          
-          setExtractedMedicines(medicines);
-          setIsVerified(true);
-          setIsEditingPrescription(false);
-          
-          // Save to localStorage
-          localStorage.setItem('prescriptionImage', imageUrl);
-          localStorage.setItem('extractedMedicines', JSON.stringify(medicines));
-          localStorage.setItem('isVerified', 'true');
-          
-          console.log('Prescription analysis complete:', medicines);
-          
-        } catch (error) {
-          console.error('Error analyzing prescription:', error);
-          
-          // Fallback to mock medicines on error
-          const mockMedicines = ['Vitamin D3', 'Omega-3 Supplements', 'Iron Tablets', 'Calcium Supplements'];
-          setExtractedMedicines(mockMedicines);
-          setIsVerified(true);
-          setIsEditingPrescription(false);
-          
-          // Save to localStorage
-          localStorage.setItem('prescriptionImage', imageUrl);
-          localStorage.setItem('extractedMedicines', JSON.stringify(mockMedicines));
-          localStorage.setItem('isVerified', 'true');
-        } finally {
-          setIsAnalyzing(false);
-        }
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const handleEditPrescription = () => {
-    setIsEditingPrescription(true);
-  };
-
-  const handleCancelEditPrescription = () => {
-    setIsEditingPrescription(false);
   };
 
   const renderActiveTab = () => {
@@ -234,7 +163,7 @@ const Profile = () => {
       case 'therapist':
         return <TherapistBooking onPlanSelected={handlePlanSelected} />;
       case 'medicine':
-        return <MedicineDelivery isVerified={isVerified} extractedMedicines={extractedMedicines} />;
+        return <MedicineDelivery />;
       default:
         return (
           <div className="space-y-8">
@@ -253,14 +182,6 @@ const Profile = () => {
                     {parentName.split(' ').map(n => n[0]).join('')}
                   </AvatarFallback>
                 </Avatar>
-                {isVerified && (
-                  <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2">
-                    <Badge className="bg-green-500 text-white font-black flex items-center">
-                      <CheckCircle className="w-4 h-4 mr-1" />
-                      Verified
-                    </Badge>
-                  </div>
-                )}
                 <label className="absolute bottom-0 right-0 bg-primary hover:bg-primary/90 text-white p-3 rounded-full cursor-pointer transition-all duration-200 hover:scale-105">
                   <Camera className="w-5 h-5" />
                   <input
@@ -272,84 +193,6 @@ const Profile = () => {
                 </label>
               </div>
             </div>
-
-            {/* Prescription Verification Section */}
-            <Card className="bold-card mb-8">
-              <CardHeader className="text-center pb-6">
-                <CardTitle className="text-2xl font-black text-white flex items-center justify-center">
-                  <Pill className="w-6 h-6 mr-3 text-blue-400" />
-                  Medical Verification
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {!isVerified || isEditingPrescription ? (
-                  <div className="text-center space-y-4">
-                    <p className="text-lg font-bold text-gray-300">
-                      {isEditingPrescription ? 'Upload new prescription to update verification' : 'Upload your prescription to verify your profile'}
-                    </p>
-                    <label className="cursor-pointer">
-                      <div className="border-2 border-dashed border-gray-600 rounded-xl p-8 hover:border-blue-400 transition-colors">
-                        <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                        <p className="text-lg font-bold text-gray-400">Click to upload prescription (JPEG)</p>
-                        <p className="text-sm font-bold text-gray-500 mt-2">Supported formats: JPEG, JPG</p>
-                      </div>
-                      <input
-                        type="file"
-                        accept=".jpeg,.jpg"
-                        onChange={handlePrescriptionUpload}
-                        className="hidden"
-                      />
-                    </label>
-                    {isEditingPrescription && (
-                      <Button
-                        onClick={handleCancelEditPrescription}
-                        variant="outline"
-                        className="border-gray-600 text-gray-300 hover:bg-gray-700"
-                      >
-                        Cancel
-                      </Button>
-                    )}
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-2 text-green-400">
-                        <CheckCircle className="w-6 h-6" />
-                        <span className="text-lg font-black">Profile Verified!</span>
-                      </div>
-                      <Button
-                        onClick={handleEditPrescription}
-                        variant="ghost"
-                        size="sm"
-                        className="text-blue-400 hover:text-blue-300 hover:bg-blue-400/10"
-                      >
-                        <Edit className="w-4 h-4 mr-2" />
-                        Edit
-                      </Button>
-                    </div>
-                    {prescriptionImage && (
-                      <div className="text-center">
-                        <img 
-                          src={prescriptionImage} 
-                          alt="Uploaded prescription" 
-                          className="max-w-xs mx-auto rounded-xl border-2 border-green-400"
-                        />
-                      </div>
-                    )}
-                    <div className="space-y-2">
-                      <p className="text-lg font-black text-white">Extracted Medicines:</p>
-                      <div className="grid grid-cols-2 gap-2">
-                        {extractedMedicines.map((medicine, index) => (
-                          <Badge key={index} className="bg-blue-500 text-white font-bold">
-                            {medicine}
-                          </Badge>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
 
             {/* Current Plan Card */}
             {currentPlan.therapistName && (
