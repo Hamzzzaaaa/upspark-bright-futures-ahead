@@ -23,7 +23,7 @@
     --secondary-foreground: 0 0% 100%;
 
     --muted: 0 0% 15%;
-    --muted-foreground: 0 0% 70%;
+    --muted-foreground: 0 0% 85%;
 
     --accent: 45 100% 55%;
     --accent-foreground: 0 0% 10%;
@@ -64,7 +64,7 @@
     --secondary-foreground: 0 0% 100%;
 
     --muted: 0 0% 15%;
-    --muted-foreground: 0 0% 70%;
+    --muted-foreground: 0 0% 85%;
 
     --accent: 45 100% 55%;
     --accent-foreground: 0 0% 10%;
@@ -92,13 +92,13 @@
   }
 
   body {
-    @apply bg-background text-foreground font-bold;
+    @apply bg-background text-foreground font-black;
     background: linear-gradient(135deg, hsl(var(--background)) 0%, hsl(270 30% 8%) 100%);
     min-height: 100vh;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-black tracking-tight;
+    @apply font-black tracking-tight text-white;
   }
 
   h1 {
@@ -113,8 +113,16 @@
     @apply text-2xl md:text-4xl;
   }
 
+  p {
+    @apply font-bold text-white;
+  }
+
+  span {
+    @apply font-bold text-white;
+  }
+
   button {
-    @apply font-bold tracking-wide transition-all duration-200;
+    @apply font-black tracking-wide transition-all duration-200 text-white;
   }
 
   .bold-card {
@@ -122,10 +130,18 @@
   }
 
   .bold-button {
-    @apply bg-gradient-to-r from-primary to-secondary hover:from-secondary hover:to-primary shadow-lg hover:shadow-xl transform hover:scale-105;
+    @apply bg-gradient-to-r from-primary to-secondary hover:from-secondary hover:to-primary shadow-lg hover:shadow-xl transform hover:scale-105 font-black text-white;
   }
 
   .bold-text {
-    @apply font-black text-transparent bg-clip-text bg-gradient-to-r from-primary via-accent to-secondary;
+    @apply font-black text-white;
+  }
+
+  .card-text {
+    @apply font-bold text-white;
+  }
+
+  .muted-text {
+    @apply font-bold text-gray-200;
   }
 }

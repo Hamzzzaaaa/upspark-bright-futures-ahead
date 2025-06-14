@@ -27,7 +27,7 @@ const UpSparkLogo = ({ size = 'medium', className = '' }: UpSparkLogoProps) => {
         <Sparkles className={`text-yellow-400 ${iconSizes[size]}`} />
         
         {/* Simple text */}
-        <div className={`font-bold text-white ${sizeClasses[size]}`}>
+        <div className={`font-black text-white ${sizeClasses[size]}`}>
           UpSpark
         </div>
         

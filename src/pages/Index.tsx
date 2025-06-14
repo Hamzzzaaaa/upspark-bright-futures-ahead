@@ -41,22 +41,22 @@ const Index = () => {
             {/* Welcome Header with Logo */}
             <div className="bold-card p-6 sm:p-8 rounded-3xl text-center">
               <UpSparkLogo size="medium" className="mb-4 sm:mb-6" />
-              <h1 className="text-2xl sm:text-4xl mb-3 sm:mb-4 font-black text-white">Welcome to UpSpark!</h1>
-              <p className="text-lg sm:text-2xl text-gray-200 font-bold">Let's make today amazing for {childName} ✨</p>
+              <h1 className="text-3xl sm:text-5xl mb-3 sm:mb-4 font-black text-white">Welcome to UpSpark!</h1>
+              <p className="text-xl sm:text-3xl font-black text-white">Let's make today amazing for {childName} ✨</p>
             </div>
 
             {/* Quick Stats */}
             <div className="grid grid-cols-2 gap-4 sm:gap-6">
               <Card className="bold-card">
                 <CardContent className="p-4 sm:p-6 text-center">
-                  <div className="text-2xl sm:text-4xl font-black text-primary">7</div>
-                  <div className="text-sm sm:text-lg font-bold text-gray-200">Activities Done Today</div>
+                  <div className="text-3xl sm:text-5xl font-black text-primary">7</div>
+                  <div className="text-base sm:text-xl font-black text-white">Activities Done Today</div>
                 </CardContent>
               </Card>
               <Card className="bold-card">
                 <CardContent className="p-4 sm:p-6 text-center">
-                  <div className="text-2xl sm:text-4xl font-black text-secondary">{selectedPlan}</div>
-                  <div className="text-sm sm:text-lg font-bold text-gray-200">Day Program Active</div>
+                  <div className="text-3xl sm:text-5xl font-black text-secondary">{selectedPlan}</div>
+                  <div className="text-base sm:text-xl font-black text-white">Day Program Active</div>
                 </CardContent>
               </Card>
             </div>
@@ -123,22 +123,22 @@ const Index = () => {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex flex-col items-center py-2 sm:py-3 px-2 sm:px-4 rounded-2xl transition-all duration-300 font-bold ${
+                className={`flex flex-col items-center py-2 sm:py-3 px-2 sm:px-4 rounded-2xl transition-all duration-300 font-black ${
                   activeTab === tab.id
-                    ? 'bold-button text-white shadow-2xl scale-110'
-                    : 'text-gray-300 hover:text-white hover:scale-105'
+                    ? 'bold-button shadow-2xl scale-110'
+                    : 'text-white hover:text-white hover:scale-105'
                 }`}
               >
-                <tab.icon className="w-5 h-5 sm:w-6 sm:h-6 mb-1 sm:mb-2" />
-                <span className="text-xs sm:text-sm font-black tracking-wide">{tab.label}</span>
+                <tab.icon className="w-6 h-6 sm:w-8 sm:h-8 mb-1 sm:mb-2" />
+                <span className="text-sm sm:text-base font-black tracking-wide">{tab.label}</span>
               </button>
             ))}
             <button
               onClick={handleProfileClick}
-              className="flex flex-col items-center py-2 sm:py-3 px-2 sm:px-4 rounded-2xl transition-all duration-300 font-bold text-gray-300 hover:text-white hover:scale-105"
+              className="flex flex-col items-center py-2 sm:py-3 px-2 sm:px-4 rounded-2xl transition-all duration-300 font-black text-white hover:text-white hover:scale-105"
             >
-              <User className="w-5 h-5 sm:w-6 sm:h-6 mb-1 sm:mb-2" />
-              <span className="text-xs sm:text-sm font-black tracking-wide">Profile</span>
+              <User className="w-6 h-6 sm:w-8 sm:h-8 mb-1 sm:mb-2" />
+              <span className="text-sm sm:text-base font-black tracking-wide">Profile</span>
             </button>
           </div>
         </div>

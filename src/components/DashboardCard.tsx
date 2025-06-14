@@ -18,11 +18,11 @@ const DashboardCard = ({ title, description, icon: Icon, gradient, onClick }: Da
     >
       <CardContent className="p-0">
         <div className={`bg-gradient-to-r ${gradient} p-4 sm:p-6 rounded-t-xl`}>
-          <Icon className="w-6 h-6 sm:w-8 sm:h-8 text-white mb-2" />
-          <h3 className="text-lg sm:text-xl font-bold text-white">{title}</h3>
+          <Icon className="w-8 h-8 sm:w-10 sm:h-10 text-white mb-2" />
+          <h3 className="text-xl sm:text-2xl font-black text-white">{title}</h3>
         </div>
         <div className="p-3 sm:p-4 rounded-b-xl">
-          <p className="text-gray-200 font-medium text-sm sm:text-base">{description}</p>
+          <p className="font-black text-white text-base sm:text-lg">{description}</p>
         </div>
       </CardContent>
     </Card>
