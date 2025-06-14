@@ -1,10 +1,12 @@
+
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { User, Mail, Phone, MapPin, Heart, Edit, Save, LogOut, Home, Activity, TrendingUp, UserCheck, Pill } from 'lucide-react';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { User, Mail, Phone, MapPin, Edit, Save, LogOut, Home, Activity, TrendingUp, UserCheck, Pill, Camera } from 'lucide-react';
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -14,15 +16,14 @@ const Profile = () => {
   const [email, setEmail] = useState('sarah.johnson@email.com');
   const [phone, setPhone] = useState('+1 (555) 123-4567');
   const [address, setAddress] = useState('123 Main St, Anytown, USA');
+  const [profileImage, setProfileImage] = useState<string>('');
 
   const handleSave = () => {
     setIsEditing(false);
-    // Here you would typically save to a database
     console.log('Profile updated');
   };
 
   const handleLogout = () => {
-    // Here you would clear any stored authentication
     navigate('/login');
   };
 
@@ -30,52 +31,77 @@ const Profile = () => {
     if (path === 'dashboard') {
       navigate('/');
     } else {
-      // For now, navigate to home and let the tab switching handle it
       navigate(`/?tab=${path}`);
     }
   };
 
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setProfileImage(e.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
+    <div className="min-h-screen">
       {/* Main Content */}
       <div className="pb-20">
         <div className="p-4 max-w-md mx-auto">
           {/* Header */}
           <div className="text-center mb-6">
-            <div className="bg-gradient-to-r from-purple-400 to-pink-400 p-4 rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center">
-              <User className="w-10 h-10 text-white" />
+            <h1 className="text-3xl font-black mb-2 bold-text">Profile Settings</h1>
+            <p className="bold-text opacity-90">Manage your account information</p>
+          </div>
+
+          {/* Profile Picture Section */}
+          <div className="text-center mb-6">
+            <div className="relative inline-block">
+              <Avatar className="w-24 h-24 mx-auto border-4 border-primary/20">
+                <AvatarImage src={profileImage} alt="Profile" />
+                <AvatarFallback className="bg-gradient-to-r from-primary to-secondary text-white text-2xl font-black">
+                  {parentName.split(' ').map(n => n[0]).join('')}
+                </AvatarFallback>
+              </Avatar>
+              {isEditing && (
+                <label className="absolute bottom-0 right-0 bg-primary hover:bg-primary/90 text-white p-2 rounded-full cursor-pointer transition-all duration-200 hover:scale-105">
+                  <Camera className="w-4 h-4" />
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    className="hidden"
+                  />
+                </label>
+              )}
             </div>
-            <h1 className="text-2xl font-bold text-gray-800 mb-2">Profile</h1>
-            <p className="text-gray-600">Manage your account information</p>
           </div>
 
           {/* Profile Card */}
-          <Card className="border-0 shadow-xl bg-white/90 backdrop-blur mb-6">
+          <Card className="bold-card mb-6">
             <CardHeader className="text-center pb-4">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-xl font-bold text-gray-800">
+                <CardTitle className="text-xl card-text">
                   Account Details
                 </CardTitle>
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={() => setIsEditing(!isEditing)}
-                  className="text-purple-600 hover:text-purple-700"
+                  className="text-primary hover:text-primary/80 hover:bg-primary/10"
                 >
                   {isEditing ? <Save className="w-4 h-4" /> : <Edit className="w-4 h-4" />}
                 </Button>
-              </div>
-              <div className="flex justify-center space-x-2 mt-2">
-                <Heart className="w-4 h-4 text-pink-400" />
-                <Heart className="w-4 h-4 text-purple-400" />
-                <Heart className="w-4 h-4 text-yellow-400" />
               </div>
             </CardHeader>
             
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="parentName" className="text-gray-700 font-medium flex items-center">
-                  <User className="w-4 h-4 mr-2 text-purple-500" />
+                <Label htmlFor="parentName" className="card-text flex items-center">
+                  <User className="w-4 h-4 mr-2 text-primary" />
                   Parent/Guardian Name
                 </Label>
                 <Input
@@ -83,14 +109,14 @@ const Profile = () => {
                   type="text"
                   value={parentName}
                   onChange={(e) => setParentName(e.target.value)}
-                  className="border-2 border-gray-200 focus:border-purple-400"
+                  className="bg-background/50 border-2 border-primary/20 focus:border-primary text-white font-black"
                   disabled={!isEditing}
                 />
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="childName" className="text-gray-700 font-medium flex items-center">
-                  <Heart className="w-4 h-4 mr-2 text-pink-500" />
+                <Label htmlFor="childName" className="card-text flex items-center">
+                  <User className="w-4 h-4 mr-2 text-secondary" />
                   Child's Name
                 </Label>
                 <Input
@@ -98,14 +124,14 @@ const Profile = () => {
                   type="text"
                   value={childName}
                   onChange={(e) => setChildName(e.target.value)}
-                  className="border-2 border-gray-200 focus:border-purple-400"
+                  className="bg-background/50 border-2 border-primary/20 focus:border-primary text-white font-black"
                   disabled={!isEditing}
                 />
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-gray-700 font-medium flex items-center">
-                  <Mail className="w-4 h-4 mr-2 text-blue-500" />
+                <Label htmlFor="email" className="card-text flex items-center">
+                  <Mail className="w-4 h-4 mr-2 text-accent" />
                   Email Address
                 </Label>
                 <Input
@@ -113,14 +139,14 @@ const Profile = () => {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="border-2 border-gray-200 focus:border-purple-400"
+                  className="bg-background/50 border-2 border-primary/20 focus:border-primary text-white font-black"
                   disabled={!isEditing}
                 />
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="phone" className="text-gray-700 font-medium flex items-center">
-                  <Phone className="w-4 h-4 mr-2 text-green-500" />
+                <Label htmlFor="phone" className="card-text flex items-center">
+                  <Phone className="w-4 h-4 mr-2 text-secondary" />
                   Phone Number
                 </Label>
                 <Input
@@ -128,14 +154,14 @@ const Profile = () => {
                   type="tel"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  className="border-2 border-gray-200 focus:border-purple-400"
+                  className="bg-background/50 border-2 border-primary/20 focus:border-primary text-white font-black"
                   disabled={!isEditing}
                 />
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="address" className="text-gray-700 font-medium flex items-center">
-                  <MapPin className="w-4 h-4 mr-2 text-orange-500" />
+                <Label htmlFor="address" className="card-text flex items-center">
+                  <MapPin className="w-4 h-4 mr-2 text-accent" />
                   Address
                 </Label>
                 <Input
@@ -143,7 +169,7 @@ const Profile = () => {
                   type="text"
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
-                  className="border-2 border-gray-200 focus:border-purple-400"
+                  className="bg-background/50 border-2 border-primary/20 focus:border-primary text-white font-black"
                   disabled={!isEditing}
                 />
               </div>
@@ -151,7 +177,7 @@ const Profile = () => {
               {isEditing && (
                 <Button
                   onClick={handleSave}
-                  className="w-full bg-gradient-to-r from-purple-400 to-pink-400 hover:from-purple-500 hover:to-pink-500 text-white font-semibold py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200"
+                  className="w-full bold-button py-3 rounded-xl"
                 >
                   Save Changes ✨
                 </Button>
@@ -163,21 +189,21 @@ const Profile = () => {
           <Button
             onClick={handleLogout}
             variant="outline"
-            className="w-full border-2 border-red-300 text-red-600 hover:bg-red-50 font-semibold py-3 rounded-xl"
+            className="w-full border-2 border-destructive/50 text-destructive hover:bg-destructive/10 font-black py-3 rounded-xl"
           >
             <LogOut className="w-4 h-4 mr-2" />
             Sign Out
           </Button>
           
           {/* Footer */}
-          <div className="text-center mt-6 text-gray-500 text-sm">
-            <p>Made with 💜 for amazing families</p>
+          <div className="text-center mt-6">
+            <p className="bold-text opacity-80 text-sm">Made with 💜 for amazing families</p>
           </div>
         </div>
       </div>
 
       {/* Bottom Navigation */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t border-gray-200">
+      <div className="fixed bottom-0 left-0 right-0 bg-card/90 backdrop-blur-sm shadow-lg border-t border-primary/20">
         <div className="max-w-md mx-auto px-4 py-2">
           <div className="flex justify-around">
             {[
@@ -190,17 +216,15 @@ const Profile = () => {
               <button
                 key={tab.id}
                 onClick={() => handleNavigation(tab.id)}
-                className="flex flex-col items-center py-2 px-3 rounded-xl transition-all duration-200 text-gray-500 hover:text-gray-700"
+                className="flex flex-col items-center py-2 px-3 rounded-xl transition-all duration-200 text-muted-foreground hover:text-primary hover:bg-primary/10"
               >
                 <tab.icon className="w-5 h-5 mb-1" />
-                <span className="text-xs font-medium">{tab.label}</span>
+                <span className="text-xs font-black">{tab.label}</span>
               </button>
             ))}
-            <button
-              className="flex flex-col items-center py-2 px-3 rounded-xl transition-all duration-200 bg-gradient-to-r from-purple-400 to-pink-400 text-white shadow-lg scale-105"
-            >
+            <button className="flex flex-col items-center py-2 px-3 rounded-xl transition-all duration-200 bg-gradient-to-r from-primary to-secondary text-white shadow-lg scale-105">
               <User className="w-5 h-5 mb-1" />
-              <span className="text-xs font-medium">Profile</span>
+              <span className="text-xs font-black">Profile</span>
             </button>
           </div>
         </div>
