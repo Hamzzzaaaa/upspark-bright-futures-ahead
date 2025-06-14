@@ -30,6 +30,7 @@ const Profile = () => {
   const [isVerified, setIsVerified] = useState(false);
   const [prescriptionImage, setPrescriptionImage] = useState<string>('');
   const [extractedMedicines, setExtractedMedicines] = useState<string[]>([]);
+  const [isEditingPrescription, setIsEditingPrescription] = useState(false);
   
   // Current plan information
   const [currentPlan, setCurrentPlan] = useState({
@@ -131,6 +132,7 @@ const Profile = () => {
         const mockMedicines = ['Vitamin D3', 'Omega-3 Supplements', 'Iron Tablets', 'Calcium Supplements'];
         setExtractedMedicines(mockMedicines);
         setIsVerified(true);
+        setIsEditingPrescription(false);
         
         // Save to localStorage
         localStorage.setItem('prescriptionImage', imageUrl);
@@ -141,6 +143,14 @@ const Profile = () => {
       };
       reader.readAsDataURL(file);
     }
+  };
+
+  const handleEditPrescription = () => {
+    setIsEditingPrescription(true);
+  };
+
+  const handleCancelEditPrescription = () => {
+    setIsEditingPrescription(false);
   };
 
   const renderActiveTab = () => {
@@ -248,9 +258,11 @@ const Profile = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                {!isVerified ? (
+                {!isVerified || isEditingPrescription ? (
                   <div className="text-center space-y-4">
-                    <p className="text-lg font-bold text-gray-300">Upload your prescription to verify your profile</p>
+                    <p className="text-lg font-bold text-gray-300">
+                      {isEditingPrescription ? 'Upload new prescription to update verification' : 'Upload your prescription to verify your profile'}
+                    </p>
                     <label className="cursor-pointer">
                       <div className="border-2 border-dashed border-gray-600 rounded-xl p-8 hover:border-blue-400 transition-colors">
                         <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
@@ -264,12 +276,32 @@ const Profile = () => {
                         className="hidden"
                       />
                     </label>
+                    {isEditingPrescription && (
+                      <Button
+                        onClick={handleCancelEditPrescription}
+                        variant="outline"
+                        className="border-gray-600 text-gray-300 hover:bg-gray-700"
+                      >
+                        Cancel
+                      </Button>
+                    )}
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    <div className="flex items-center justify-center space-x-2 text-green-400">
-                      <CheckCircle className="w-6 h-6" />
-                      <span className="text-lg font-black">Profile Verified!</span>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2 text-green-400">
+                        <CheckCircle className="w-6 h-6" />
+                        <span className="text-lg font-black">Profile Verified!</span>
+                      </div>
+                      <Button
+                        onClick={handleEditPrescription}
+                        variant="ghost"
+                        size="sm"
+                        className="text-blue-400 hover:text-blue-300 hover:bg-blue-400/10"
+                      >
+                        <Edit className="w-4 h-4 mr-2" />
+                        Edit
+                      </Button>
                     </div>
                     {prescriptionImage && (
                       <div className="text-center">
