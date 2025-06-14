@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from 'react';
-import { Activity, UserCheck, Pill, Home, User } from 'lucide-react';
+import { Activity, UserCheck, Pill, Home, User, Calendar, TrendingUp, Target } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useNavigate } from 'react-router-dom';
 import DashboardCard from '@/components/DashboardCard';
@@ -50,18 +50,35 @@ const Index = () => {
               <p className="text-xl sm:text-3xl font-black text-white">Let's make today amazing for {childName} ✨</p>
             </div>
 
-            {/* Quick Stats */}
-            <div className="grid grid-cols-2 gap-4 sm:gap-6">
+            {/* Progress Stats Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+              {/* Therapist Sessions */}
               <Card className="bold-card">
                 <CardContent className="p-4 sm:p-6 text-center">
-                  <div className="text-3xl sm:text-5xl font-black text-primary">7</div>
-                  <div className="text-base sm:text-xl font-black text-white">Activities Done Today</div>
+                  <Calendar className="w-8 h-8 sm:w-10 sm:h-10 text-purple-400 mx-auto mb-2" />
+                  <div className="text-2xl sm:text-3xl font-black text-white">12/16</div>
+                  <div className="text-base sm:text-lg font-black text-white">Therapist Sessions</div>
+                  <div className="text-sm sm:text-base font-bold text-purple-300">75% Complete</div>
                 </CardContent>
               </Card>
+
+              {/* Activities Completed */}
               <Card className="bold-card">
                 <CardContent className="p-4 sm:p-6 text-center">
-                  <div className="text-3xl sm:text-5xl font-black text-secondary">{selectedPlan}</div>
-                  <div className="text-base sm:text-xl font-black text-white">Day Program Active</div>
+                  <Target className="w-8 h-8 sm:w-10 sm:h-10 text-green-400 mx-auto mb-2" />
+                  <div className="text-2xl sm:text-3xl font-black text-white">85%</div>
+                  <div className="text-base sm:text-lg font-black text-white">Activities Done</div>
+                  <div className="text-sm sm:text-base font-bold text-green-300">Great Progress!</div>
+                </CardContent>
+              </Card>
+
+              {/* Development Progress */}
+              <Card className="bold-card sm:col-span-2">
+                <CardContent className="p-4 sm:p-6 text-center">
+                  <TrendingUp className="w-8 h-8 sm:w-10 sm:h-10 text-yellow-400 mx-auto mb-2" />
+                  <div className="text-2xl sm:text-3xl font-black text-white">78%</div>
+                  <div className="text-base sm:text-lg font-black text-white">Overall Development</div>
+                  <div className="text-sm sm:text-base font-bold text-yellow-300">Excellent Progress This Month</div>
                 </CardContent>
               </Card>
             </div>
