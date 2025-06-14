@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Calendar, Activity, TrendingUp, UserCheck, Pill, Home, Sparkles, User } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,6 +7,7 @@ import ActivitiesZone from '@/components/ActivitiesZone';
 import ProgressTracker from '@/components/ProgressTracker';
 import TherapistBooking from '@/components/TherapistBooking';
 import MedicineDelivery from '@/components/MedicineDelivery';
+import UpSparkLogo from '@/components/UpSparkLogo';
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -37,12 +37,10 @@ const Index = () => {
       default:
         return (
           <div className="space-y-6">
-            {/* Welcome Header */}
+            {/* Welcome Header with Logo */}
             <div className="bg-gradient-to-r from-purple-400 via-pink-400 to-orange-400 p-6 rounded-3xl text-white text-center">
-              <div className="flex items-center justify-center mb-3">
-                <Sparkles className="w-8 h-8 mr-2 animate-pulse" />
-                <h1 className="text-2xl font-bold">Welcome to UpSpark!</h1>
-              </div>
+              <UpSparkLogo size="medium" className="mb-4" />
+              <h1 className="text-2xl font-bold mb-2">Welcome to UpSpark!</h1>
               <p className="text-lg opacity-90">Let's make today amazing for {childName} ✨</p>
             </div>
 
