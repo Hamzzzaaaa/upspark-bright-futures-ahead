@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -161,12 +162,12 @@ const ActivitiesZone = ({ childName, selectedPlan = 30 }: ActivitiesZoneProps) =
             onClick={() => setActiveActivity(null)}
             variant="outline"
             size="sm"
-            className="flex items-center space-x-2 activity-text"
+            className="flex items-center space-x-2 text-white"
           >
             <ArrowLeft className="w-4 h-4" />
-            <span className="activity-text">Back</span>
+            <span className="text-white">Back</span>
           </Button>
-          <h2 className="text-xl font-black activity-text">
+          <h2 className="text-xl font-normal text-white">
             {activeActivity.title}
           </h2>
         </div>
@@ -223,12 +224,12 @@ const ActivitiesZone = ({ childName, selectedPlan = 30 }: ActivitiesZoneProps) =
     <div className="space-y-6">
       {/* Header */}
       <div className="text-center">
-        <h2 className="text-2xl font-black activity-text mb-2">
+        <h2 className="text-2xl font-normal text-white mb-2">
           {childName}'s Activities 🌟
         </h2>
 
         <div className="bg-gradient-to-r from-green-100 to-blue-100 p-4 rounded-2xl">
-          <p className="text-lg font-black activity-text">
+          <p className="text-lg font-normal text-gray-800">
             {completedCount} of {activities.length} activities completed!
           </p>
           <div className="w-full bg-gray-200 rounded-full h-3 mt-2">
@@ -255,10 +256,10 @@ const ActivitiesZone = ({ childName, selectedPlan = 30 }: ActivitiesZoneProps) =
                   <div className="flex items-center space-x-3">
                     <span className="text-3xl">{activity.emoji}</span>
                     <div>
-                      <h3 className="text-lg font-black text-white activity-text">{activity.title}</h3>
-                      <div className="flex items-center text-white/90 text-sm activity-text">
+                      <h3 className="text-lg font-normal text-white">{activity.title}</h3>
+                      <div className="flex items-center text-white/90 text-sm">
                         <Clock className="w-4 h-4 mr-1" />
-                        <span className="activity-text">{activity.duration} min</span>
+                        <span className="text-white/90">{activity.duration} min</span>
                       </div>
                     </div>
                   </div>
@@ -269,10 +270,10 @@ const ActivitiesZone = ({ childName, selectedPlan = 30 }: ActivitiesZoneProps) =
               </div>
               
               <div className="p-4 bg-white rounded-b-xl">
-                <p className="activity-text mb-4">{activity.description}</p>
+                <p className="text-gray-800 mb-4 font-normal">{activity.description}</p>
                 <Button
                   onClick={() => openActivity(activity)}
-                  className={`w-full py-3 text-lg font-black rounded-xl transition-all duration-200 activity-text ${
+                  className={`w-full py-3 text-lg font-normal rounded-xl transition-all duration-200 ${
                     activity.completed
                       ? 'bg-green-500 hover:bg-green-600 text-white'
                       : activity.interactive
@@ -280,7 +281,7 @@ const ActivitiesZone = ({ childName, selectedPlan = 30 }: ActivitiesZoneProps) =
                       : 'bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white'
                   }`}
                 >
-                  <span className="activity-text">
+                  <span className="text-white">
                     {activity.completed 
                       ? '🎉 Great Job!' 
                       : activity.interactive 
@@ -349,16 +350,16 @@ const ColorSortingGame = ({ onComplete }: { onComplete: () => void }) => {
   return (
     <div className="space-y-8">
       <div className="text-center">
-        <h3 className="text-2xl font-bold text-gray-800 mb-2">Color Sorting Game 🎯</h3>
-        <p className="text-gray-600">Pick up the colored balls and put them in the jar!</p>
-        <div className="text-3xl font-bold text-purple-600 mt-4">
+        <h3 className="text-2xl font-normal text-white mb-2">Color Sorting Game 🎯</h3>
+        <p className="text-gray-300">Pick up the colored balls and put them in the jar!</p>
+        <div className="text-3xl font-normal text-purple-300 mt-4">
           Count: {score} / {balls.length}
         </div>
       </div>
 
       {/* Available Balls */}
       <div className="bg-gray-100 p-6 rounded-2xl">
-        <h4 className="text-lg font-semibold text-gray-700 mb-4 text-center">Pick a Ball</h4>
+        <h4 className="text-lg font-normal text-gray-800 mb-4 text-center">Pick a Ball</h4>
         <div className="flex flex-wrap justify-center gap-4">
           {balls.map((ball) => {
             const isUsed = jarBalls.some(jb => jb.id === ball.id);
@@ -381,8 +382,8 @@ const ColorSortingGame = ({ onComplete }: { onComplete: () => void }) => {
       {/* Selected Ball */}
       {currentBall && (
         <div className="text-center">
-          <p className="text-lg font-semibold text-gray-700 mb-4">
-            You picked: <span className="text-2xl font-bold" style={{ color: currentBall.color }}>
+          <p className="text-lg font-normal text-gray-300 mb-4">
+            You picked: <span className="text-2xl font-normal" style={{ color: currentBall.color }}>
               {currentBall.name}
             </span>
           </p>
@@ -392,7 +393,7 @@ const ColorSortingGame = ({ onComplete }: { onComplete: () => void }) => {
 
       {/* Empty Jar */}
       <div className="bg-gradient-to-b from-transparent to-gray-200 p-8 rounded-2xl border-4 border-dashed border-gray-400 min-h-32">
-        <h4 className="text-lg font-semibold text-gray-700 mb-4 text-center">Empty Jar</h4>
+        <h4 className="text-lg font-normal text-gray-800 mb-4 text-center">Empty Jar</h4>
         <div className="flex flex-wrap justify-center gap-2 min-h-16">
           {jarBalls.map((ball, index) => (
             <div
@@ -406,7 +407,7 @@ const ColorSortingGame = ({ onComplete }: { onComplete: () => void }) => {
           <div className="text-center mt-4">
             <Button
               onClick={() => addBallToJar(currentBall)}
-              className="bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white font-bold py-3 px-6 rounded-xl text-lg"
+              className="bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white font-normal py-3 px-6 rounded-xl text-lg"
             >
               Put Ball in Jar! 🫙
             </Button>
@@ -417,7 +418,7 @@ const ColorSortingGame = ({ onComplete }: { onComplete: () => void }) => {
       {score === balls.length && (
         <div className="text-center p-6 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-2xl">
           <div className="text-4xl mb-2">🎉</div>
-          <h3 className="text-2xl font-bold text-white">Amazing Job!</h3>
+          <h3 className="text-2xl font-normal text-white">Amazing Job!</h3>
           <p className="text-white text-lg">You sorted all {balls.length} colors!</p>
         </div>
       )}
@@ -465,9 +466,9 @@ const AnimalNameGame = ({ onComplete }: { onComplete: () => void }) => {
   return (
     <div className="space-y-8">
       <div className="text-center">
-        <h3 className="text-2xl font-bold text-gray-800 mb-2">Animal Name Game 🐾</h3>
-        <p className="text-gray-600">Click on the animals to learn their names!</p>
-        <div className="text-3xl font-bold text-green-600 mt-4">
+        <h3 className="text-2xl font-normal text-white mb-2">Animal Name Game 🐾</h3>
+        <p className="text-gray-300">Click on the animals to learn their names!</p>
+        <div className="text-3xl font-normal text-green-300 mt-4">
           Animals Found: {score} / {animals.length}
         </div>
       </div>
@@ -487,7 +488,7 @@ const AnimalNameGame = ({ onComplete }: { onComplete: () => void }) => {
               }`}
             >
               <div className="text-6xl mb-2">{animal.emoji}</div>
-              <div className={`text-xl font-bold ${isSelected ? 'text-green-700' : 'text-gray-700'}`}>
+              <div className={`text-xl font-normal ${isSelected ? 'text-green-700' : 'text-gray-700'}`}>
                 {isSelected ? animal.name : '?'}
               </div>
               {isSelected && <div className="text-2xl mt-2">✅</div>}
@@ -499,7 +500,7 @@ const AnimalNameGame = ({ onComplete }: { onComplete: () => void }) => {
       {score === animals.length && (
         <div className="text-center p-6 bg-gradient-to-r from-green-400 to-blue-400 rounded-2xl">
           <div className="text-4xl mb-2">🎉</div>
-          <h3 className="text-2xl font-bold text-white">Amazing Job!</h3>
+          <h3 className="text-2xl font-normal text-white">Amazing Job!</h3>
           <p className="text-white text-lg">You learned all {animals.length} animal names!</p>
         </div>
       )}
@@ -592,20 +593,20 @@ const AlphabetScribbling = ({ onComplete }: { onComplete: () => void }) => {
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <h3 className="text-2xl font-bold text-gray-800 mb-2">Alphabet Scribbling ✏️</h3>
-        <p className="text-gray-600">Draw the letter with your mouse or finger!</p>
-        <div className="text-3xl font-bold text-purple-600 mt-4">
+        <h3 className="text-2xl font-normal text-white mb-2">Alphabet Scribbling ✏️</h3>
+        <p className="text-gray-300">Draw the letter with your mouse or finger!</p>
+        <div className="text-3xl font-normal text-purple-300 mt-4">
           Letters Done: {completedLetters.length} / {letters.length}
         </div>
       </div>
 
       <div className="text-center">
-        <h4 className="text-lg font-semibold text-gray-700 mb-4">
-          Draw the letter: <span className="text-4xl font-bold text-blue-600">{currentLetter}</span>
+        <h4 className="text-lg font-normal text-gray-300 mb-4">
+          Draw the letter: <span className="text-4xl font-normal text-blue-300">{currentLetter}</span>
         </h4>
-        <p className="text-lg mb-4">
+        <p className="text-lg mb-4 text-gray-300">
           Use this color: <span 
-            className="font-bold text-2xl inline-block w-8 h-8 rounded-full border-2 border-gray-400" 
+            className="font-normal text-2xl inline-block w-8 h-8 rounded-full border-2 border-gray-400" 
             style={{ backgroundColor: currentColor }}
           ></span>
         </p>
@@ -623,7 +624,7 @@ const AlphabetScribbling = ({ onComplete }: { onComplete: () => void }) => {
         <Button
           onClick={clearCanvas}
           variant="outline"
-          className="flex items-center space-x-2"
+          className="flex items-center space-x-2 text-white border-white hover:bg-white hover:text-gray-800"
         >
           <RefreshCw className="w-4 h-4" />
           <span>Clear</span>
@@ -631,7 +632,7 @@ const AlphabetScribbling = ({ onComplete }: { onComplete: () => void }) => {
         
         <Button
           onClick={finishLetter}
-          className="bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white font-bold py-3 px-6 rounded-xl"
+          className="bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white font-normal py-3 px-6 rounded-xl"
         >
           Finished Drawing!
         </Button>
@@ -639,7 +640,7 @@ const AlphabetScribbling = ({ onComplete }: { onComplete: () => void }) => {
         <Button
           onClick={nextLetter}
           variant="outline"
-          className="flex items-center space-x-2"
+          className="flex items-center space-x-2 text-white border-white hover:bg-white hover:text-gray-800"
         >
           <RefreshCw className="w-4 h-4" />
           <span>Next Letter</span>
@@ -651,12 +652,12 @@ const AlphabetScribbling = ({ onComplete }: { onComplete: () => void }) => {
         {letters.map((letter) => (
           <div
             key={letter}
-            className={`w-12 h-12 rounded-full flex items-center justify-center font-bold ${
+            className={`w-12 h-12 rounded-full flex items-center justify-center font-normal ${
               completedLetters.includes(letter)
                 ? 'bg-green-500 text-white'
                 : letter === currentLetter
                 ? 'bg-blue-500 text-white'
-                : 'bg-gray-200 text-gray-500'
+                : 'bg-gray-200 text-gray-800'
             }`}
           >
             {letter}
@@ -667,7 +668,7 @@ const AlphabetScribbling = ({ onComplete }: { onComplete: () => void }) => {
       {completedLetters.length === letters.length && (
         <div className="text-center p-6 bg-gradient-to-r from-purple-400 to-pink-400 rounded-2xl">
           <div className="text-4xl mb-2">🎉</div>
-          <h3 className="text-2xl font-bold text-white">Amazing Job!</h3>
+          <h3 className="text-2xl font-normal text-white">Amazing Job!</h3>
           <p className="text-white text-lg">You practiced all {letters.length} letters!</p>
         </div>
       )}
@@ -715,9 +716,9 @@ const ShapeSelectionGame = ({ onComplete }: { onComplete: () => void }) => {
   return (
     <div className="space-y-8">
       <div className="text-center">
-        <h3 className="text-2xl font-bold text-gray-800 mb-2">Shape Selection Game 🔷</h3>
-        <p className="text-gray-600">Click on the shapes to learn their names!</p>
-        <div className="text-3xl font-bold text-blue-600 mt-4">
+        <h3 className="text-2xl font-normal text-white mb-2">Shape Selection Game 🔷</h3>
+        <p className="text-gray-300">Click on the shapes to learn their names!</p>
+        <div className="text-3xl font-normal text-blue-300 mt-4">
           Shapes Found: {score} / {shapes.length}
         </div>
       </div>
@@ -737,7 +738,7 @@ const ShapeSelectionGame = ({ onComplete }: { onComplete: () => void }) => {
               }`}
             >
               <div className="text-6xl mb-2">{shape.emoji}</div>
-              <div className={`text-xl font-bold ${isSelected ? 'text-green-700' : 'text-white'}`}>
+              <div className={`text-xl font-normal ${isSelected ? 'text-green-700' : 'text-white'}`}>
                 {isSelected ? shape.name : '?'}
               </div>
               {isSelected && <div className="text-2xl mt-2">✅</div>}
@@ -749,7 +750,7 @@ const ShapeSelectionGame = ({ onComplete }: { onComplete: () => void }) => {
       {score === shapes.length && (
         <div className="text-center p-6 bg-gradient-to-r from-blue-400 to-purple-400 rounded-2xl">
           <div className="text-4xl mb-2">🎉</div>
-          <h3 className="text-2xl font-bold text-white">Amazing Job!</h3>
+          <h3 className="text-2xl font-normal text-white">Amazing Job!</h3>
           <p className="text-white text-lg">You learned all {shapes.length} shape names!</p>
         </div>
       )}
@@ -862,23 +863,23 @@ const MusicMakingGame = ({ onComplete }: { onComplete: () => void }) => {
   return (
     <div className="space-y-8">
       <div className="text-center">
-        <h3 className="text-2xl font-bold text-gray-800 mb-2">Music Making 🎵</h3>
-        <p className="text-gray-600">Click on the colorful notes to create beautiful melodies!</p>
-        <div className="text-3xl font-bold text-purple-600 mt-4">
+        <h3 className="text-2xl font-normal text-white mb-2">Music Making 🎵</h3>
+        <p className="text-gray-300">Click on the colorful notes to create beautiful melodies!</p>
+        <div className="text-3xl font-normal text-purple-300 mt-4">
           Notes Played: {playedNotes.length} / 10
         </div>
       </div>
 
       {/* Musical Notes */}
       <div className="space-y-4">
-        <h4 className="text-lg font-semibold text-gray-700 text-center">Musical Scale</h4>
+        <h4 className="text-lg font-normal text-gray-300 text-center">Musical Scale</h4>
         <div className="grid grid-cols-7 gap-2">
           {notes.map((note) => (
             <button
               key={note.id}
               onClick={() => playNote(note)}
               disabled={isPlaying}
-              className={`${note.color} text-white font-bold py-4 px-2 rounded-2xl 
+              className={`${note.color} text-white font-normal py-4 px-2 rounded-2xl 
                 hover:scale-105 active:scale-95 transition-all duration-200 shadow-lg
                 disabled:opacity-50 disabled:cursor-not-allowed`}
             >
@@ -892,12 +893,12 @@ const MusicMakingGame = ({ onComplete }: { onComplete: () => void }) => {
       {/* Current Melody Display */}
       {currentMelody.length > 0 && (
         <div className="bg-gradient-to-r from-purple-100 to-pink-100 p-6 rounded-2xl">
-          <h4 className="text-lg font-semibold text-gray-700 mb-4 text-center">Your Melody</h4>
+          <h4 className="text-lg font-normal text-gray-800 mb-4 text-center">Your Melody</h4>
           <div className="flex justify-center space-x-2 mb-4 flex-wrap">
             {currentMelody.map((noteName, index) => (
               <div
                 key={index}
-                className="bg-white px-3 py-2 rounded-xl shadow-md font-bold text-purple-600 m-1"
+                className="bg-white px-3 py-2 rounded-xl shadow-md font-normal text-purple-600 m-1"
               >
                 {noteName}
               </div>
@@ -908,7 +909,7 @@ const MusicMakingGame = ({ onComplete }: { onComplete: () => void }) => {
             <Button
               onClick={playMelody}
               disabled={isPlaying || currentMelody.length === 0}
-              className="bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white font-bold py-2 px-4 rounded-xl flex items-center space-x-2"
+              className="bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white font-normal py-2 px-4 rounded-xl flex items-center space-x-2"
             >
               <Volume2 className="w-4 h-4" />
               <span>{isPlaying ? 'Playing...' : 'Play Melody'}</span>
@@ -917,7 +918,7 @@ const MusicMakingGame = ({ onComplete }: { onComplete: () => void }) => {
             <Button
               onClick={clearMelody}
               variant="outline"
-              className="flex items-center space-x-2"
+              className="flex items-center space-x-2 text-white border-white hover:bg-white hover:text-gray-800"
             >
               <RefreshCw className="w-4 h-4" />
               <span>Clear</span>
@@ -929,7 +930,7 @@ const MusicMakingGame = ({ onComplete }: { onComplete: () => void }) => {
       {playedNotes.length >= 10 && (
         <div className="text-center p-6 bg-gradient-to-r from-yellow-400 to-pink-400 rounded-2xl">
           <div className="text-4xl mb-2">🎉</div>
-          <h3 className="text-2xl font-bold text-white">Amazing Musician!</h3>
+          <h3 className="text-2xl font-normal text-white">Amazing Musician!</h3>
           <p className="text-white text-lg">You created a beautiful melody with {playedNotes.length} notes!</p>
         </div>
       )}
