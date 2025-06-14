@@ -18,8 +18,26 @@ const LoginSignup = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Basic validation
+    if (!email || !password) {
+      alert('Please fill in all required fields');
+      return;
+    }
+    
+    if (!isLogin && password !== confirmPassword) {
+      alert('Passwords do not match');
+      return;
+    }
+    
+    if (!isLogin && (!childName || !parentName)) {
+      alert('Please fill in all fields for signup');
+      return;
+    }
+    
     // For now, just navigate to the main app
     // In a real app, this would handle authentication
+    console.log(isLogin ? 'Logging in...' : 'Creating account...', { email, parentName, childName });
     navigate('/');
   };
 

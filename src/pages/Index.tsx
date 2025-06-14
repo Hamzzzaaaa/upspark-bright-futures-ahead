@@ -1,7 +1,8 @@
 
 import { useState } from 'react';
-import { Calendar, Activity, TrendingUp, UserCheck, Pill, Home, Sparkles } from 'lucide-react';
+import { Calendar, Activity, TrendingUp, UserCheck, Pill, Home, Sparkles, User } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useNavigate } from 'react-router-dom';
 import DashboardCard from '@/components/DashboardCard';
 import ActivitiesZone from '@/components/ActivitiesZone';
 import ProgressTracker from '@/components/ProgressTracker';
@@ -11,6 +12,11 @@ import MedicineDelivery from '@/components/MedicineDelivery';
 const Index = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [childName] = useState('Emma'); // This would come from user profile
+  const navigate = useNavigate();
+
+  const handleProfileClick = () => {
+    navigate('/profile');
+  };
 
   const renderActiveTab = () => {
     switch (activeTab) {
@@ -62,7 +68,7 @@ const Index = () => {
               
               <DashboardCard
                 title="Progress Tracker"
-                description="See how {childName} is growing"
+                description={`See how ${childName} is growing`}
                 icon={TrendingUp}
                 gradient="from-green-400 to-blue-500"
                 onClick={() => setActiveTab('progress')}
@@ -122,6 +128,13 @@ const Index = () => {
                 <span className="text-xs font-medium">{tab.label}</span>
               </button>
             ))}
+            <button
+              onClick={handleProfileClick}
+              className="flex flex-col items-center py-2 px-3 rounded-xl transition-all duration-200 text-gray-500 hover:text-gray-700"
+            >
+              <User className="w-5 h-5 mb-1" />
+              <span className="text-xs font-medium">Profile</span>
+            </button>
           </div>
         </div>
       </div>
