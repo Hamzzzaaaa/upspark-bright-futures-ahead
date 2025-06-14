@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Clock, Calendar, ArrowLeft, RefreshCw } from 'lucide-react';
+import { Clock, Calendar, ArrowLeft, RefreshCw, Volume2 } from 'lucide-react';
 import { Canvas as FabricCanvas, PencilBrush } from 'fabric';
 
 interface Activity {
@@ -63,11 +63,11 @@ const ActivitiesZone = ({ childName, selectedPlan = 30 }: ActivitiesZoneProps) =
           interactive: true
         },
         {
-          title: 'Bird Coloring',
-          description: 'Color beautiful birds with different colors',
+          title: 'Music Making',
+          description: 'Create beautiful melodies with colorful notes',
           duration: 15,
           category: 'creative' as const,
-          emoji: '🎨',
+          emoji: '🎵',
           interactive: true
         },
         {
@@ -197,8 +197,8 @@ const ActivitiesZone = ({ childName, selectedPlan = 30 }: ActivitiesZoneProps) =
           />
         )}
         
-        {activeActivity.title === 'Bird Coloring' && (
-          <BirdColoringGame 
+        {activeActivity.title === 'Music Making' && (
+          <MusicMakingGame 
             onComplete={() => {
               toggleActivity(activeActivity.id);
               setActiveActivity(null);
@@ -770,219 +770,180 @@ const ShapeSelectionGame = ({ onComplete }: { onComplete: () => void }) => {
   );
 };
 
-// NEW: Bird Coloring Game Component
-const BirdColoringGame = ({ onComplete }: { onComplete: () => void }) => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [fabricCanvas, setFabricCanvas] = useState<FabricCanvas | null>(null);
-  const [selectedColor, setSelectedColor] = useState('#ff0000');
-  const [currentBird, setCurrentBird] = useState(0);
-  const [coloredBirds, setColoredBirds] = useState<number[]>([]);
+// NEW: Music Making Game Component
+const MusicMakingGame = ({ onComplete }: { onComplete: () => void }) => {
+  const [notes] = useState([
+    { id: 1, name: 'Do', color: 'bg-red-400', frequency: 261.63 },
+    { id: 2, name: 'Re', color: 'bg-orange-400', frequency: 293.66 },
+    { id: 3, name: 'Mi', color: 'bg-yellow-400', frequency: 329.63 },
+    { id: 4, name: 'Fa', color: 'bg-green-400', frequency: 349.23 },
+    { id: 5, name: 'So', color: 'bg-blue-400', frequency: 392.0 },
+    { id: 6, name: 'La', color: 'bg-indigo-400', frequency: 440.0 },
+    { id: 7, name: 'Ti', color: 'bg-purple-400', frequency: 493.88 }
+  ]);
   
-  const colors = [
-    { name: 'Red', value: '#ff0000' },
-    { name: 'Blue', value: '#0000ff' },
-    { name: 'Green', value: '#00ff00' },
-    { name: 'Yellow', value: '#ffff00' },
-    { name: 'Purple', value: '#ff00ff' },
-    { name: 'Orange', value: '#ffa500' }
-  ];
+  const [playedNotes, setPlayedNotes] = useState<string[]>([]);
+  const [currentMelody, setCurrentMelody] = useState<string[]>([]);
+  const [isPlaying, setIsPlaying] = useState(false);
 
-  const birds = [
-    { id: 1, name: 'Parrot', emoji: '🦜' },
-    { id: 2, name: 'Eagle', emoji: '🦅' },
-    { id: 3, name: 'Flamingo', emoji: '🦩' }
-  ];
-
-  useEffect(() => {
-    if (!canvasRef.current) return;
-
-    const canvas = new FabricCanvas(canvasRef.current, {
-      width: 400,
-      height: 300,
-      backgroundColor: '#ffffff',
-    });
-
-    canvas.isDrawingMode = true;
-    canvas.freeDrawingBrush = new PencilBrush(canvas);
-    canvas.freeDrawingBrush.color = selectedColor;
-    canvas.freeDrawingBrush.width = 12;
-
-    // Draw bird outline
-    drawBirdOutline(canvas);
+  const playNote = async (note: typeof notes[0]) => {
+    setPlayedNotes(prev => [...prev, note.name]);
+    setCurrentMelody(prev => [...prev, note.name]);
     
-    setFabricCanvas(canvas);
-
-    return () => {
-      canvas.dispose();
-    };
-  }, [currentBird]);
-
-  useEffect(() => {
-    if (fabricCanvas) {
-      fabricCanvas.freeDrawingBrush.color = selectedColor;
-    }
-  }, [selectedColor, fabricCanvas]);
-
-  const drawBirdOutline = (canvas: FabricCanvas) => {
-    // Simple bird outline (you could make this more detailed)
-    const ctx = canvas.getContext();
-    ctx.strokeStyle = '#000000';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    
-    // Bird body (oval)
-    ctx.ellipse(200, 180, 80, 50, 0, 0, 2 * Math.PI);
-    
-    // Bird head (circle)
-    ctx.ellipse(200, 120, 40, 40, 0, 0, 2 * Math.PI);
-    
-    // Beak (triangle)
-    ctx.moveTo(160, 120);
-    ctx.lineTo(140, 125);
-    ctx.lineTo(160, 130);
-    ctx.closePath();
-    
-    // Wing
-    ctx.ellipse(180, 160, 30, 20, -0.5, 0, 2 * Math.PI);
-    
-    // Tail
-    ctx.ellipse(280, 180, 40, 15, 0, 0, 2 * Math.PI);
-    
-    ctx.stroke();
-  };
-
-  const finishColoring = () => {
-    if (!coloredBirds.includes(currentBird)) {
-      setColoredBirds(prev => [...prev, currentBird]);
+    // Create and play audio tone
+    if ('AudioContext' in window || 'webkitAudioContext' in window) {
+      const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
+      const audioContext = new AudioContext();
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
       
-      if ('speechSynthesis' in window) {
-        const utterance = new SpeechSynthesisUtterance(`Beautiful coloring of the ${birds[currentBird].name}!`);
-        utterance.rate = 0.8;
-        speechSynthesis.speak(utterance);
-      }
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+      
+      oscillator.frequency.setValueAtTime(note.frequency, audioContext.currentTime);
+      oscillator.type = 'sine';
+      
+      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+      
+      oscillator.start(audioContext.currentTime);
+      oscillator.stop(audioContext.currentTime + 0.5);
+    }
+    
+    // Speak the note name
+    if ('speechSynthesis' in window) {
+      const utterance = new SpeechSynthesisUtterance(note.name);
+      utterance.rate = 0.8;
+      speechSynthesis.speak(utterance);
+    }
 
-      if (coloredBirds.length + 1 === birds.length) {
-        setTimeout(() => {
-          if ('speechSynthesis' in window) {
-            const utterance = new SpeechSynthesisUtterance('Excellent! You colored all the birds!');
-            speechSynthesis.speak(utterance);
+    // Complete after playing 10 notes
+    if (playedNotes.length + 1 >= 10) {
+      setTimeout(() => {
+        if ('speechSynthesis' in window) {
+          const utterance = new SpeechSynthesisUtterance('Beautiful melody! You are a great musician!');
+          speechSynthesis.speak(utterance);
+        }
+        onComplete();
+      }, 1000);
+    }
+  };
+
+  const playMelody = async () => {
+    if (currentMelody.length === 0) return;
+    
+    setIsPlaying(true);
+    
+    for (let i = 0; i < currentMelody.length; i++) {
+      const noteName = currentMelody[i];
+      const note = notes.find(n => n.name === noteName);
+      if (note) {
+        await new Promise(resolve => {
+          if ('AudioContext' in window || 'webkitAudioContext' in window) {
+            const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
+            const audioContext = new AudioContext();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.setValueAtTime(note.frequency, audioContext.currentTime);
+            oscillator.type = 'sine';
+            
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.4);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.4);
+            
+            setTimeout(resolve, 500);
+          } else {
+            setTimeout(resolve, 500);
           }
-          onComplete();
-        }, 2000);
+        });
       }
     }
+    
+    setIsPlaying(false);
   };
 
-  const nextBird = () => {
-    const nextIndex = (currentBird + 1) % birds.length;
-    setCurrentBird(nextIndex);
-    if (fabricCanvas) {
-      fabricCanvas.clear();
-      fabricCanvas.backgroundColor = '#ffffff';
-      drawBirdOutline(fabricCanvas);
-      fabricCanvas.renderAll();
-    }
-  };
-
-  const clearCanvas = () => {
-    if (fabricCanvas) {
-      fabricCanvas.clear();
-      fabricCanvas.backgroundColor = '#ffffff';
-      drawBirdOutline(fabricCanvas);
-      fabricCanvas.renderAll();
-    }
+  const clearMelody = () => {
+    setCurrentMelody([]);
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div className="text-center">
-        <h3 className="text-2xl font-bold text-gray-800 mb-2">Bird Coloring 🎨</h3>
-        <p className="text-gray-600">Color the beautiful birds with different colors!</p>
-        <div className="text-3xl font-bold text-indigo-600 mt-4">
-          Birds Colored: {coloredBirds.length} / {birds.length}
+        <h3 className="text-2xl font-bold text-gray-800 mb-2">Music Making 🎵</h3>
+        <p className="text-gray-600">Click on the colorful notes to create beautiful melodies!</p>
+        <div className="text-3xl font-bold text-purple-600 mt-4">
+          Notes Played: {playedNotes.length} / 10
         </div>
       </div>
 
-      <div className="text-center">
-        <h4 className="text-lg font-semibold text-gray-700 mb-4">
-          Color the {birds[currentBird].name}: <span className="text-4xl">{birds[currentBird].emoji}</span>
-        </h4>
-      </div>
-
-      {/* Color Palette */}
-      <div className="flex justify-center space-x-2 mb-4">
-        {colors.map((color) => (
-          <button
-            key={color.value}
-            onClick={() => setSelectedColor(color.value)}
-            className={`w-10 h-10 rounded-full border-4 transition-all duration-200 ${
-              selectedColor === color.value ? 'border-gray-800 scale-110' : 'border-gray-300'
-            }`}
-            style={{ backgroundColor: color.value }}
-            title={color.name}
-          />
-        ))}
-      </div>
-
-      {/* Drawing Canvas */}
-      <div className="flex justify-center">
-        <div className="bg-white border-4 border-dashed border-gray-300 rounded-2xl p-4">
-          <canvas ref={canvasRef} className="border border-gray-200 rounded-xl" />
+      {/* Musical Notes */}
+      <div className="space-y-4">
+        <h4 className="text-lg font-semibold text-gray-700 text-center">Musical Scale</h4>
+        <div className="grid grid-cols-7 gap-2">
+          {notes.map((note) => (
+            <button
+              key={note.id}
+              onClick={() => playNote(note)}
+              disabled={isPlaying}
+              className={`${note.color} text-white font-bold py-4 px-2 rounded-2xl 
+                hover:scale-105 active:scale-95 transition-all duration-200 shadow-lg
+                disabled:opacity-50 disabled:cursor-not-allowed`}
+            >
+              <div className="text-2xl mb-1">🎵</div>
+              <div className="text-sm">{note.name}</div>
+            </button>
+          ))}
         </div>
       </div>
 
-      {/* Controls */}
-      <div className="flex justify-center space-x-4">
-        <Button
-          onClick={clearCanvas}
-          variant="outline"
-          className="flex items-center space-x-2"
-        >
-          <RefreshCw className="w-4 h-4" />
-          <span>Clear</span>
-        </Button>
-        
-        <Button
-          onClick={finishColoring}
-          className="bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white font-bold py-3 px-6 rounded-xl"
-        >
-          Finished Coloring!
-        </Button>
-        
-        <Button
-          onClick={nextBird}
-          variant="outline"
-          className="flex items-center space-x-2"
-        >
-          <RefreshCw className="w-4 h-4" />
-          <span>Next Bird</span>
-        </Button>
-      </div>
-
-      {/* Progress */}
-      <div className="flex justify-center space-x-2">
-        {birds.map((bird, index) => (
-          <div
-            key={bird.id}
-            className={`w-16 h-16 rounded-full flex flex-col items-center justify-center font-bold text-xs ${
-              coloredBirds.includes(index)
-                ? 'bg-green-500 text-white'
-                : index === currentBird
-                ? 'bg-blue-500 text-white'
-                : 'bg-gray-200 text-gray-500'
-            }`}
-          >
-            <div className="text-lg">{bird.emoji}</div>
-            <div>{bird.name}</div>
+      {/* Current Melody Display */}
+      {currentMelody.length > 0 && (
+        <div className="bg-gradient-to-r from-purple-100 to-pink-100 p-6 rounded-2xl">
+          <h4 className="text-lg font-semibold text-gray-700 mb-4 text-center">Your Melody</h4>
+          <div className="flex justify-center space-x-2 mb-4 flex-wrap">
+            {currentMelody.map((noteName, index) => (
+              <div
+                key={index}
+                className="bg-white px-3 py-2 rounded-xl shadow-md font-bold text-purple-600 m-1"
+              >
+                {noteName}
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+          
+          <div className="flex justify-center space-x-4">
+            <Button
+              onClick={playMelody}
+              disabled={isPlaying || currentMelody.length === 0}
+              className="bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white font-bold py-2 px-4 rounded-xl flex items-center space-x-2"
+            >
+              <Volume2 className="w-4 h-4" />
+              <span>{isPlaying ? 'Playing...' : 'Play Melody'}</span>
+            </Button>
+            
+            <Button
+              onClick={clearMelody}
+              variant="outline"
+              className="flex items-center space-x-2"
+            >
+              <RefreshCw className="w-4 h-4" />
+              <span>Clear</span>
+            </Button>
+          </div>
+        </div>
+      )}
 
-      {coloredBirds.length === birds.length && (
-        <div className="text-center p-6 bg-gradient-to-r from-sky-400 to-indigo-400 rounded-2xl">
+      {playedNotes.length >= 10 && (
+        <div className="text-center p-6 bg-gradient-to-r from-yellow-400 to-pink-400 rounded-2xl">
           <div className="text-4xl mb-2">🎉</div>
-          <h3 className="text-2xl font-bold text-white">Amazing Job!</h3>
-          <p className="text-white text-lg">You colored all {birds.length} birds beautifully!</p>
+          <h3 className="text-2xl font-bold text-white">Amazing Musician!</h3>
+          <p className="text-white text-lg">You created a beautiful melody with {playedNotes.length} notes!</p>
         </div>
       )}
     </div>
