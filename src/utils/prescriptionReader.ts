@@ -33,7 +33,14 @@ export const extractMedicineNames = async (imageFile: File): Promise<string[]> =
     
     // Extract text from image
     const result = await ocr(imageUrl);
-    const extractedText = result.text || '';
+    
+    // Handle both single result and array of results
+    let extractedText = '';
+    if (Array.isArray(result)) {
+      extractedText = result.map(r => r.generated_text || '').join(' ');
+    } else {
+      extractedText = result.generated_text || '';
+    }
     
     console.log('Extracted text:', extractedText);
     
