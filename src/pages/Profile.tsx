@@ -11,7 +11,6 @@ import TherapistBooking from '@/components/TherapistBooking';
 import MedicineDelivery from '@/components/MedicineDelivery';
 import UpSparkLogo from '@/components/UpSparkLogo';
 import { Badge } from '@/components/ui/badge';
-import { extractMedicineNames } from '@/utils/prescriptionReader';
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -121,45 +120,26 @@ const Profile = () => {
     }
   };
 
-  const handlePrescriptionUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePrescriptionUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       const reader = new FileReader();
-      reader.onload = async (e) => {
+      reader.onload = (e) => {
         const imageUrl = e.target?.result as string;
         setPrescriptionImage(imageUrl);
         
-        try {
-          console.log('Analyzing prescription image...');
-          
-          // Extract medicine names from the prescription
-          const medicines = await extractMedicineNames(file);
-          
-          setExtractedMedicines(medicines);
-          setIsVerified(true);
-          setIsEditingPrescription(false);
-          
-          // Save to localStorage
-          localStorage.setItem('prescriptionImage', imageUrl);
-          localStorage.setItem('extractedMedicines', JSON.stringify(medicines));
-          localStorage.setItem('isVerified', 'true');
-          
-          console.log('Prescription analyzed and verified with medicines:', medicines);
-        } catch (error) {
-          console.error('Error analyzing prescription:', error);
-          
-          // Fallback to mock data if analysis fails
-          const fallbackMedicines = ['Vitamin D3', 'Omega-3 Supplements', 'Iron Tablets', 'Calcium Supplements'];
-          setExtractedMedicines(fallbackMedicines);
-          setIsVerified(true);
-          setIsEditingPrescription(false);
-          
-          localStorage.setItem('prescriptionImage', imageUrl);
-          localStorage.setItem('extractedMedicines', JSON.stringify(fallbackMedicines));
-          localStorage.setItem('isVerified', 'true');
-          
-          console.log('Using fallback medicines due to analysis error');
-        }
+        // Mock prescription analysis - extract medicine names
+        const mockMedicines = ['Vitamin D3', 'Omega-3 Supplements', 'Iron Tablets', 'Calcium Supplements'];
+        setExtractedMedicines(mockMedicines);
+        setIsVerified(true);
+        setIsEditingPrescription(false);
+        
+        // Save to localStorage
+        localStorage.setItem('prescriptionImage', imageUrl);
+        localStorage.setItem('extractedMedicines', JSON.stringify(mockMedicines));
+        localStorage.setItem('isVerified', 'true');
+        
+        console.log('Prescription uploaded and verified');
       };
       reader.readAsDataURL(file);
     }
