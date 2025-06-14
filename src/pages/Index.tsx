@@ -1,11 +1,14 @@
 
 import { useState, useEffect } from 'react';
-import { Calendar, Activity, TrendingUp, CheckCircle, Target, Clock } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Calendar, Activity, TrendingUp, CheckCircle, Target, Clock, Home, User, UserCheck, Pill } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import UpSparkLogo from '@/components/UpSparkLogo';
 
 const Index = () => {
+  const navigate = useNavigate();
   const [childName, setChildName] = useState('Emma'); // Default fallback
+  const [activeTab, setActiveTab] = useState('home');
 
   // Load child name from localStorage on component mount
   useEffect(() => {
@@ -32,9 +35,126 @@ const Index = () => {
   const completionPercentage = Math.round((therapyData.activitiesCompleted / therapyData.totalActivities) * 100);
   const daysPercentage = Math.round((therapyData.completedDays / therapyData.totalDays) * 100);
 
-  return (
-    <div className="min-h-screen">
-      <div className="p-4 sm:p-6 max-w-md mx-auto space-y-6">
+  const handleNavigation = (tab: string) => {
+    setActiveTab(tab);
+    if (tab === 'profile') {
+      navigate('/profile');
+    }
+    // For other tabs, we'll just update the active state for now
+    // In a real app, you would implement the actual navigation/content switching
+  };
+
+  const renderContent = () => {
+    if (activeTab === 'activities') {
+      return (
+        <div className="space-y-6">
+          <Card className="bold-card">
+            <CardHeader>
+              <CardTitle className="text-white text-xl font-black flex items-center">
+                <Activity className="w-6 h-6 mr-2" />
+                Today's Activities
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="flex justify-between items-center p-4 bg-white/20 rounded-lg">
+                  <span className="text-white font-bold">Speech Therapy</span>
+                  <span className="text-green-400 font-bold">Completed ✓</span>
+                </div>
+                <div className="flex justify-between items-center p-4 bg-white/20 rounded-lg">
+                  <span className="text-white font-bold">Motor Skills Exercise</span>
+                  <span className="text-yellow-400 font-bold">In Progress</span>
+                </div>
+                <div className="flex justify-between items-center p-4 bg-white/20 rounded-lg">
+                  <span className="text-white font-bold">Reading Practice</span>
+                  <span className="text-gray-400 font-bold">Pending</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      );
+    }
+
+    if (activeTab === 'therapist') {
+      return (
+        <div className="space-y-6">
+          <Card className="bold-card">
+            <CardHeader>
+              <CardTitle className="text-white text-xl font-black flex items-center">
+                <UserCheck className="w-6 h-6 mr-2" />
+                Your Therapist
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-center space-y-4">
+                <div className="w-20 h-20 bg-purple-400 rounded-full mx-auto flex items-center justify-center">
+                  <UserCheck className="w-10 h-10 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-black text-white">Dr. Sarah Wilson</h3>
+                  <p className="text-white/80">Speech & Language Therapist</p>
+                </div>
+                <div className="space-y-2">
+                  <div className="flex justify-between p-3 bg-white/20 rounded-lg">
+                    <span className="text-white font-bold">Next Appointment</span>
+                    <span className="text-white">Tomorrow 2:00 PM</span>
+                  </div>
+                  <div className="flex justify-between p-3 bg-white/20 rounded-lg">
+                    <span className="text-white font-bold">Session Type</span>
+                    <span className="text-white">Virtual</span>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      );
+    }
+
+    if (activeTab === 'medicine') {
+      return (
+        <div className="space-y-6">
+          <Card className="bold-card">
+            <CardHeader>
+              <CardTitle className="text-white text-xl font-black flex items-center">
+                <Pill className="w-6 h-6 mr-2" />
+                Medication Schedule
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="flex justify-between items-center p-4 bg-white/20 rounded-lg">
+                  <div>
+                    <span className="text-white font-bold block">Vitamin D3</span>
+                    <span className="text-white/80 text-sm">Morning - 8:00 AM</span>
+                  </div>
+                  <span className="text-green-400 font-bold">Taken ✓</span>
+                </div>
+                <div className="flex justify-between items-center p-4 bg-white/20 rounded-lg">
+                  <div>
+                    <span className="text-white font-bold block">Omega-3</span>
+                    <span className="text-white/80 text-sm">Afternoon - 2:00 PM</span>
+                  </div>
+                  <span className="text-yellow-400 font-bold">Pending</span>
+                </div>
+                <div className="flex justify-between items-center p-4 bg-white/20 rounded-lg">
+                  <div>
+                    <span className="text-white font-bold block">Melatonin</span>
+                    <span className="text-white/80 text-sm">Evening - 8:00 PM</span>
+                  </div>
+                  <span className="text-gray-400 font-bold">Scheduled</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      );
+    }
+
+    // Default home content (progress dashboard)
+    return (
+      <>
         {/* Welcome Header with Logo */}
         <div className="bold-card p-6 sm:p-8 rounded-3xl text-center">
           <UpSparkLogo size="medium" className="mb-4 sm:mb-6" />
@@ -137,6 +257,44 @@ const Index = () => {
               <div className="text-sm font-bold text-white">Activities Left</div>
             </CardContent>
           </Card>
+        </div>
+      </>
+    );
+  };
+
+  return (
+    <div className="min-h-screen">
+      <div className="pb-20">
+        <div className="p-4 sm:p-6 max-w-md mx-auto space-y-6">
+          {renderContent()}
+        </div>
+      </div>
+
+      {/* Bottom Navigation */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t border-gray-200">
+        <div className="max-w-md mx-auto px-4 py-2">
+          <div className="flex justify-around">
+            {[
+              { id: 'home', icon: Home, label: 'Home' },
+              { id: 'activities', icon: Activity, label: 'Activities' },
+              { id: 'profile', icon: User, label: 'Profile' },
+              { id: 'therapist', icon: UserCheck, label: 'Therapist' },
+              { id: 'medicine', icon: Pill, label: 'Medicine' },
+            ].map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => handleNavigation(tab.id)}
+                className={`flex flex-col items-center py-2 px-3 rounded-xl transition-all duration-200 ${
+                  activeTab === tab.id
+                    ? 'bg-gradient-to-r from-purple-400 to-pink-400 text-white shadow-lg scale-105'
+                    : 'text-gray-500 hover:text-gray-700'
+                }`}
+              >
+                <tab.icon className="w-5 h-5 mb-1" />
+                <span className="text-xs font-medium">{tab.label}</span>
+              </button>
+            ))}
+          </div>
         </div>
       </div>
     </div>
