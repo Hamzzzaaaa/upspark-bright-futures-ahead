@@ -70,7 +70,7 @@ const Application = () => {
               <Textarea
                 value={formData.therapyNeeds}
                 onChange={(e) => handleInputChange('therapyNeeds', e.target.value)}
-                className="border-2 border-gray-200 focus:border-purple-400 min-h-[100px] text-sm sm:text-base font-bold text-gray-900"
+                className="border-2 border-gray-300 bg-white focus:border-purple-500 min-h-[100px] text-sm sm:text-base font-bold text-gray-900 placeholder:text-gray-600"
                 placeholder="What days and times work best for online therapy sessions?"
               />
             </div>
@@ -79,7 +79,7 @@ const Application = () => {
               <Textarea
                 value={formData.equipmentNeeds}
                 onChange={(e) => handleInputChange('equipmentNeeds', e.target.value)}
-                className="border-2 border-gray-200 focus:border-purple-400 min-h-[80px] text-sm sm:text-base font-bold text-gray-900"
+                className="border-2 border-gray-300 bg-white focus:border-purple-500 min-h-[80px] text-sm sm:text-base font-bold text-gray-900 placeholder:text-gray-600"
                 placeholder="Do you have a computer/tablet with camera and stable internet connection?"
               />
             </div>
@@ -93,7 +93,7 @@ const Application = () => {
               <Textarea
                 value={formData.therapyNeeds}
                 onChange={(e) => handleInputChange('therapyNeeds', e.target.value)}
-                className="border-2 border-gray-200 focus:border-purple-400 min-h-[100px] text-sm sm:text-base font-bold text-gray-900"
+                className="border-2 border-gray-300 bg-white focus:border-purple-500 min-h-[100px] text-sm sm:text-base font-bold text-gray-900 placeholder:text-gray-600"
                 placeholder="How often do you need medicine delivered? (Weekly, Monthly, etc.)"
               />
             </div>
@@ -102,7 +102,7 @@ const Application = () => {
               <Textarea
                 value={formData.equipmentNeeds}
                 onChange={(e) => handleInputChange('equipmentNeeds', e.target.value)}
-                className="border-2 border-gray-200 focus:border-purple-400 min-h-[80px] text-sm sm:text-base font-bold text-gray-900"
+                className="border-2 border-gray-300 bg-white focus:border-purple-500 min-h-[80px] text-sm sm:text-base font-bold text-gray-900 placeholder:text-gray-600"
                 placeholder="Confirm delivery address if different from main address"
               />
             </div>
@@ -116,7 +116,7 @@ const Application = () => {
               <Textarea
                 value={formData.therapyNeeds}
                 onChange={(e) => handleInputChange('therapyNeeds', e.target.value)}
-                className="border-2 border-gray-200 focus:border-purple-400 min-h-[100px] text-sm sm:text-base font-bold text-gray-900"
+                className="border-2 border-gray-300 bg-white focus:border-purple-500 min-h-[100px] text-sm sm:text-base font-bold text-gray-900 placeholder:text-gray-600"
                 placeholder="Would you prefer home visits or clinic visits? Any location preferences?"
               />
             </div>
@@ -125,7 +125,7 @@ const Application = () => {
               <Textarea
                 value={formData.equipmentNeeds}
                 onChange={(e) => handleInputChange('equipmentNeeds', e.target.value)}
-                className="border-2 border-gray-200 focus:border-purple-400 min-h-[80px] text-sm sm:text-base font-bold text-gray-900"
+                className="border-2 border-gray-300 bg-white focus:border-purple-500 min-h-[80px] text-sm sm:text-base font-bold text-gray-900 placeholder:text-gray-600"
                 placeholder="Any special mobility needs or accessibility requirements?"
               />
             </div>
@@ -170,7 +170,7 @@ const Application = () => {
                   <Input
                     value={formData.parentName}
                     onChange={(e) => handleInputChange('parentName', e.target.value)}
-                    className="border-2 border-gray-200 focus:border-purple-400 h-10 sm:h-12 text-sm sm:text-base font-bold text-gray-900"
+                    className="border-2 border-gray-300 bg-white focus:border-purple-500 h-10 sm:h-12 text-sm sm:text-base font-bold text-gray-900 placeholder:text-gray-600"
                     placeholder="Full name"
                     required
                   />
@@ -180,7 +180,7 @@ const Application = () => {
                   <Input
                     value={formData.parentPhone}
                     onChange={(e) => handleInputChange('parentPhone', e.target.value)}
-                    className="border-2 border-gray-200 focus:border-purple-400 h-10 sm:h-12 text-sm sm:text-base font-bold text-gray-900"
+                    className="border-2 border-gray-300 bg-white focus:border-purple-500 h-10 sm:h-12 text-sm sm:text-base font-bold text-gray-900 placeholder:text-gray-600"
                     placeholder="Phone number"
                     required
                   />
@@ -192,7 +192,7 @@ const Application = () => {
                 <Input
                   value={formData.parentEmail}
                   onChange={(e) => handleInputChange('parentEmail', e.target.value)}
-                  className="border-2 border-gray-200 focus:border-purple-400 h-10 sm:h-12 text-sm sm:text-base font-bold text-gray-900"
+                  className="border-2 border-gray-300 bg-white focus:border-purple-500 h-10 sm:h-12 text-sm sm:text-base font-bold text-gray-900 placeholder:text-gray-600"
                   placeholder="Email address"
                   type="email"
                   required
@@ -205,7 +205,7 @@ const Application = () => {
                   <Input
                     value={formData.childName}
                     onChange={(e) => handleInputChange('childName', e.target.value)}
-                    className="border-2 border-gray-200 focus:border-purple-400 h-10 sm:h-12 text-sm sm:text-base font-bold text-gray-900"
+                    className="border-2 border-gray-300 bg-white focus:border-purple-500 h-10 sm:h-12 text-sm sm:text-base font-bold text-gray-900 placeholder:text-gray-600"
                     placeholder="Child's full name"
                     required
                   />
@@ -215,7 +215,7 @@ const Application = () => {
                   <Input
                     value={formData.childAge}
                     onChange={(e) => handleInputChange('childAge', e.target.value)}
-                    className="border-2 border-gray-200 focus:border-purple-400 h-10 sm:h-12 text-sm sm:text-base font-bold text-gray-900"
+                    className="border-2 border-gray-300 bg-white focus:border-purple-500 h-10 sm:h-12 text-sm sm:text-base font-bold text-gray-900 placeholder:text-gray-600"
                     placeholder="Age"
                     type="number"
                     required
@@ -250,7 +250,7 @@ const Application = () => {
                 <Textarea
                   value={formData.address}
                   onChange={(e) => handleInputChange('address', e.target.value)}
-                  className="border-2 border-gray-200 focus:border-purple-400 min-h-[80px] text-sm sm:text-base font-bold text-gray-900"
+                  className="border-2 border-gray-300 bg-white focus:border-purple-500 min-h-[80px] text-sm sm:text-base font-bold text-gray-900 placeholder:text-gray-600"
                   placeholder="Full address"
                   required
                 />
@@ -262,7 +262,7 @@ const Application = () => {
                   <Input
                     value={formData.emergencyContact}
                     onChange={(e) => handleInputChange('emergencyContact', e.target.value)}
-                    className="border-2 border-gray-200 focus:border-purple-400 h-10 sm:h-12 text-sm sm:text-base font-bold text-gray-900"
+                    className="border-2 border-gray-300 bg-white focus:border-purple-500 h-10 sm:h-12 text-sm sm:text-base font-bold text-gray-900 placeholder:text-gray-600"
                     placeholder="Emergency contact name"
                     required
                   />
@@ -272,7 +272,7 @@ const Application = () => {
                   <Input
                     value={formData.emergencyPhone}
                     onChange={(e) => handleInputChange('emergencyPhone', e.target.value)}
-                    className="border-2 border-gray-200 focus:border-purple-400 h-10 sm:h-12 text-sm sm:text-base font-bold text-gray-900"
+                    className="border-2 border-gray-300 bg-white focus:border-purple-500 h-10 sm:h-12 text-sm sm:text-base font-bold text-gray-900 placeholder:text-gray-600"
                     placeholder="Emergency phone number"
                     required
                   />
@@ -295,7 +295,7 @@ const Application = () => {
                 <Input
                   value={formData.disabilityType}
                   onChange={(e) => handleInputChange('disabilityType', e.target.value)}
-                  className="border-2 border-gray-200 focus:border-purple-400 h-10 sm:h-12 text-sm sm:text-base font-bold text-gray-900"
+                  className="border-2 border-gray-300 bg-white focus:border-purple-500 h-10 sm:h-12 text-sm sm:text-base font-bold text-gray-900 placeholder:text-gray-600"
                   placeholder="e.g., Autism, ADHD, Cerebral Palsy, etc."
                   required
                 />
@@ -307,7 +307,7 @@ const Application = () => {
                   <Input
                     value={formData.disabilityDuration}
                     onChange={(e) => handleInputChange('disabilityDuration', e.target.value)}
-                    className="border-2 border-gray-200 focus:border-purple-400 h-10 sm:h-12 text-sm sm:text-base font-bold text-gray-900"
+                    className="border-2 border-gray-300 bg-white focus:border-purple-500 h-10 sm:h-12 text-sm sm:text-base font-bold text-gray-900 placeholder:text-gray-600"
                     placeholder="e.g., Since birth, 2 years"
                     required
                   />
@@ -317,7 +317,7 @@ const Application = () => {
                   <Input
                     value={formData.onsetDate}
                     onChange={(e) => handleInputChange('onsetDate', e.target.value)}
-                    className="border-2 border-gray-200 focus:border-purple-400 h-10 sm:h-12 text-sm sm:text-base font-bold text-gray-900"
+                    className="border-2 border-gray-300 bg-white focus:border-purple-500 h-10 sm:h-12 text-sm sm:text-base font-bold text-gray-900 placeholder:text-gray-600"
                     placeholder="When did symptoms first appear?"
                     required
                   />
@@ -329,7 +329,7 @@ const Application = () => {
                 <Textarea
                   value={formData.currentSymptoms}
                   onChange={(e) => handleInputChange('currentSymptoms', e.target.value)}
-                  className="border-2 border-gray-200 focus:border-purple-400 min-h-[100px] text-sm sm:text-base font-bold text-gray-900"
+                  className="border-2 border-gray-300 bg-white focus:border-purple-500 min-h-[100px] text-sm sm:text-base font-bold text-gray-900 placeholder:text-gray-600"
                   placeholder="Describe current symptoms and behaviors"
                   required
                 />
@@ -340,7 +340,7 @@ const Application = () => {
                 <Textarea
                   value={formData.functionalLimitations}
                   onChange={(e) => handleInputChange('functionalLimitations', e.target.value)}
-                  className="border-2 border-gray-200 focus:border-purple-400 min-h-[100px] text-sm sm:text-base font-bold text-gray-900"
+                  className="border-2 border-gray-300 bg-white focus:border-purple-500 min-h-[100px] text-sm sm:text-base font-bold text-gray-900 placeholder:text-gray-600"
                   placeholder="What activities are affected? How does this impact daily life?"
                   required
                 />
@@ -362,7 +362,7 @@ const Application = () => {
                 <Textarea
                   value={formData.currentMedications}
                   onChange={(e) => handleInputChange('currentMedications', e.target.value)}
-                  className="border-2 border-gray-200 focus:border-purple-400 min-h-[100px] text-sm sm:text-base font-bold text-gray-900"
+                  className="border-2 border-gray-300 bg-white focus:border-purple-500 min-h-[100px] text-sm sm:text-base font-bold text-gray-900 placeholder:text-gray-600"
                   placeholder="List all current medications, dosages, and frequency"
                 />
               </div>
@@ -372,7 +372,7 @@ const Application = () => {
                 <Textarea
                   value={formData.pastMedications}
                   onChange={(e) => handleInputChange('pastMedications', e.target.value)}
-                  className="border-2 border-gray-200 focus:border-purple-400 min-h-[100px] text-sm sm:text-base font-bold text-gray-900"
+                  className="border-2 border-gray-300 bg-white focus:border-purple-500 min-h-[100px] text-sm sm:text-base font-bold text-gray-900 placeholder:text-gray-600"
                   placeholder="Previous medications tried and why they were discontinued"
                 />
               </div>
@@ -382,7 +382,7 @@ const Application = () => {
                 <Textarea
                   value={formData.allergies}
                   onChange={(e) => handleInputChange('allergies', e.target.value)}
-                  className="border-2 border-gray-200 focus:border-purple-400 min-h-[80px] text-sm sm:text-base font-bold text-gray-900"
+                  className="border-2 border-gray-300 bg-white focus:border-purple-500 min-h-[80px] text-sm sm:text-base font-bold text-gray-900 placeholder:text-gray-600"
                   placeholder="Any known allergies to medications, foods, or other substances"
                 />
               </div>
@@ -392,7 +392,7 @@ const Application = () => {
                 <Textarea
                   value={formData.previousTreatments}
                   onChange={(e) => handleInputChange('previousTreatments', e.target.value)}
-                  className="border-2 border-gray-200 focus:border-purple-400 min-h-[100px] text-sm sm:text-base font-bold text-gray-900"
+                  className="border-2 border-gray-300 bg-white focus:border-purple-500 min-h-[100px] text-sm sm:text-base font-bold text-gray-900 placeholder:text-gray-600"
                   placeholder="Therapies, interventions, or treatments previously received"
                 />
               </div>
@@ -411,13 +411,13 @@ const Application = () => {
               <div className="space-y-1 sm:space-y-2">
                 <Label className="text-gray-900 font-black text-sm sm:text-base">Primary Requirement Type</Label>
                 <Select value={formData.requirementType} onValueChange={(value) => handleInputChange('requirementType', value)}>
-                  <SelectTrigger className="border-2 border-gray-200 focus:border-purple-400 h-10 sm:h-12 text-sm sm:text-base font-bold text-gray-900">
-                    <SelectValue placeholder="Select primary support requirement" />
+                  <SelectTrigger className="border-2 border-gray-300 bg-white focus:border-purple-500 h-10 sm:h-12 text-sm sm:text-base font-bold text-gray-900">
+                    <SelectValue placeholder="Select primary support requirement" className="text-gray-900 font-bold" />
                   </SelectTrigger>
-                  <SelectContent className="bg-white border-2 border-gray-200 shadow-lg z-50">
-                    <SelectItem value="online-therapist" className="font-bold text-gray-900 hover:bg-purple-50">Online Therapist</SelectItem>
-                    <SelectItem value="medicine-booking" className="font-bold text-gray-900 hover:bg-purple-50">Medicine Booking</SelectItem>
-                    <SelectItem value="offline-therapist" className="font-bold text-gray-900 hover:bg-purple-50">Offline Therapist</SelectItem>
+                  <SelectContent className="bg-white border-2 border-gray-300 shadow-xl z-50">
+                    <SelectItem value="online-therapist" className="font-bold text-gray-900 hover:bg-purple-50 cursor-pointer">Online Therapist</SelectItem>
+                    <SelectItem value="medicine-booking" className="font-bold text-gray-900 hover:bg-purple-50 cursor-pointer">Medicine Booking</SelectItem>
+                    <SelectItem value="offline-therapist" className="font-bold text-gray-900 hover:bg-purple-50 cursor-pointer">Offline Therapist</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -429,7 +429,7 @@ const Application = () => {
                 <Textarea
                   value={formData.caregiverSupport}
                   onChange={(e) => handleInputChange('caregiverSupport', e.target.value)}
-                  className="border-2 border-gray-200 focus:border-purple-400 min-h-[100px] text-sm sm:text-base font-bold text-gray-900"
+                  className="border-2 border-gray-300 bg-white focus:border-purple-500 min-h-[100px] text-sm sm:text-base font-bold text-gray-900 placeholder:text-gray-600"
                   placeholder="Any other support requirements or special considerations?"
                 />
               </div>
