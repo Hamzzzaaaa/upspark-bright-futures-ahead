@@ -12,6 +12,7 @@ import NotFound from "./pages/NotFound";
 import TherapistDetails from "./pages/TherapistDetails";
 import PlanSelection from "./pages/PlanSelection";
 import BookingConfirmation from "./pages/BookingConfirmation";
+import Billing from "./pages/Billing";
 
 const queryClient = new QueryClient();
 
@@ -29,6 +30,7 @@ const App = () => (
             <Route path="/therapist/:therapistId" element={<TherapistDetails />} />
             <Route path="/plan-selection" element={<PlanSelection />} />
             <Route path="/booking-confirmation" element={<BookingConfirmation />} />
+            <Route path="/billing" element={<Billing />} />
             <Route path="/" element={<Index />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />

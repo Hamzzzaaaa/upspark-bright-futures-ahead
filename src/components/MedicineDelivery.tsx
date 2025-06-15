@@ -3,16 +3,20 @@ import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Pill, Clock, MapPin, Calendar, FileText, CheckCircle, Upload, AlertCircle } from 'lucide-react';
+import { Pill, Clock, MapPin, Calendar, FileText, CheckCircle, Upload, AlertCircle, Phone, Minus, Plus } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 interface MedicineDeliveryProps {
   onUploadRequest?: () => void;
 }
 
 const MedicineDelivery = ({ onUploadRequest }: MedicineDeliveryProps) => {
+  const navigate = useNavigate();
   const [selectedFrequency, setSelectedFrequency] = useState<string>('');
   const [deliveryAddress, setDeliveryAddress] = useState<string>('');
+  const [phoneNumber, setPhoneNumber] = useState<string>('');
   const [preferredTime, setPreferredTime] = useState<string>('');
+  const [medicineQuantities, setMedicineQuantities] = useState<{[key: string]: number}>({});
 
   // Check verification status
   const isVerified = localStorage.getItem('prescriptionVerified') === 'true';
@@ -50,12 +54,40 @@ const MedicineDelivery = ({ onUploadRequest }: MedicineDeliveryProps) => {
     '6:00 PM - 9:00 PM'
   ];
 
-  const handleOrderRequest = () => {
-    if (selectedFrequency && deliveryAddress && preferredTime) {
-      alert(`Medicine delivery scheduled!\nFrequency: ${selectedFrequency}\nAddress: ${deliveryAddress}\nTime: ${preferredTime}`);
-    } else {
+  const updateQuantity = (medicineId: string, change: number) => {
+    setMedicineQuantities(prev => ({
+      ...prev,
+      [medicineId]: Math.max(0, (prev[medicineId] || 1) + change)
+    }));
+  };
+
+  const getQuantity = (medicineId: string) => {
+    return medicineQuantities[medicineId] || 1;
+  };
+
+  const handleBookMedicine = () => {
+    if (!selectedFrequency || !deliveryAddress || !phoneNumber || !preferredTime) {
       alert('Please fill in all required fields');
+      return;
     }
+
+    // Prepare order data
+    const orderData = {
+      medicines: prescribedMedicines.map((medicine: any) => ({
+        ...medicine,
+        quantity: getQuantity(medicine.id)
+      })),
+      frequency: selectedFrequency,
+      deliveryAddress,
+      phoneNumber,
+      preferredTime
+    };
+
+    // Store order data in localStorage for the billing page
+    localStorage.setItem('orderData', JSON.stringify(orderData));
+    
+    // Navigate to billing page
+    navigate('/billing');
   };
 
   // If not verified, show verification needed message
@@ -141,7 +173,7 @@ const MedicineDelivery = ({ onUploadRequest }: MedicineDeliveryProps) => {
         </div>
       </div>
 
-      {/* Prescribed Medicines Only */}
+      {/* Prescribed Medicines with Quantity Selection */}
       <div className="space-y-4">
         <h3 className="text-xl sm:text-2xl font-black text-white">Your Prescribed Medicines</h3>
         <div className="space-y-3">
@@ -160,12 +192,29 @@ const MedicineDelivery = ({ onUploadRequest }: MedicineDeliveryProps) => {
                       <p className="text-sm font-bold text-gray-300">{medicine.instructions}</p>
                     </div>
                   </div>
-                  <Button
-                    size="sm"
-                    className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-black rounded-lg"
-                  >
-                    Order
-                  </Button>
+                  <div className="flex items-center space-x-3">
+                    <div className="flex items-center space-x-2 bg-gray-700 rounded-lg p-2">
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => updateQuantity(medicine.id, -1)}
+                        className="h-8 w-8 p-0 text-white hover:bg-gray-600"
+                      >
+                        <Minus className="w-4 h-4" />
+                      </Button>
+                      <span className="text-white font-black min-w-[2rem] text-center">
+                        {getQuantity(medicine.id)}
+                      </span>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => updateQuantity(medicine.id, 1)}
+                        className="h-8 w-8 p-0 text-white hover:bg-gray-600"
+                      >
+                        <Plus className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -175,7 +224,7 @@ const MedicineDelivery = ({ onUploadRequest }: MedicineDeliveryProps) => {
 
       {/* Delivery Options */}
       <div className="space-y-4">
-        <h3 className="text-xl sm:text-2xl font-black text-white">Delivery Options</h3>
+        <h3 className="text-xl sm:text-2xl font-black text-white">Delivery Details</h3>
         
         {/* Frequency Selection */}
         <div className="space-y-3">
@@ -219,6 +268,20 @@ const MedicineDelivery = ({ onUploadRequest }: MedicineDeliveryProps) => {
           />
         </div>
 
+        {/* Phone Number Input */}
+        <div className="space-y-2">
+          <label className="text-base font-black text-white flex items-center">
+            <Phone className="w-4 h-4 mr-1" />
+            Phone Number
+          </label>
+          <Input
+            value={phoneNumber}
+            onChange={(e) => setPhoneNumber(e.target.value)}
+            placeholder="Enter your phone number"
+            className="rounded-xl bg-gray-800 border-gray-600 text-white font-bold placeholder-gray-400"
+          />
+        </div>
+
         {/* Time Slot Selection */}
         <div className="space-y-2">
           <label className="text-base font-black text-white flex items-center">
@@ -243,14 +306,14 @@ const MedicineDelivery = ({ onUploadRequest }: MedicineDeliveryProps) => {
           </div>
         </div>
 
-        {/* Submit Button */}
+        {/* Book Medicine Button */}
         <Button
-          onClick={handleOrderRequest}
-          disabled={!selectedFrequency || !deliveryAddress || !preferredTime}
+          onClick={handleBookMedicine}
+          disabled={!selectedFrequency || !deliveryAddress || !phoneNumber || !preferredTime}
           className="w-full py-4 text-lg font-black bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-600 hover:to-cyan-600 text-white rounded-xl transition-all duration-200 disabled:opacity-50"
         >
-          {selectedFrequency && deliveryAddress && preferredTime
-            ? '🚚 Schedule Delivery'
+          {selectedFrequency && deliveryAddress && phoneNumber && preferredTime
+            ? '💳 Book Medicine'
             : '📋 Complete All Fields'
           }
         </Button>
