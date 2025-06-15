@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -10,6 +9,7 @@ import { User, Mail, Phone, MapPin, Edit, Save, LogOut, Home, Activity, Trending
 import ActivitiesZone from '@/components/ActivitiesZone';
 import TherapistBooking from '@/components/TherapistBooking';
 import MedicineDelivery from '@/components/MedicineDelivery';
+import DocumentVerification from '@/components/DocumentVerification';
 import UpSparkLogo from '@/components/UpSparkLogo';
 
 const Profile = () => {
@@ -106,6 +106,15 @@ const Profile = () => {
     }
   };
 
+  const handleVerificationComplete = () => {
+    setActiveTab('medicine');
+  };
+
+  const handleUploadRequest = () => {
+    setActiveTab('profile');
+    // Scroll to document verification if needed
+  };
+
   const renderActiveTab = () => {
     switch (activeTab) {
       case 'dashboard':
@@ -163,7 +172,7 @@ const Profile = () => {
       case 'therapist':
         return <TherapistBooking onPlanSelected={handlePlanSelected} />;
       case 'medicine':
-        return <MedicineDelivery />;
+        return <MedicineDelivery onUploadRequest={handleUploadRequest} />;
       default:
         return (
           <div className="space-y-8">
@@ -172,6 +181,9 @@ const Profile = () => {
               <h1 className="text-4xl font-black mb-3 text-white">Profile Settings</h1>
               <p className="text-xl font-black text-white opacity-90">Manage your account information</p>
             </div>
+
+            {/* Document Verification Section */}
+            <DocumentVerification onVerificationComplete={handleVerificationComplete} />
 
             {/* Profile Picture Section */}
             <div className="text-center mb-8">
