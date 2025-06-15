@@ -74,11 +74,15 @@ const TherapistDetails = () => {
   }, [therapistId]);
 
   const handleBooking = () => {
-    navigate('/plan-selection', { 
+    navigate('/session-booking', { 
       state: { 
         therapistId: therapist?.id,
         therapistName: therapist?.name,
-        specialization: therapist?.specialization 
+        specialization: therapist?.specialization,
+        experience: therapist?.experience,
+        therapistPhone: therapist?.phone,
+        therapistImage: therapist?.image,
+        therapistArea: therapist?.area
       } 
     });
   };

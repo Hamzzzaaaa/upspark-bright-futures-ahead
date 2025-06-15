@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { MapPin, Phone, Search, Star, X } from 'lucide-react';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 
@@ -29,7 +28,6 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [pincodeFilter, setPincodeFilter] = useState<string>('');
-  const [categoryFilter, setCategoryFilter] = useState<string>('all');
 
   const therapists: Therapist[] = [
     // Speech Therapists - 12 therapists
@@ -507,7 +505,7 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
     }
   ];
 
-  // Filter therapists based on search query, pincode, and category
+  // Filter therapists based on search query and pincode only
   const filteredTherapists = useMemo(() => {
     let filtered = therapists.filter(t => t.available);
 
@@ -527,25 +525,8 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
       );
     }
 
-    // Filter by category - Fixed the filter logic
-    if (categoryFilter !== 'all') {
-      filtered = filtered.filter(therapist => {
-        const spec = therapist.specialization.toLowerCase();
-        switch (categoryFilter) {
-          case 'speech':
-            return spec.includes('speech');
-          case 'behavioral':
-            return spec.includes('behavioral');
-          case 'occupational':
-            return spec.includes('occupational');
-          default:
-            return true;
-        }
-      });
-    }
-
     return filtered;
-  }, [searchQuery, pincodeFilter, categoryFilter]);
+  }, [searchQuery, pincodeFilter]);
 
   const handleTherapistClick = (therapistId: string) => {
     navigate(`/therapist/${therapistId}`);
@@ -565,7 +546,7 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
 
       {/* Therapist Grid - Clean and Simple */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-        {therapists.filter(t => t.available).map((therapist) => (
+        {filteredTherapists.map((therapist) => (
           <Card 
             key={therapist.id}
             className="border-2 cursor-pointer transition-all duration-200 bold-card hover:border-purple-400 hover:scale-105"
