@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Clock, Calendar, ArrowLeft, RefreshCw, Volume2 } from 'lucide-react';
+import { Clock, Calendar, ArrowLeft, RefreshCw, Volume2, Upload, CheckCircle, PlayCircle } from 'lucide-react';
 import { Canvas as FabricCanvas, PencilBrush } from 'fabric';
 
 interface Activity {
@@ -9,10 +9,14 @@ interface Activity {
   title: string;
   description: string;
   duration: number;
-  category: 'cognitive' | 'motor' | 'speech' | 'creative' | 'sensory';
+  category: 'cognitive' | 'motor' | 'speech' | 'creative' | 'sensory' | 'daily-living';
   completed: boolean;
   emoji: string;
   interactive?: boolean;
+  requiresVideo?: boolean;
+  therapistAssigned?: boolean;
+  videoUploaded?: boolean;
+  videoApproved?: boolean;
 }
 
 interface ActivitiesZoneProps {
@@ -65,57 +69,80 @@ const ActivitiesZone = ({ childName, selectedPlan = 30 }: ActivitiesZoneProps) =
     {
       id: 'activity5',
       title: 'Activity 5',
-      description: 'Music Making - Create beautiful melodies with colorful notes',
-      duration: 15,
-      category: 'creative',
-      emoji: '🎵',
+      description: 'Unbuttoning a Shirt - Practice unbuttoning 3-5 buttons on a shirt',
+      duration: 10,
+      category: 'daily-living',
+      emoji: '👕',
       completed: false,
-      interactive: true
+      requiresVideo: true,
+      therapistAssigned: true,
+      videoUploaded: false,
+      videoApproved: false
     },
     {
       id: 'activity6',
       title: 'Activity 6',
-      description: 'Balance Walk - Walk on a line maintaining balance',
+      description: 'Hair Combing - Comb your hair using proper technique',
       duration: 8,
-      category: 'motor',
-      emoji: '🚶‍♀️',
-      completed: false
+      category: 'daily-living',
+      emoji: '💇‍♀️',
+      completed: false,
+      requiresVideo: true,
+      therapistAssigned: true,
+      videoUploaded: false,
+      videoApproved: false
     },
     {
       id: 'activity7',
       title: 'Activity 7',
-      description: 'Number Counting - Count objects and match numbers',
+      description: 'Teeth Brushing - Brush teeth for 2 minutes with proper technique',
       duration: 12,
-      category: 'cognitive',
-      emoji: '🔢',
-      completed: false
+      category: 'daily-living',
+      emoji: '🦷',
+      completed: false,
+      requiresVideo: true,
+      therapistAssigned: true,
+      videoUploaded: false,
+      videoApproved: false
     },
     {
       id: 'activity8',
       title: 'Activity 8',
-      description: 'Singing Time - Sing simple songs and rhymes',
-      duration: 10,
-      category: 'speech',
-      emoji: '🎵',
-      completed: false
+      description: 'Shoe Tying - Tie shoelaces using bunny ear method',
+      duration: 15,
+      category: 'daily-living',
+      emoji: '👟',
+      completed: false,
+      requiresVideo: true,
+      therapistAssigned: true,
+      videoUploaded: false,
+      videoApproved: false
     },
     {
       id: 'activity9',
       title: 'Activity 9',
-      description: 'Puzzle Solving - Complete colorful jigsaw puzzles',
-      duration: 18,
-      category: 'cognitive',
-      emoji: '🧩',
-      completed: false
+      description: 'Folding Clothes - Fold a t-shirt neatly',
+      duration: 10,
+      category: 'daily-living',
+      emoji: '👔',
+      completed: false,
+      requiresVideo: true,
+      therapistAssigned: true,
+      videoUploaded: false,
+      videoApproved: false
     },
     {
       id: 'activity10',
       title: 'Activity 10',
-      description: 'Dance & Movement - Follow fun dance moves and rhythms',
-      duration: 12,
-      category: 'motor',
-      emoji: '💃',
-      completed: false
+      description: 'Washing Hands - Wash hands with soap for 20 seconds',
+      duration: 5,
+      category: 'daily-living',
+      emoji: '🧼',
+      completed: false,
+      requiresVideo: true,
+      therapistAssigned: true,
+      videoUploaded: false,
+      videoApproved: false
     }
   ]);
 
@@ -132,7 +159,9 @@ const ActivitiesZone = ({ childName, selectedPlan = 30 }: ActivitiesZoneProps) =
   };
 
   const openActivity = (activity: Activity) => {
-    if (activity.interactive) {
+    if (activity.interactive && !activity.requiresVideo) {
+      setActiveActivity(activity);
+    } else if (activity.requiresVideo) {
       setActiveActivity(activity);
     } else {
       toggleActivity(activity.id);
@@ -145,7 +174,8 @@ const ActivitiesZone = ({ childName, selectedPlan = 30 }: ActivitiesZoneProps) =
       motor: 'from-green-400 to-teal-500',
       speech: 'from-yellow-400 to-orange-500',
       creative: 'from-pink-400 to-red-500',
-      sensory: 'from-indigo-400 to-blue-500'
+      sensory: 'from-indigo-400 to-blue-500',
+      'daily-living': 'from-orange-400 to-yellow-500'
     };
     return colors[category as keyof typeof colors] || 'from-gray-400 to-gray-500';
   };
@@ -171,49 +201,70 @@ const ActivitiesZone = ({ childName, selectedPlan = 30 }: ActivitiesZoneProps) =
           </h2>
         </div>
         
-        {activeActivity.title.includes('Activity 1') && (
-          <ColorSortingGame 
+        {activeActivity.requiresVideo ? (
+          <VideoUploadActivity 
+            activity={activeActivity}
             onComplete={() => {
               toggleActivity(activeActivity.id);
               setActiveActivity(null);
             }}
-          />
-        )}
-        
-        {activeActivity.title.includes('Activity 2') && (
-          <AnimalNameGame 
-            onComplete={() => {
-              toggleActivity(activeActivity.id);
-              setActiveActivity(null);
+            onVideoUpload={(activityId) => {
+              setActivities(prev => 
+                prev.map(activity => 
+                  activity.id === activityId 
+                    ? { ...activity, videoUploaded: true }
+                    : activity
+                )
+              );
+            }}
+            onVideoApprove={(activityId) => {
+              setActivities(prev => 
+                prev.map(activity => 
+                  activity.id === activityId 
+                    ? { ...activity, videoApproved: true, completed: true }
+                    : activity
+                )
+              );
             }}
           />
-        )}
-        
-        {activeActivity.title.includes('Activity 3') && (
-          <AlphabetScribbling 
-            onComplete={() => {
-              toggleActivity(activeActivity.id);
-              setActiveActivity(null);
-            }}
-          />
-        )}
-        
-        {activeActivity.title.includes('Activity 4') && (
-          <ShapeSelectionGame 
-            onComplete={() => {
-              toggleActivity(activeActivity.id);
-              setActiveActivity(null);
-            }}
-          />
-        )}
-        
-        {activeActivity.title.includes('Activity 5') && (
-          <MusicMakingGame 
-            onComplete={() => {
-              toggleActivity(activeActivity.id);
-              setActiveActivity(null);
-            }}
-          />
+        ) : (
+          <>
+            {activeActivity.title.includes('Activity 1') && (
+              <ColorSortingGame 
+                onComplete={() => {
+                  toggleActivity(activeActivity.id);
+                  setActiveActivity(null);
+                }}
+              />
+            )}
+            
+            {activeActivity.title.includes('Activity 2') && (
+              <AnimalNameGame 
+                onComplete={() => {
+                  toggleActivity(activeActivity.id);
+                  setActiveActivity(null);
+                }}
+              />
+            )}
+            
+            {activeActivity.title.includes('Activity 3') && (
+              <AlphabetScribbling 
+                onComplete={() => {
+                  toggleActivity(activeActivity.id);
+                  setActiveActivity(null);
+                }}
+              />
+            )}
+            
+            {activeActivity.title.includes('Activity 4') && (
+              <ShapeSelectionGame 
+                onComplete={() => {
+                  toggleActivity(activeActivity.id);
+                  setActiveActivity(null);
+                }}
+              />
+            )}
+          </>
         )}
       </div>
     );
@@ -257,20 +308,268 @@ const ActivitiesZone = ({ childName, selectedPlan = 30 }: ActivitiesZoneProps) =
                   <div>
                     <h3 className="text-xl font-black text-white mb-1">{activity.title}</h3>
                     <p className="text-base font-bold text-gray-300 mb-2">{activity.description}</p>
-                    <div className="flex items-center text-gray-400">
-                      <Clock className="w-4 h-4 mr-1" />
-                      <span className="text-sm font-bold">{activity.duration} min</span>
+                    <div className="flex items-center text-gray-400 space-x-4">
+                      <div className="flex items-center">
+                        <Clock className="w-4 h-4 mr-1" />
+                        <span className="text-sm font-bold">{activity.duration} min</span>
+                      </div>
+                      {activity.therapistAssigned && (
+                        <span className="text-xs bg-blue-500 text-white px-2 py-1 rounded-full">
+                          Therapist Task
+                        </span>
+                      )}
                     </div>
                   </div>
                 </div>
-                {activity.completed && (
-                  <div className="text-3xl">✅</div>
-                )}
+                <div className="flex items-center space-x-2">
+                  {activity.requiresVideo && (
+                    <div className="flex flex-col items-center space-y-1">
+                      {activity.videoUploaded && !activity.videoApproved && (
+                        <span className="text-xs text-yellow-400">Under Review</span>
+                      )}
+                      {activity.videoApproved && (
+                        <span className="text-xs text-green-400">Approved ✓</span>
+                      )}
+                      {!activity.videoUploaded && (
+                        <Upload className="w-5 h-5 text-blue-400" />
+                      )}
+                    </div>
+                  )}
+                  {activity.completed && (
+                    <div className="text-3xl">✅</div>
+                  )}
+                </div>
               </div>
             </CardContent>
           </Card>
         ))}
       </div>
+    </div>
+  );
+};
+
+// Video Upload Activity Component
+const VideoUploadActivity = ({ 
+  activity, 
+  onComplete, 
+  onVideoUpload, 
+  onVideoApprove 
+}: { 
+  activity: Activity;
+  onComplete: () => void;
+  onVideoUpload: (activityId: string) => void;
+  onVideoApprove: (activityId: string) => void;
+}) => {
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadComplete, setUploadComplete] = useState(false);
+  const [showInstructions, setShowInstructions] = useState(true);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file && file.type.startsWith('video/')) {
+      setSelectedFile(file);
+    } else {
+      alert('Please select a video file');
+    }
+  };
+
+  const handleUpload = async () => {
+    if (!selectedFile) return;
+
+    setIsUploading(true);
+    
+    // Simulate upload process
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
+    setIsUploading(false);
+    setUploadComplete(true);
+    onVideoUpload(activity.id);
+
+    // Simulate therapist review and approval
+    setTimeout(() => {
+      onVideoApprove(activity.id);
+      if ('speechSynthesis' in window) {
+        const utterance = new SpeechSynthesisUtterance('Great job! Your therapist has approved your activity!');
+        speechSynthesis.speak(utterance);
+      }
+      setTimeout(onComplete, 2000);
+    }, 3000);
+  };
+
+  const getActivityInstructions = (activityId: string) => {
+    const instructions = {
+      'activity5': [
+        '1. Put on a shirt with at least 3-5 buttons',
+        '2. Start recording the video',
+        '3. Slowly unbutton each button one by one',
+        '4. Show each button clearly as you unbutton it',
+        '5. Complete all buttons and show the open shirt'
+      ],
+      'activity6': [
+        '1. Get a comb or brush',
+        '2. Start recording the video',
+        '3. Comb your hair from top to bottom',
+        '4. Make sure to comb all sections of your hair',
+        '5. Show your neat, combed hair at the end'
+      ],
+      'activity7': [
+        '1. Get your toothbrush and toothpaste',
+        '2. Start recording the video',
+        '3. Apply toothpaste to the brush',
+        '4. Brush all areas of your teeth for 2 minutes',
+        '5. Rinse and show your clean teeth'
+      ],
+      'activity8': [
+        '1. Get shoes with laces',
+        '2. Start recording the video',
+        '3. Cross the laces and make the first knot',
+        '4. Make two bunny ears with the laces',
+        '5. Tie the bunny ears together to complete the bow'
+      ],
+      'activity9': [
+        '1. Get a t-shirt to fold',
+        '2. Start recording the video',
+        '3. Lay the shirt flat on a surface',
+        '4. Fold the sleeves towards the center',
+        '5. Fold the shirt in half and show the neat fold'
+      ],
+      'activity10': [
+        '1. Go to a sink with soap',
+        '2. Start recording the video',
+        '3. Wet your hands with water',
+        '4. Apply soap and scrub for 20 seconds',
+        '5. Rinse thoroughly and dry your hands'
+      ]
+    };
+    return instructions[activityId as keyof typeof instructions] || [];
+  };
+
+  if (activity.videoApproved) {
+    return (
+      <div className="text-center p-6 bg-gradient-to-r from-green-400 to-blue-400 rounded-2xl">
+        <div className="text-4xl mb-2">🎉</div>
+        <h3 className="text-2xl font-normal text-white">Activity Completed!</h3>
+        <p className="text-white text-lg">Your therapist has approved your video!</p>
+        <CheckCircle className="w-16 h-16 text-white mx-auto mt-4" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="text-center">
+        <h3 className="text-2xl font-normal text-white mb-2">{activity.title}</h3>
+        <p className="text-gray-300">{activity.description}</p>
+        <div className="mt-4 p-4 bg-blue-900 rounded-xl">
+          <p className="text-blue-200 font-bold">
+            📹 Record yourself performing this activity and upload the video for therapist review
+          </p>
+        </div>
+      </div>
+
+      {showInstructions && (
+        <Card className="bold-card">
+          <CardHeader>
+            <CardTitle className="text-lg font-black text-white flex items-center">
+              <PlayCircle className="w-5 h-5 mr-2" />
+              How to Complete This Activity
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ul className="space-y-2 text-gray-300">
+              {getActivityInstructions(activity.id).map((instruction, index) => (
+                <li key={index} className="flex items-start">
+                  <span className="text-purple-400 font-bold mr-2">{instruction.split('.')[0]}.</span>
+                  <span>{instruction.split('.').slice(1).join('.')}</span>
+                </li>
+              ))}
+            </ul>
+            <Button
+              onClick={() => setShowInstructions(false)}
+              className="w-full mt-4 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
+            >
+              Got It! Start Recording
+            </Button>
+          </CardContent>
+        </Card>
+      )}
+
+      {!showInstructions && (
+        <Card className="bold-card">
+          <CardContent className="p-6 space-y-6">
+            <div className="text-center">
+              <h4 className="text-lg font-normal text-white mb-4">Upload Your Video</h4>
+              
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="video/*"
+                onChange={handleFileSelect}
+                className="hidden"
+              />
+              
+              <Button
+                onClick={() => fileInputRef.current?.click()}
+                variant="outline"
+                className="w-full p-8 border-2 border-dashed border-gray-400 hover:border-purple-400 text-white hover:bg-purple-900"
+                disabled={uploadComplete}
+              >
+                <Upload className="w-8 h-8 mr-4" />
+                <div>
+                  <div className="text-lg">
+                    {selectedFile ? selectedFile.name : 'Click to select video file'}
+                  </div>
+                  <div className="text-sm text-gray-400">
+                    MP4, MOV, AVI files supported
+                  </div>
+                </div>
+              </Button>
+            </div>
+
+            {selectedFile && !uploadComplete && (
+              <div className="text-center space-y-4">
+                <div className="p-4 bg-gray-800 rounded-xl">
+                  <p className="text-white">Selected: {selectedFile.name}</p>
+                  <p className="text-gray-400 text-sm">
+                    Size: {(selectedFile.size / (1024 * 1024)).toFixed(2)} MB
+                  </p>
+                </div>
+                
+                <Button
+                  onClick={handleUpload}
+                  disabled={isUploading}
+                  className="w-full bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white font-normal py-3 px-6 rounded-xl text-lg"
+                >
+                  {isUploading ? (
+                    <>
+                      <RefreshCw className="w-5 h-5 mr-2 animate-spin" />
+                      Uploading...
+                    </>
+                  ) : (
+                    <>
+                      <Upload className="w-5 h-5 mr-2" />
+                      Upload Video for Review
+                    </>
+                  )}
+                </Button>
+              </div>
+            )}
+
+            {uploadComplete && !activity.videoApproved && (
+              <div className="text-center p-6 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-2xl">
+                <div className="text-3xl mb-2">⏳</div>
+                <h4 className="text-xl font-normal text-white">Video Uploaded Successfully!</h4>
+                <p className="text-white">Your therapist is reviewing your activity...</p>
+                <div className="mt-4">
+                  <RefreshCw className="w-8 h-8 text-white mx-auto animate-spin" />
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 };
