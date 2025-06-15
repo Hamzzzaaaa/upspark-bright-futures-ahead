@@ -1,3 +1,4 @@
+
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
@@ -32,7 +33,7 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
 
   const therapists: Therapist[] = [
-    // Speech Therapists - 5 available
+    // Speech Therapists - 12 therapists
     {
       id: '1',
       name: 'Dr. Sarah Johnson',
@@ -98,10 +99,101 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
       phone: '+91 98765 43214',
       distance: '6.8 km'
     },
-
-    // Behavioral Therapists - 5 available
+    {
+      id: '6',
+      name: 'Dr. Kavya Nair',
+      specialization: 'Speech Therapy',
+      rating: 4.5,
+      experience: '4 years',
+      available: true,
+      image: 'https://images.unsplash.com/photo-1607990281513-2c110a25bd8c?w=150&h=150&fit=crop&crop=face',
+      area: 'Secunderabad',
+      pincode: '500003',
+      phone: '+91 98765 43215',
+      distance: '8.1 km'
+    },
+    {
+      id: '7',
+      name: 'Dr. Ravi Teja',
+      specialization: 'Speech Therapy',
+      rating: 4.7,
+      experience: '9 years',
+      available: true,
+      image: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=150&h=150&fit=crop&crop=face',
+      area: 'Ameerpet',
+      pincode: '500016',
+      phone: '+91 98765 43216',
+      distance: '3.7 km'
+    },
+    {
+      id: '8',
+      name: 'Dr. Deepika Rao',
+      specialization: 'Speech Therapy',
+      rating: 4.6,
+      experience: '6 years',
+      available: true,
+      image: 'https://images.unsplash.com/photo-1594824804732-ca8db7748dda?w=150&h=150&fit=crop&crop=face',
+      area: 'Miyapur',
+      pincode: '500049',
+      phone: '+91 98765 43217',
+      distance: '5.4 km'
+    },
+    {
+      id: '9',
+      name: 'Dr. Sanjay Gupta',
+      specialization: 'Speech Therapy',
+      rating: 4.9,
+      experience: '12 years',
+      available: true,
+      image: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=150&h=150&fit=crop&crop=face',
+      area: 'Kukatpally',
+      pincode: '500072',
+      phone: '+91 98765 43218',
+      distance: '7.2 km'
+    },
+    {
+      id: '10',
+      name: 'Dr. Pooja Jain',
+      specialization: 'Speech Therapy',
+      rating: 4.4,
+      experience: '3 years',
+      available: true,
+      image: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=150&h=150&fit=crop&crop=face',
+      area: 'Begumpet',
+      pincode: '500016',
+      phone: '+91 98765 43219',
+      distance: '4.8 km'
+    },
     {
       id: '11',
+      name: 'Dr. Arjun Malhotra',
+      specialization: 'Speech Therapy',
+      rating: 4.8,
+      experience: '11 years',
+      available: true,
+      image: 'https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=150&h=150&fit=crop&crop=face',
+      area: 'HITEC City',
+      pincode: '500081',
+      phone: '+91 98765 43220',
+      distance: '6.3 km'
+    },
+    {
+      id: '12',
+      name: 'Dr. Nisha Patel',
+      specialization: 'Speech Therapy',
+      rating: 4.7,
+      experience: '8 years',
+      available: true,
+      image: 'https://images.unsplash.com/photo-1638202993928-7267aad84c31?w=150&h=150&fit=crop&crop=face',
+      area: 'LB Nagar',
+      pincode: '500074',
+      phone: '+91 98765 43221',
+      distance: '9.1 km'
+    },
+
+    // Behavioral Therapists - 12 therapists
+    {
+      id: '21',
       name: 'Dr. Michael Chen',
       specialization: 'Behavioral Therapy',
       rating: 4.8,
@@ -110,11 +202,11 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
       image: 'https://images.unsplash.com/photo-1649972904349-6e44c42644a7?w=150&h=150&fit=crop&crop=face',
       area: 'HITEC City',
       pincode: '500081',
-      phone: '+91 98765 43220',
+      phone: '+91 98765 43230',
       distance: '4.8 km'
     },
     {
-      id: '12',
+      id: '22',
       name: 'Dr. Kavitha Reddy',
       specialization: 'Behavioral Therapy',
       rating: 4.9,
@@ -123,11 +215,11 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
       image: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=150&h=150&fit=crop&crop=face',
       area: 'Kukatpally',
       pincode: '500072',
-      phone: '+91 98765 43221',
+      phone: '+91 98765 43231',
       distance: '6.3 km'
     },
     {
-      id: '13',
+      id: '23',
       name: 'Dr. Arun Patel',
       specialization: 'Behavioral Therapy',
       rating: 4.6,
@@ -136,11 +228,11 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
       image: 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=150&h=150&fit=crop&crop=face',
       area: 'Secunderabad',
       pincode: '500003',
-      phone: '+91 98765 43222',
+      phone: '+91 98765 43232',
       distance: '8.2 km'
     },
     {
-      id: '14',
+      id: '24',
       name: 'Dr. Neha Gupta',
       specialization: 'Behavioral Therapy',
       rating: 4.7,
@@ -149,12 +241,12 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
       image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=150&h=150&fit=crop&crop=face',
       area: 'Ameerpet',
       pincode: '500016',
-      phone: '+91 98765 43223',
+      phone: '+91 98765 43233',
       distance: '2.1 km'
     },
     {
-      id: '15',
-      name: 'Dr. Arjun Kumar',
+      id: '25',
+      name: 'Dr. Rohit Kumar',
       specialization: 'Behavioral Therapy',
       rating: 4.8,
       experience: '5 years',
@@ -162,13 +254,104 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
       image: 'https://images.unsplash.com/photo-1581090464777-f3220bbe1b8b?w=150&h=150&fit=crop&crop=face',
       area: 'Miyapur',
       pincode: '500049',
-      phone: '+91 98765 43224',
+      phone: '+91 98765 43234',
       distance: '3.5 km'
     },
-
-    // Occupational Therapists - 5 available
     {
-      id: '21',
+      id: '26',
+      name: 'Dr. Priyanka Singh',
+      specialization: 'Behavioral Therapy',
+      rating: 4.5,
+      experience: '6 years',
+      available: true,
+      image: 'https://images.unsplash.com/photo-1607990281513-2c110a25bd8c?w=150&h=150&fit=crop&crop=face',
+      area: 'Banjara Hills',
+      pincode: '500034',
+      phone: '+91 98765 43235',
+      distance: '4.7 km'
+    },
+    {
+      id: '27',
+      name: 'Dr. Suresh Babu',
+      specialization: 'Behavioral Therapy',
+      rating: 4.9,
+      experience: '10 years',
+      available: true,
+      image: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=150&h=150&fit=crop&crop=face',
+      area: 'Jubilee Hills',
+      pincode: '500033',
+      phone: '+91 98765 43236',
+      distance: '5.2 km'
+    },
+    {
+      id: '28',
+      name: 'Dr. Radha Krishna',
+      specialization: 'Behavioral Therapy',
+      rating: 4.6,
+      experience: '7 years',
+      available: true,
+      image: 'https://images.unsplash.com/photo-1594824804732-ca8db7748dda?w=150&h=150&fit=crop&crop=face',
+      area: 'Madhapur',
+      pincode: '500081',
+      phone: '+91 98765 43237',
+      distance: '3.8 km'
+    },
+    {
+      id: '29',
+      name: 'Dr. Anjali Sharma',
+      specialization: 'Behavioral Therapy',
+      rating: 4.7,
+      experience: '9 years',
+      available: true,
+      image: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=150&h=150&fit=crop&crop=face',
+      area: 'Kondapur',
+      pincode: '500084',
+      phone: '+91 98765 43238',
+      distance: '6.1 km'
+    },
+    {
+      id: '30',
+      name: 'Dr. Kiran Reddy',
+      specialization: 'Behavioral Therapy',
+      rating: 4.8,
+      experience: '4 years',
+      available: true,
+      image: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=150&h=150&fit=crop&crop=face',
+      area: 'Gachibowli',
+      pincode: '500032',
+      phone: '+91 98765 43239',
+      distance: '7.4 km'
+    },
+    {
+      id: '31',
+      name: 'Dr. Meera Joshi',
+      specialization: 'Behavioral Therapy',
+      rating: 4.4,
+      experience: '5 years',
+      available: true,
+      image: 'https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=150&h=150&fit=crop&crop=face',
+      area: 'Begumpet',
+      pincode: '500016',
+      phone: '+91 98765 43240',
+      distance: '4.3 km'
+    },
+    {
+      id: '32',
+      name: 'Dr. Venkat Rao',
+      specialization: 'Behavioral Therapy',
+      rating: 4.9,
+      experience: '11 years',
+      available: true,
+      image: 'https://images.unsplash.com/photo-1638202993928-7267aad84c31?w=150&h=150&fit=crop&crop=face',
+      area: 'LB Nagar',
+      pincode: '500074',
+      phone: '+91 98765 43241',
+      distance: '8.9 km'
+    },
+
+    // Occupational Therapists - 12 therapists
+    {
+      id: '41',
       name: 'Dr. Emma Wilson',
       specialization: 'Occupational Therapy',
       rating: 4.9,
@@ -177,12 +360,12 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
       image: 'https://images.unsplash.com/photo-1649972904349-6e44c42644a7?w=150&h=150&fit=crop&crop=face',
       area: 'Begumpet',
       pincode: '500016',
-      phone: '+91 98765 43230',
+      phone: '+91 98765 43250',
       distance: '7.1 km'
     },
     {
-      id: '22',
-      name: 'Dr. Suresh Babu',
+      id: '42',
+      name: 'Dr. Ramesh Kumar',
       specialization: 'Occupational Therapy',
       rating: 4.7,
       experience: '8 years',
@@ -190,11 +373,11 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
       image: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=150&h=150&fit=crop&crop=face',
       area: 'Kondapur',
       pincode: '500084',
-      phone: '+91 98765 43231',
+      phone: '+91 98765 43251',
       distance: '4.5 km'
     },
     {
-      id: '23',
+      id: '43',
       name: 'Dr. Meera Singh',
       specialization: 'Occupational Therapy',
       rating: 4.8,
@@ -203,11 +386,11 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
       image: 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=150&h=150&fit=crop&crop=face',
       area: 'Jubilee Hills',
       pincode: '500033',
-      phone: '+91 98765 43232',
+      phone: '+91 98765 43252',
       distance: '9.8 km'
     },
     {
-      id: '24',
+      id: '44',
       name: 'Dr. Kiran Kumar',
       specialization: 'Occupational Therapy',
       rating: 4.6,
@@ -216,11 +399,11 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
       image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=150&h=150&fit=crop&crop=face',
       area: 'Madhapur',
       pincode: '500081',
-      phone: '+91 98765 43233',
+      phone: '+91 98765 43253',
       distance: '2.8 km'
     },
     {
-      id: '25',
+      id: '45',
       name: 'Dr. Radhika Iyer',
       specialization: 'Occupational Therapy',
       rating: 4.8,
@@ -229,8 +412,99 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
       image: 'https://images.unsplash.com/photo-1581090464777-f3220bbe1b8b?w=150&h=150&fit=crop&crop=face',
       area: 'Banjara Hills',
       pincode: '500034',
-      phone: '+91 98765 43234',
+      phone: '+91 98765 43254',
       distance: '3.9 km'
+    },
+    {
+      id: '46',
+      name: 'Dr. Lakshmi Prasad',
+      specialization: 'Occupational Therapy',
+      rating: 4.5,
+      experience: '4 years',
+      available: true,
+      image: 'https://images.unsplash.com/photo-1607990281513-2c110a25bd8c?w=150&h=150&fit=crop&crop=face',
+      area: 'Secunderabad',
+      pincode: '500003',
+      phone: '+91 98765 43255',
+      distance: '6.7 km'
+    },
+    {
+      id: '47',
+      name: 'Dr. Anil Varma',
+      specialization: 'Occupational Therapy',
+      rating: 4.7,
+      experience: '9 years',
+      available: true,
+      image: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=150&h=150&fit=crop&crop=face',
+      area: 'Ameerpet',
+      pincode: '500016',
+      phone: '+91 98765 43256',
+      distance: '5.3 km'
+    },
+    {
+      id: '48',
+      name: 'Dr. Sunita Rao',
+      specialization: 'Occupational Therapy',
+      rating: 4.9,
+      experience: '11 years',
+      available: true,
+      image: 'https://images.unsplash.com/photo-1594824804732-ca8db7748dda?w=150&h=150&fit=crop&crop=face',
+      area: 'Miyapur',
+      pincode: '500049',
+      phone: '+91 98765 43257',
+      distance: '4.1 km'
+    },
+    {
+      id: '49',
+      name: 'Dr. Gopal Krishna',
+      specialization: 'Occupational Therapy',
+      rating: 4.6,
+      experience: '6 years',
+      available: true,
+      image: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=150&h=150&fit=crop&crop=face',
+      area: 'Kukatpally',
+      pincode: '500072',
+      phone: '+91 98765 43258',
+      distance: '7.8 km'
+    },
+    {
+      id: '50',
+      name: 'Dr. Shweta Jain',
+      specialization: 'Occupational Therapy',
+      rating: 4.8,
+      experience: '8 years',
+      available: true,
+      image: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=150&h=150&fit=crop&crop=face',
+      area: 'Gachibowli',
+      pincode: '500032',
+      phone: '+91 98765 43259',
+      distance: '3.6 km'
+    },
+    {
+      id: '51',
+      name: 'Dr. Mahesh Reddy',
+      specialization: 'Occupational Therapy',
+      rating: 4.4,
+      experience: '3 years',
+      available: true,
+      image: 'https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=150&h=150&fit=crop&crop=face',
+      area: 'HITEC City',
+      pincode: '500081',
+      phone: '+91 98765 43260',
+      distance: '5.9 km'
+    },
+    {
+      id: '52',
+      name: 'Dr. Divya Sharma',
+      specialization: 'Occupational Therapy',
+      rating: 4.7,
+      experience: '7 years',
+      available: true,
+      image: 'https://images.unsplash.com/photo-1638202993928-7267aad84c31?w=150&h=150&fit=crop&crop=face',
+      area: 'LB Nagar',
+      pincode: '500074',
+      phone: '+91 98765 43261',
+      distance: '8.4 km'
     }
   ];
 
@@ -254,11 +528,21 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
       );
     }
 
-    // Filter by category
+    // Filter by category - Fixed the filter logic
     if (categoryFilter !== 'all') {
-      filtered = filtered.filter(therapist => 
-        therapist.specialization.toLowerCase().includes(categoryFilter.toLowerCase())
-      );
+      filtered = filtered.filter(therapist => {
+        const spec = therapist.specialization.toLowerCase();
+        switch (categoryFilter) {
+          case 'speech':
+            return spec.includes('speech');
+          case 'behavioral':
+            return spec.includes('behavioral');
+          case 'occupational':
+            return spec.includes('occupational');
+          default:
+            return true;
+        }
+      });
     }
 
     return filtered;
@@ -358,6 +642,22 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
                   <div>
                     <h4 className="font-black text-white text-sm sm:text-base">{therapist.name}</h4>
                     <p className="text-xs sm:text-sm font-bold text-purple-300">{therapist.specialization}</p>
+                  </div>
+
+                  {/* Rating and Experience */}
+                  <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-1">
+                      <Star className="w-3 h-3 text-yellow-400 fill-current" />
+                      <span className="text-xs font-bold text-white">{therapist.rating}</span>
+                    </div>
+                    <span className="text-xs text-gray-400">•</span>
+                    <span className="text-xs font-bold text-gray-400">{therapist.experience}</span>
+                  </div>
+
+                  {/* Location */}
+                  <div className="flex items-center space-x-1">
+                    <MapPin className="w-3 h-3 text-blue-400" />
+                    <span className="text-xs font-bold text-blue-300">{therapist.area}</span>
                   </div>
 
                   {/* Click for details hint */}
