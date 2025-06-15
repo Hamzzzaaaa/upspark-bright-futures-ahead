@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Upload, FileText, CheckCircle, Loader2, Edit, X } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface DocumentVerificationProps {
   onVerificationComplete: () => void;
@@ -15,9 +16,28 @@ const DocumentVerification = ({ onVerificationComplete }: DocumentVerificationPr
   const [isVerified, setIsVerified] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const { toast } = useToast();
+  const { isNewUser } = useAuth();
 
   // Check if user already has a verified prescription
-  const hasVerifiedPrescription = localStorage.getItem('prescriptionVerified') === 'true';
+  const [hasVerifiedPrescription, setHasVerifiedPrescription] = useState(false);
+
+  useEffect(() => {
+    // If it's a new user, clear any existing verification data
+    if (isNewUser) {
+      localStorage.removeItem('prescriptionVerified');
+      localStorage.removeItem('prescriptionFile');
+      localStorage.removeItem('extractedMedicines');
+      localStorage.removeItem('verificationDate');
+      setHasVerifiedPrescription(false);
+      setIsEditing(false);
+      setUploadedFile(null);
+      setIsVerified(false);
+    } else {
+      // For existing users, check their verification status
+      const verified = localStorage.getItem('prescriptionVerified') === 'true';
+      setHasVerifiedPrescription(verified);
+    }
+  }, [isNewUser]);
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -85,6 +105,7 @@ const DocumentVerification = ({ onVerificationComplete }: DocumentVerificationPr
       localStorage.setItem('verificationDate', new Date().toISOString());
 
       setIsVerified(true);
+      setHasVerifiedPrescription(true);
       
       toast({
         title: "Verification Complete! ✅",
@@ -125,6 +146,7 @@ const DocumentVerification = ({ onVerificationComplete }: DocumentVerificationPr
     
     setIsEditing(false);
     setUploadedFile(null);
+    setHasVerifiedPrescription(false);
     
     toast({
       title: "Verification Removed",
