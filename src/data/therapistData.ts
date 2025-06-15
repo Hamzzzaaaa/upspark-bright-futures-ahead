@@ -19,7 +19,7 @@ export interface Therapist {
 }
 
 export const hyderabadTherapists: Therapist[] = [
-  // Speech Language Pathologists (8 therapists)
+  // Speech Language Pathologists (12 therapists across all major areas)
   {
     id: "1",
     name: "Ms. Ananya Reddy",
@@ -164,10 +164,82 @@ export const hyderabadTherapists: Therapist[] = [
     approachStyle: "Neurogenic Rehabilitation",
     specializations: ["Neurogenic Disorders", "Dysphagia", "Brain Injury", "Cerebral Palsy Communication"]
   },
-
-  // Occupational Therapists (8 therapists)
   {
     id: "9",
+    name: "Ms. Neha Gupta",
+    specialty: "Speech Language Pathologist",
+    experience: 6,
+    rating: 4.5,
+    reviewCount: 98,
+    location: "Ameerpet, Hyderabad",
+    image: "/placeholder.svg",
+    qualifications: ["MASLP", "Pediatric Dysphagia Certified", "FEES Trained"],
+    languages: ["English", "Hindi", "Punjabi", "Telugu"],
+    about: "Focuses on pediatric swallowing disorders and feeding difficulties. Neha provides comprehensive assessment and treatment for complex feeding cases.",
+    availability: ["Monday", "Wednesday", "Friday", "Saturday"],
+    consultationFee: 1100,
+    sessionDuration: 45,
+    approachStyle: "Pediatric Dysphagia Management",
+    specializations: ["Pediatric Dysphagia", "Feeding Disorders", "Texture Modification", "Oral Sensory Issues"]
+  },
+  {
+    id: "10",
+    name: "Dr. Srinivas Reddy",
+    specialty: "Speech Language Pathologist",
+    experience: 14,
+    rating: 4.8,
+    reviewCount: 312,
+    location: "Kukatpally, Hyderabad",
+    image: "/placeholder.svg",
+    qualifications: ["Ph.D in Speech Sciences", "Cochlear Implant Specialist", "Auditory Processing Certified"],
+    languages: ["English", "Telugu", "Hindi"],
+    about: "Expert in cochlear implant rehabilitation and auditory processing disorders. Dr. Srinivas has extensive experience with hearing-impaired children.",
+    availability: ["Tuesday", "Wednesday", "Thursday", "Friday"],
+    consultationFee: 1900,
+    sessionDuration: 50,
+    approachStyle: "Auditory-Verbal Therapy",
+    specializations: ["Cochlear Implant Therapy", "Auditory Processing", "Hearing Loss", "Listening Skills"]
+  },
+  {
+    id: "11",
+    name: "Ms. Priyanka Jain",
+    specialty: "Speech Language Pathologist",
+    experience: 5,
+    rating: 4.6,
+    reviewCount: 87,
+    location: "Miyapur, Hyderabad",
+    image: "/placeholder.svg",
+    qualifications: ["MASLP", "Telepractice Certified", "Augmentative Communication Specialist"],
+    languages: ["English", "Hindi", "Telugu"],
+    about: "Specializes in telepractice and augmentative communication systems. Priyanka helps families access therapy services remotely and implement AAC strategies.",
+    availability: ["Monday", "Tuesday", "Thursday", "Saturday"],
+    consultationFee: 1000,
+    sessionDuration: 40,
+    approachStyle: "Telepractice and AAC",
+    specializations: ["Telepractice", "AAC Systems", "Remote Therapy", "Communication Devices"]
+  },
+  {
+    id: "12",
+    name: "Dr. Ramesh Chandra",
+    specialty: "Speech Language Pathologist",
+    experience: 16,
+    rating: 4.9,
+    reviewCount: 345,
+    location: "Uppal, Hyderabad",
+    image: "/placeholder.svg",
+    qualifications: ["Ph.D in Communication Sciences", "Cleft Palate Specialist", "Craniofacial Team Member"],
+    languages: ["English", "Telugu", "Hindi", "Urdu"],
+    about: "Renowned specialist in cleft palate and craniofacial speech disorders. Dr. Ramesh works as part of multidisciplinary teams for comprehensive care.",
+    availability: ["Monday", "Wednesday", "Thursday", "Friday"],
+    consultationFee: 2000,
+    sessionDuration: 55,
+    approachStyle: "Craniofacial Speech Therapy",
+    specializations: ["Cleft Palate", "Craniofacial Disorders", "Resonance Disorders", "Velopharyngeal Dysfunction"]
+  },
+
+  // Occupational Therapists (12 therapists across all major areas)
+  {
+    id: "13",
     name: "Dr. Rajesh Kumar",
     specialty: "Occupational Therapist",
     experience: 8,
@@ -185,7 +257,7 @@ export const hyderabadTherapists: Therapist[] = [
     specializations: ["Sensory Processing Disorders", "Fine Motor Skills", "Gross Motor Skills", "Daily Living Activities"]
   },
   {
-    id: "10",
+    id: "14",
     name: "Ms. Lakshmi Reddy",
     specialty: "Occupational Therapist",
     experience: 10,
@@ -203,7 +275,7 @@ export const hyderabadTherapists: Therapist[] = [
     specializations: ["Handwriting Difficulties", "Visual Processing", "School Readiness", "Executive Function"]
   },
   {
-    id: "11",
+    id: "15",
     name: "Dr. Vikram Agarwal",
     specialty: "Occupational Therapist",
     experience: 11,
@@ -221,7 +293,7 @@ export const hyderabadTherapists: Therapist[] = [
     specializations: ["Assistive Technology", "Adaptive Equipment", "Wheelchair Positioning", "Environmental Modifications"]
   },
   {
-    id: "12",
+    id: "16",
     name: "Ms. Sneha Krishnan",
     specialty: "Occupational Therapist",
     experience: 9,
@@ -239,7 +311,7 @@ export const hyderabadTherapists: Therapist[] = [
     specializations: ["Autism Spectrum Disorders", "Social Skills Development", "Sensory Regulation", "Routine Building"]
   },
   {
-    id: "13",
+    id: "17",
     name: "Dr. Pooja Sharma",
     specialty: "Occupational Therapist",
     experience: 12,
@@ -257,7 +329,7 @@ export const hyderabadTherapists: Therapist[] = [
     specializations: ["Mental Health", "Emotional Regulation", "Trauma Recovery", "Coping Strategies"]
   },
   {
-    id: "14",
+    id: "18",
     name: "Ms. Ritu Agarwal",
     specialty: "Occupational Therapist",
     experience: 7,
@@ -275,7 +347,7 @@ export const hyderabadTherapists: Therapist[] = [
     specializations: ["Feeding Difficulties", "Oral Motor Skills", "Texture Progression", "Mealtime Behavior"]
   },
   {
-    id: "15",
+    id: "19",
     name: "Dr. Amit Verma",
     specialty: "Occupational Therapist",
     experience: 14,
@@ -293,7 +365,7 @@ export const hyderabadTherapists: Therapist[] = [
     specializations: ["Cerebral Palsy", "Neurological Conditions", "Motor Learning", "Functional Independence"]
   },
   {
-    id: "16",
+    id: "20",
     name: "Ms. Nandini Iyer",
     specialty: "Occupational Therapist",
     experience: 6,
@@ -310,10 +382,82 @@ export const hyderabadTherapists: Therapist[] = [
     approachStyle: "Family-Centered Approach",
     specializations: ["Early Intervention", "Family Training", "Developmental Delays", "Home Program Design"]
   },
-
-  // Behavior Analysts (8 therapists)
   {
-    id: "17",
+    id: "21",
+    name: "Dr. Kavya Menon",
+    specialty: "Occupational Therapist",
+    experience: 13,
+    rating: 4.8,
+    reviewCount: 245,
+    location: "Ameerpet, Hyderabad",
+    image: "/placeholder.svg",
+    qualifications: ["Ph.D in Occupational Therapy", "Spinal Cord Injury Specialist", "Wheelchair Seating Expert"],
+    languages: ["English", "Malayalam", "Hindi", "Telugu"],
+    about: "Specialist in mobility and seating for children with physical disabilities. Dr. Kavya focuses on maximizing independence through proper positioning and mobility aids.",
+    availability: ["Monday", "Wednesday", "Thursday", "Friday"],
+    consultationFee: 1550,
+    sessionDuration: 50,
+    approachStyle: "Mobility and Seating",
+    specializations: ["Mobility Training", "Wheelchair Seating", "Spinal Cord Injury", "Physical Disabilities"]
+  },
+  {
+    id: "22",
+    name: "Ms. Divya Patel",
+    specialty: "Occupational Therapist",
+    experience: 8,
+    rating: 4.6,
+    reviewCount: 167,
+    location: "Kukatpally, Hyderabad",
+    image: "/placeholder.svg",
+    qualifications: ["MOT", "Cognitive Rehabilitation Certified", "Executive Function Training"],
+    languages: ["English", "Gujarati", "Hindi", "Telugu"],
+    about: "Focuses on cognitive rehabilitation and executive function training. Divya helps children with attention, memory, and problem-solving difficulties.",
+    availability: ["Tuesday", "Wednesday", "Friday", "Saturday"],
+    consultationFee: 1200,
+    sessionDuration: 45,
+    approachStyle: "Cognitive Rehabilitation",
+    specializations: ["Cognitive Rehabilitation", "Executive Function", "Attention Training", "Memory Skills"]
+  },
+  {
+    id: "23",
+    name: "Dr. Aruna Reddy",
+    specialty: "Occupational Therapist",
+    experience: 15,
+    rating: 4.9,
+    reviewCount: 298,
+    location: "Miyapur, Hyderabad",
+    image: "/placeholder.svg",
+    qualifications: ["Ph.D in Occupational Science", "Burn Rehabilitation Specialist", "Scar Management Expert"],
+    languages: ["English", "Telugu", "Hindi"],
+    about: "Expert in burn rehabilitation and scar management for pediatric patients. Dr. Aruna provides comprehensive care for children recovering from burn injuries.",
+    availability: ["Monday", "Tuesday", "Thursday", "Friday"],
+    consultationFee: 1700,
+    sessionDuration: 60,
+    approachStyle: "Burn Rehabilitation",
+    specializations: ["Burn Rehabilitation", "Scar Management", "Wound Care", "Pain Management"]
+  },
+  {
+    id: "24",
+    name: "Ms. Shweta Singh",
+    specialty: "Occupational Therapist",
+    experience: 9,
+    rating: 4.7,
+    reviewCount: 185,
+    location: "Uppal, Hyderabad",
+    image: "/placeholder.svg",
+    qualifications: ["MOT", "Lymphedema Therapy Certified", "Manual Therapy Trained"],
+    languages: ["English", "Hindi", "Telugu"],
+    about: "Specializes in lymphedema management and manual therapy techniques. Shweta provides specialized care for children with swelling and circulation issues.",
+    availability: ["Monday", "Wednesday", "Thursday", "Saturday"],
+    consultationFee: 1300,
+    sessionDuration: 55,
+    approachStyle: "Manual Lymphatic Drainage",
+    specializations: ["Lymphedema Management", "Manual Therapy", "Circulation Disorders", "Swelling Reduction"]
+  },
+
+  // Behavior Analysts (12 therapists across all major areas)
+  {
+    id: "25",
     name: "Ms. Fatima Sheikh",
     specialty: "Behavior Analyst",
     experience: 7,
@@ -331,7 +475,7 @@ export const hyderabadTherapists: Therapist[] = [
     specializations: ["Challenging Behaviors", "Self-Help Skills", "Communication Training", "Social Behaviors"]
   },
   {
-    id: "18",
+    id: "26",
     name: "Dr. Karthik Reddy",
     specialty: "Behavior Analyst",
     experience: 11,
@@ -342,7 +486,6 @@ export const hyderabadTherapists: Therapist[] = [
     qualifications: ["Ph.D in Behavior Analysis", "BCBA-D", "Autism Specialist"],
     languages: ["English", "Telugu", "Hindi"],
     about: "Leading behavior analyst specializing in autism spectrum disorders. Dr. Karthik has developed comprehensive ABA programs that have helped hundreds of children achieve significant developmental milestones.",
-
     availability: ["Monday", "Tuesday", "Thursday", "Friday"],
     consultationFee: 1800,
     sessionDuration: 50,
@@ -350,7 +493,7 @@ export const hyderabadTherapists: Therapist[] = [
     specializations: ["Autism Spectrum Disorders", "Early Intensive Intervention", "Verbal Behavior", "Academic Skills"]
   },
   {
-    id: "19",
+    id: "27",
     name: "Ms. Priyanka Joshi",
     specialty: "Behavior Analyst",
     experience: 8,
@@ -368,7 +511,7 @@ export const hyderabadTherapists: Therapist[] = [
     specializations: ["School Behavior", "Academic Behavior", "Peer Interactions", "Classroom Management"]
   },
   {
-    id: "20",
+    id: "28",
     name: "Dr. Suresh Kumar",
     specialty: "Behavior Analyst",
     experience: 13,
@@ -386,7 +529,7 @@ export const hyderabadTherapists: Therapist[] = [
     specializations: ["Research Applications", "Complex Behaviors", "Program Development", "Staff Training"]
   },
   {
-    id: "21",
+    id: "29",
     name: "Ms. Anjali Sharma",
     specialty: "Behavior Analyst",
     experience: 6,
@@ -404,7 +547,7 @@ export const hyderabadTherapists: Therapist[] = [
     specializations: ["Parent Training", "Natural Environment Teaching", "Generalization", "Family Support"]
   },
   {
-    id: "22",
+    id: "30",
     name: "Dr. Rohit Agarwal",
     specialty: "Behavior Analyst",
     experience: 10,
@@ -422,7 +565,7 @@ export const hyderabadTherapists: Therapist[] = [
     specializations: ["Feeding Behaviors", "Food Selectivity", "Mealtime Problems", "Nutritional Behaviors"]
   },
   {
-    id: "23",
+    id: "31",
     name: "Ms. Deepa Nair",
     specialty: "Behavior Analyst",
     experience: 9,
@@ -440,7 +583,7 @@ export const hyderabadTherapists: Therapist[] = [
     specializations: ["Sleep Disorders", "Nighttime Behaviors", "Routine Building", "Developmental Disabilities"]
   },
   {
-    id: "24",
+    id: "32",
     name: "Dr. Manish Patel",
     specialty: "Behavior Analyst",
     experience: 12,
@@ -456,6 +599,78 @@ export const hyderabadTherapists: Therapist[] = [
     sessionDuration: 60,
     approachStyle: "Technology-Enhanced ABA",
     specializations: ["Technology Integration", "Data Analytics", "Remote Monitoring", "Digital Interventions"]
+  },
+  {
+    id: "33",
+    name: "Ms. Rashmi Gupta",
+    specialty: "Behavior Analyst",
+    experience: 5,
+    rating: 4.5,
+    reviewCount: 89,
+    location: "Ameerpet, Hyderabad",
+    image: "/placeholder.svg",
+    qualifications: ["BCBA Certified", "Early Childhood Behavior Specialist", "Toilet Training Expert"],
+    languages: ["English", "Hindi", "Telugu", "Punjabi"],
+    about: "Specializes in early childhood behavioral interventions and toilet training programs. Rashmi helps young children develop essential self-care and behavioral skills.",
+    availability: ["Monday", "Wednesday", "Friday", "Saturday"],
+    consultationFee: 1100,
+    sessionDuration: 45,
+    approachStyle: "Early Childhood ABA",
+    specializations: ["Early Childhood Behavior", "Toilet Training", "Self-Care Skills", "Transition Planning"]
+  },
+  {
+    id: "34",
+    name: "Dr. Vikash Sharma",
+    specialty: "Behavior Analyst",
+    experience: 14,
+    rating: 4.9,
+    reviewCount: 278,
+    location: "Kukatpally, Hyderabad",
+    image: "/placeholder.svg",
+    qualifications: ["Ph.D in Applied Behavior Analysis", "BCBA-D", "Organizational Behavior Management"],
+    languages: ["English", "Hindi", "Telugu"],
+    about: "Expert in organizational behavior management and systems-level interventions. Dr. Vikash works with schools and organizations to improve behavioral outcomes.",
+    availability: ["Tuesday", "Wednesday", "Thursday", "Friday"],
+    consultationFee: 1750,
+    sessionDuration: 50,
+    approachStyle: "Systems-Level ABA",
+    specializations: ["Organizational Behavior", "Systems Interventions", "School-Wide Programs", "Staff Training"]
+  },
+  {
+    id: "35",
+    name: "Ms. Meera Agarwal",
+    specialty: "Behavior Analyst",
+    experience: 7,
+    rating: 4.6,
+    reviewCount: 145,
+    location: "Miyapur, Hyderabad",
+    image: "/placeholder.svg",
+    qualifications: ["BCBA Certified", "Aggression Management Specialist", "Crisis Intervention"],
+    languages: ["English", "Hindi", "Telugu"],
+    about: "Specializes in managing aggressive behaviors and crisis intervention. Meera provides intensive support for families dealing with severe behavioral challenges.",
+    availability: ["Monday", "Tuesday", "Thursday", "Saturday"],
+    consultationFee: 1450,
+    sessionDuration: 55,
+    approachStyle: "Crisis Intervention ABA",
+    specializations: ["Aggression Management", "Crisis Intervention", "Safety Planning", "Intensive Behavioral Support"]
+  },
+  {
+    id: "36",
+    name: "Dr. Rajesh Mehra",
+    specialty: "Behavior Analyst",
+    experience: 16,
+    rating: 4.9,
+    reviewCount: 321,
+    location: "Uppal, Hyderabad",
+    image: "/placeholder.svg",
+    qualifications: ["Ph.D in Behavior Analysis", "BCBA-D", "International Behavior Analysis Certification"],
+    languages: ["English", "Hindi", "Telugu", "Urdu"],
+    about: "Internationally recognized behavior analyst with extensive experience in complex developmental disabilities. Dr. Rajesh provides consultation and training worldwide.",
+    availability: ["Monday", "Wednesday", "Thursday", "Friday"],
+    consultationFee: 2100,
+    sessionDuration: 60,
+    approachStyle: "International Standards ABA",
+    specializations: ["Complex Disabilities", "International Consultation", "Advanced ABA Techniques", "Research and Development"]
   }
 ];
 
