@@ -1,17 +1,12 @@
+
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { LogOut } from 'lucide-react';
 import { toast } from 'sonner';
 import { useState, useEffect } from 'react';
-import { Activity, UserCheck, Pill, Home, User, Calendar, TrendingUp, Target } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useNavigate } from 'react-router-dom';
 import DashboardCard from '@/components/DashboardCard';
-import ActivitiesZone from '@/components/ActivitiesZone';
-import TherapistBooking from '@/components/TherapistBooking';
-import MedicineDelivery from '@/components/MedicineDelivery';
-import UpSparkLogo from '@/components/UpSparkLogo';
 
 const Index = () => {
   const { user, signOut, loading } = useAuth();
