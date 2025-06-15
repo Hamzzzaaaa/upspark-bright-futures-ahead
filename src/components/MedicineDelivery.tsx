@@ -15,6 +15,7 @@ const MedicineDelivery = ({ onUploadRequest }: MedicineDeliveryProps) => {
   const [deliveryAddress, setDeliveryAddress] = useState<string>('');
   const [phoneNumber, setPhoneNumber] = useState<string>('');
   const [medicineQuantities, setMedicineQuantities] = useState<{[key: string]: number}>({});
+  const [isBooked, setIsBooked] = useState(false);
 
   // Check verification status
   const isVerified = localStorage.getItem('prescriptionVerified') === 'true';
@@ -24,12 +25,12 @@ const MedicineDelivery = ({ onUploadRequest }: MedicineDeliveryProps) => {
   const updateQuantity = (medicineId: string, change: number) => {
     setMedicineQuantities(prev => ({
       ...prev,
-      [medicineId]: Math.max(0, (prev[medicineId] || 1) + change)
+      [medicineId]: Math.max(0, (prev[medicineId] || 0) + change)
     }));
   };
 
   const getQuantity = (medicineId: string) => {
-    return medicineQuantities[medicineId] || 1;
+    return medicineQuantities[medicineId] || 0;
   };
 
   const handleBookMedicine = () => {
@@ -38,12 +39,19 @@ const MedicineDelivery = ({ onUploadRequest }: MedicineDeliveryProps) => {
       return;
     }
 
+    // Check if at least one medicine has quantity > 0
+    const hasValidQuantity = Object.values(medicineQuantities).some(qty => qty > 0);
+    if (!hasValidQuantity) {
+      alert('Please select at least one medicine with quantity greater than 0');
+      return;
+    }
+
     // Prepare order data
     const orderData = {
       medicines: prescribedMedicines.map((medicine: any) => ({
         ...medicine,
         quantity: getQuantity(medicine.id)
-      })),
+      })).filter((medicine: any) => medicine.quantity > 0),
       deliveryAddress,
       phoneNumber
     };
@@ -53,6 +61,12 @@ const MedicineDelivery = ({ onUploadRequest }: MedicineDeliveryProps) => {
     
     // Navigate to billing page
     navigate('/billing');
+
+    // Set booked state and reset quantities after navigation
+    setIsBooked(true);
+    setMedicineQuantities({});
+    setDeliveryAddress('');
+    setPhoneNumber('');
   };
 
   // If not verified, show verification needed message
@@ -110,6 +124,70 @@ const MedicineDelivery = ({ onUploadRequest }: MedicineDeliveryProps) => {
               </div>
               <h4 className="text-lg font-black text-white mb-2">Safe Delivery</h4>
               <p className="text-base font-bold text-white">Secure medicine delivery</p>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
+
+  // If booked, show success message
+  if (isBooked) {
+    return (
+      <div className="space-y-6">
+        {/* Success Header */}
+        <div className="text-center">
+          <div className="flex items-center justify-center mb-4">
+            <CheckCircle className="w-8 h-8 text-green-400 mr-3" />
+            <h2 className="text-2xl sm:text-3xl font-black text-white">
+              Medicine Delivery 💊
+            </h2>
+          </div>
+        </div>
+
+        {/* Success Card */}
+        <Card className="bold-card border-2 border-green-500/50 bg-gradient-to-r from-green-900/50 to-blue-900/50">
+          <CardContent className="p-8 text-center space-y-6">
+            <div className="w-20 h-20 bg-gradient-to-r from-green-400 to-teal-500 rounded-full flex items-center justify-center mx-auto">
+              <CheckCircle className="w-10 h-10 text-white" />
+            </div>
+            <div className="space-y-3">
+              <h3 className="text-2xl font-black text-white">
+                ✅ Medicine Booked Successfully!
+              </h3>
+              <p className="text-lg font-bold text-white">
+                Your medicines will be delivered safely to your address
+              </p>
+            </div>
+            <Button
+              onClick={() => setIsBooked(false)}
+              className="bold-button py-4 px-8 text-lg font-black rounded-xl"
+            >
+              <Pill className="w-5 h-5 mr-2" />
+              Book More Medicines
+            </Button>
+          </CardContent>
+        </Card>
+
+        {/* Info Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <Card className="bold-card">
+            <CardContent className="p-6 text-center">
+              <div className="w-12 h-12 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full flex items-center justify-center mx-auto mb-3">
+                <Phone className="w-6 h-6 text-white" />
+              </div>
+              <h4 className="text-lg font-black text-white mb-2">Delivery Updates</h4>
+              <p className="text-base font-bold text-white">SMS & call updates</p>
+            </CardContent>
+          </Card>
+          
+          <Card className="bold-card">
+            <CardContent className="p-6 text-center">
+              <div className="w-12 h-12 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-3">
+                <MapPin className="w-6 h-6 text-white" />
+              </div>
+              <h4 className="text-lg font-black text-white mb-2">Safe Delivery</h4>
+              <p className="text-base font-bold text-white">24-48 hours delivery</p>
             </CardContent>
           </Card>
         </div>
