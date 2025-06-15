@@ -1,9 +1,8 @@
-
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Pill, MapPin, Phone, CheckCircle, Upload, AlertCircle, Minus, Plus } from 'lucide-react';
+import { Pill, MapPin, Phone, CheckCircle, Upload, AlertCircle, Minus, Plus, Check } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 interface MedicineDeliveryProps {
@@ -131,65 +130,56 @@ const MedicineDelivery = ({ onUploadRequest }: MedicineDeliveryProps) => {
     );
   }
 
-  // If booked, show success message
+  // If booked, show success message with big green tick
   if (isBooked) {
     return (
-      <div className="space-y-6">
-        {/* Success Header */}
-        <div className="text-center">
-          <div className="flex items-center justify-center mb-4">
-            <CheckCircle className="w-8 h-8 text-green-400 mr-3" />
-            <h2 className="text-2xl sm:text-3xl font-black text-white">
-              Medicine Delivery 💊
-            </h2>
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black flex items-center justify-center p-4">
+        <div className="max-w-2xl mx-auto text-center space-y-8">
+          {/* Big Green Tick */}
+          <div className="w-32 h-32 bg-gradient-to-r from-green-400 to-green-500 rounded-full flex items-center justify-center mx-auto shadow-2xl animate-scale-in">
+            <Check className="w-20 h-20 text-white stroke-[3]" />
           </div>
-        </div>
 
-        {/* Success Card */}
-        <Card className="bold-card border-2 border-green-500/50 bg-gradient-to-r from-green-900/50 to-blue-900/50">
-          <CardContent className="p-8 text-center space-y-6">
-            <div className="w-20 h-20 bg-gradient-to-r from-green-400 to-teal-500 rounded-full flex items-center justify-center mx-auto">
-              <CheckCircle className="w-10 h-10 text-white" />
-            </div>
-            <div className="space-y-3">
-              <h3 className="text-2xl font-black text-white">
-                ✅ Medicine Booked Successfully!
-              </h3>
-              <p className="text-lg font-bold text-white">
-                Your medicines will be delivered safely to your address
-              </p>
-            </div>
-            <Button
-              onClick={() => setIsBooked(false)}
-              className="bold-button py-4 px-8 text-lg font-black rounded-xl"
-            >
-              <Pill className="w-5 h-5 mr-2" />
-              Book More Medicines
-            </Button>
-          </CardContent>
-        </Card>
+          {/* Success Message */}
+          <div className="space-y-4">
+            <h1 className="text-4xl sm:text-5xl font-black text-white">
+              Medicine Booked! 🎉
+            </h1>
+            <p className="text-xl sm:text-2xl font-bold text-green-400">
+              Your medicines will be delivered shortly
+            </p>
+            <p className="text-lg font-bold text-gray-300 max-w-lg mx-auto">
+              We're preparing your prescribed medicines and will deliver them safely to your address within 24-48 hours.
+            </p>
+          </div>
 
-        {/* Info Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Card className="bold-card">
-            <CardContent className="p-6 text-center">
-              <div className="w-12 h-12 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full flex items-center justify-center mx-auto mb-3">
-                <Phone className="w-6 h-6 text-white" />
-              </div>
-              <h4 className="text-lg font-black text-white mb-2">Delivery Updates</h4>
-              <p className="text-base font-bold text-white">SMS & call updates</p>
-            </CardContent>
-          </Card>
-          
-          <Card className="bold-card">
-            <CardContent className="p-6 text-center">
-              <div className="w-12 h-12 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-3">
-                <MapPin className="w-6 h-6 text-white" />
-              </div>
-              <h4 className="text-lg font-black text-white mb-2">Safe Delivery</h4>
-              <p className="text-base font-bold text-white">24-48 hours delivery</p>
-            </CardContent>
-          </Card>
+          {/* Action Button */}
+          <Button
+            onClick={() => setIsBooked(false)}
+            className="py-4 px-8 text-lg font-black bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-xl transition-all duration-200"
+          >
+            <Pill className="w-5 h-5 mr-2" />
+            Book More Medicines
+          </Button>
+
+          {/* Additional Info */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8">
+            <Card className="bg-gray-800/50 border-gray-700">
+              <CardContent className="p-4 text-center">
+                <Phone className="w-8 h-8 text-blue-400 mx-auto mb-2" />
+                <h4 className="font-black text-white mb-1">Live Updates</h4>
+                <p className="text-sm font-bold text-gray-300">SMS & call notifications</p>
+              </CardContent>
+            </Card>
+            
+            <Card className="bg-gray-800/50 border-gray-700">
+              <CardContent className="p-4 text-center">
+                <MapPin className="w-8 h-8 text-green-400 mx-auto mb-2" />
+                <h4 className="font-black text-white mb-1">Safe Delivery</h4>
+                <p className="text-sm font-bold text-gray-300">Track your order</p>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </div>
     );
