@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { ArrowLeft, CreditCard, MapPin, Phone, Clock, Pill, Calendar } from 'lucide-react';
+import { ArrowLeft, CreditCard, MapPin, Phone, Clock, Pill, Calendar, Check } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const Billing = () => {
@@ -13,6 +13,7 @@ const Billing = () => {
   const [expiryDate, setExpiryDate] = useState<string>('');
   const [cvv, setCvv] = useState<string>('');
   const [cardName, setCardName] = useState<string>('');
+  const [isBooked, setIsBooked] = useState(false);
 
   useEffect(() => {
     const storedOrderData = localStorage.getItem('orderData');
@@ -49,11 +50,12 @@ const Billing = () => {
       return;
     }
 
-    // Set payment success flag and clear order data
-    localStorage.setItem('paymentSuccess', 'true');
+    // Set booking success and clear order data
+    setIsBooked(true);
     localStorage.removeItem('orderData');
-    
-    // Navigate back to profile where medicine delivery component will show success
+  };
+
+  const handleBookMore = () => {
     navigate('/profile');
   };
 
@@ -61,6 +63,63 @@ const Billing = () => {
     return <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black flex items-center justify-center">
       <div className="text-white text-xl font-black">Loading...</div>
     </div>;
+  }
+
+  // If booked, show success message with big green tick
+  if (isBooked) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black p-4">
+        <div className="max-w-md mx-auto space-y-8 pt-20">
+          {/* Big Green Tick */}
+          <div className="text-center">
+            <div className="w-32 h-32 bg-gradient-to-r from-green-400 to-green-500 rounded-full flex items-center justify-center mx-auto shadow-2xl mb-6">
+              <Check className="w-20 h-20 text-white stroke-[3]" />
+            </div>
+
+            {/* Success Message */}
+            <div className="space-y-4">
+              <h1 className="text-4xl sm:text-5xl font-black text-white">
+                Medicine Booked! 🎉
+              </h1>
+              <p className="text-xl sm:text-2xl font-bold text-green-400">
+                Your medicines will be delivered shortly
+              </p>
+              <p className="text-lg font-bold text-gray-300 max-w-lg mx-auto">
+                We're preparing your prescribed medicines and will deliver them safely to your address within 24-48 hours.
+              </p>
+            </div>
+
+            {/* Action Button */}
+            <Button
+              onClick={handleBookMore}
+              className="mt-8 py-4 px-8 text-lg font-black bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-xl transition-all duration-200"
+            >
+              <Pill className="w-5 h-5 mr-2" />
+              Back to Profile
+            </Button>
+
+            {/* Additional Info */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8">
+              <Card className="bg-gray-800/50 border-gray-700">
+                <CardContent className="p-4 text-center">
+                  <Phone className="w-8 h-8 text-blue-400 mx-auto mb-2" />
+                  <h4 className="font-black text-white mb-1">Live Updates</h4>
+                  <p className="text-sm font-bold text-gray-300">SMS & call notifications</p>
+                </CardContent>
+              </Card>
+              
+              <Card className="bg-gray-800/50 border-gray-700">
+                <CardContent className="p-4 text-center">
+                  <MapPin className="w-8 h-8 text-green-400 mx-auto mb-2" />
+                  <h4 className="font-black text-white mb-1">Safe Delivery</h4>
+                  <p className="text-sm font-bold text-gray-300">Track your order</p>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
