@@ -7,10 +7,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { User, Mail, Phone, MapPin, Edit, Save, LogOut, Home, Activity, TrendingUp, UserCheck, Pill, Camera, Star, Calendar } from 'lucide-react';
 import ActivitiesZone from '@/components/ActivitiesZone';
-import TherapistBooking from '@/components/TherapistBooking';
+import TherapistList from '@/components/TherapistList';
 import MedicineDelivery from '@/components/MedicineDelivery';
 import DocumentVerification from '@/components/DocumentVerification';
 import UpSparkLogo from '@/components/UpSparkLogo';
+import { type Therapist } from '@/data/therapistData';
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -89,6 +90,25 @@ const Profile = () => {
   const handlePlanSelected = (planDays: number) => {
     setSelectedPlan(planDays);
     setActiveTab('activities'); // Switch to activities after booking
+  };
+
+  const handleTherapistSelected = (therapist: Therapist) => {
+    // Save therapist selection to localStorage
+    localStorage.setItem('selectedTherapist', JSON.stringify(therapist));
+    localStorage.setItem('bookedTherapistName', therapist.name);
+    localStorage.setItem('bookedPlanName', `${therapist.specialty} Sessions`);
+    localStorage.setItem('bookedPlanPrice', therapist.consultationFee.toString());
+    localStorage.setItem('bookingDate', new Date().toLocaleDateString());
+    
+    // Update current plan state
+    setCurrentPlan({
+      therapistName: therapist.name,
+      planName: `${therapist.specialty} Sessions`,
+      planPrice: therapist.consultationFee.toString(),
+      startDate: new Date().toLocaleDateString()
+    });
+    
+    console.log('Therapist selected:', therapist.name);
   };
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -170,7 +190,7 @@ const Profile = () => {
       case 'activities':
         return <ActivitiesZone childName={childName} selectedPlan={selectedPlan} />;
       case 'therapist':
-        return <TherapistBooking onPlanSelected={handlePlanSelected} />;
+        return <TherapistList onTherapistSelect={handleTherapistSelected} />;
       case 'medicine':
         return <MedicineDelivery onUploadRequest={handleUploadRequest} />;
       default:
