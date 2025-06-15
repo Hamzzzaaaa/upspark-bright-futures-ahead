@@ -1,3 +1,4 @@
+
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
@@ -269,42 +270,42 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6 p-2 sm:p-4">
       {/* Header */}
-      <div className="text-center">
-        <h2 className="text-2xl sm:text-3xl font-black text-white mb-2">
+      <div className="text-center px-2">
+        <h2 className="text-xl sm:text-2xl lg:text-3xl font-black text-white mb-2">
           Find Therapists Near You 📍
         </h2>
-        <p className="text-lg sm:text-xl font-bold text-white">
+        <p className="text-sm sm:text-lg lg:text-xl font-bold text-white">
           Hyderabad - Search by therapy type and pincode
         </p>
       </div>
 
       {/* Search Filters */}
-      <div className="space-y-4">
-        <div className="flex flex-col sm:flex-row gap-4">
+      <div className="space-y-3 sm:space-y-4 px-2">
+        <div className="flex flex-col gap-3 sm:flex-row sm:gap-4">
           <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-3 h-3 sm:w-4 sm:h-4" />
             <Input
               type="text"
               placeholder="Search therapist type or name..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 bg-card border-gray-600 text-white placeholder-gray-400"
+              className="pl-8 sm:pl-10 bg-card border-gray-600 text-white placeholder-gray-400 text-sm sm:text-base h-10 sm:h-11"
             />
           </div>
-          <div className="sm:w-48">
+          <div className="sm:w-40 lg:w-48">
             <Input
               type="text"
               placeholder="Enter pincode"
               value={pincodeFilter}
               onChange={(e) => setPincodeFilter(e.target.value)}
-              className="bg-card border-gray-600 text-white placeholder-gray-400"
+              className="bg-card border-gray-600 text-white placeholder-gray-400 text-sm sm:text-base h-10 sm:h-11"
             />
           </div>
-          <div className="sm:w-56">
+          <div className="sm:w-48 lg:w-56">
             <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-              <SelectTrigger className="bg-card border-gray-600 text-white">
+              <SelectTrigger className="bg-card border-gray-600 text-white h-10 sm:h-11 text-sm sm:text-base">
                 <SelectValue placeholder="Select Category" />
               </SelectTrigger>
               <SelectContent>
@@ -320,8 +321,8 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
 
       {/* Results Count */}
       {(searchQuery || pincodeFilter || categoryFilter !== 'all') && (
-        <div className="text-center">
-          <p className="text-purple-300 font-bold">
+        <div className="text-center px-2">
+          <p className="text-purple-300 font-bold text-sm sm:text-base">
             Found {filteredTherapists.length} therapist{filteredTherapists.length !== 1 ? 's' : ''} 
             {searchQuery && ` for "${searchQuery}"`}
             {pincodeFilter && ` in pincode "${pincodeFilter}"`}
@@ -330,38 +331,54 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
         </div>
       )}
 
-      {/* Therapist Grid - 2 columns responsive */}
-      <div className="space-y-6">        
+      {/* Therapist Grid - Responsive columns */}
+      <div className="space-y-4 sm:space-y-6 px-2">        
         {filteredTherapists.length === 0 ? (
           <div className="text-center py-8">
-            <p className="text-gray-300 text-lg">No therapists found matching your search criteria.</p>
-            <p className="text-gray-400 text-sm mt-2">Try adjusting your search terms, pincode, or category.</p>
+            <p className="text-gray-300 text-base sm:text-lg">No therapists found matching your search criteria.</p>
+            <p className="text-gray-400 text-xs sm:text-sm mt-2">Try adjusting your search terms, pincode, or category.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
             {filteredTherapists.map((therapist) => (
               <Card 
                 key={therapist.id}
-                className="border-2 cursor-pointer transition-all duration-200 bold-card hover:border-purple-400 hover:scale-105"
+                className="border-2 cursor-pointer transition-all duration-200 bold-card hover:border-purple-400 hover:scale-105 active:scale-95"
                 onClick={() => handleTherapistClick(therapist.id)}
               >
-                <CardContent className="p-4 flex flex-col items-center text-center space-y-3">
+                <CardContent className="p-3 sm:p-4 flex flex-col items-center text-center space-y-2 sm:space-y-3">
                   {/* Profile Picture */}
-                  <Avatar className="w-16 h-16 sm:w-20 sm:h-20">
+                  <Avatar className="w-12 h-12 sm:w-16 sm:h-16 lg:w-20 lg:h-20">
                     <AvatarImage src={therapist.image} alt={therapist.name} />
-                    <AvatarFallback className="bg-purple-500 text-white font-bold">
+                    <AvatarFallback className="bg-purple-500 text-white font-bold text-xs sm:text-sm">
                       {therapist.name.split(' ').map(n => n[0]).join('')}
                     </AvatarFallback>
                   </Avatar>
 
                   {/* Doctor Name */}
-                  <div>
-                    <h4 className="font-black text-white text-sm sm:text-base">{therapist.name}</h4>
-                    <p className="text-xs sm:text-sm font-bold text-purple-300">{therapist.specialization}</p>
+                  <div className="min-w-0 w-full">
+                    <h4 className="font-black text-white text-xs sm:text-sm lg:text-base truncate">{therapist.name}</h4>
+                    <p className="text-xs sm:text-sm font-bold text-purple-300 truncate">{therapist.specialization}</p>
+                  </div>
+
+                  {/* Rating and Experience - Mobile optimized */}
+                  <div className="flex items-center justify-center space-x-2 sm:space-x-3 text-xs">
+                    <div className="flex items-center space-x-1">
+                      <Star className="w-3 h-3 text-yellow-400 fill-current" />
+                      <span className="text-yellow-400 font-bold">{therapist.rating}</span>
+                    </div>
+                    <span className="text-gray-400">•</span>
+                    <span className="text-white font-bold">{therapist.experience}</span>
+                  </div>
+
+                  {/* Location - Mobile optimized */}
+                  <div className="flex items-center space-x-1 text-xs">
+                    <MapPin className="w-3 h-3 text-green-400 flex-shrink-0" />
+                    <span className="text-white font-bold truncate">{therapist.area}</span>
                   </div>
 
                   {/* Click for details hint */}
-                  <p className="text-xs text-gray-400">Click for details</p>
+                  <p className="text-xs text-gray-400">Tap for details</p>
                 </CardContent>
               </Card>
             ))}
