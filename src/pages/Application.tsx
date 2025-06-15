@@ -10,10 +10,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { FileText, User, Calendar, Pill } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
 
 const Application = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   
   const [formData, setFormData] = useState({
     // General Information
@@ -49,19 +51,6 @@ const Application = () => {
   });
 
   useEffect(() => {
-    // Clear any existing application data for new users
-    const clearStorageForNewUser = () => {
-      const keysToCheck = [
-        'childName', 'parentName', 'parentPhone', 'parentEmail', 'address',
-        'bookedTherapistName', 'bookedPlanName', 'bookedPlanPrice', 'bookingDate',
-        'profileImage'
-      ];
-      
-      keysToCheck.forEach(key => {
-        localStorage.removeItem(key);
-      });
-    };
-
     // Pre-fill from user metadata if available
     if (user?.user_metadata) {
       const parentName = user.user_metadata.parent_name || '';
@@ -75,12 +64,57 @@ const Application = () => {
         parentEmail: email
       }));
       
-      // Clear existing storage for fresh start
-      clearStorageForNewUser();
-      
-      console.log('Application page loaded for new user:', { parentName, childName, email });
+      console.log('Application page loaded for user:', { parentName, childName, email });
     }
+
+    // Load existing application data if user has already started
+    loadExistingApplication();
   }, [user]);
+
+  const loadExistingApplication = async () => {
+    if (!user?.id) return;
+
+    try {
+      const { data, error } = await supabase
+        .from('user_applications')
+        .select('*')
+        .eq('user_id', user.id)
+        .single();
+
+      if (data && !error) {
+        // Pre-fill form with existing data
+        setFormData({
+          parentName: data.parent_name || '',
+          parentPhone: data.parent_phone || '',
+          parentEmail: data.parent_email || '',
+          childName: data.child_name || '',
+          childAge: data.child_age?.toString() || '',
+          childGender: data.child_gender || '',
+          address: data.address || '',
+          emergencyContact: data.emergency_contact || '',
+          emergencyPhone: data.emergency_phone || '',
+          disabilityType: data.disability_type || '',
+          disabilityDuration: data.disability_duration || '',
+          onsetDate: data.onset_date || '',
+          currentSymptoms: data.current_symptoms || '',
+          functionalLimitations: data.functional_limitations || '',
+          currentMedications: data.current_medications || '',
+          pastMedications: data.past_medications || '',
+          allergies: data.allergies || '',
+          previousTreatments: data.previous_treatments || '',
+          medicalHistory: data.medical_history || '',
+          requirementType: data.requirement_type || '',
+          therapyNeeds: data.therapy_needs || '',
+          equipmentNeeds: data.equipment_needs || '',
+          caregiverSupport: data.caregiver_support || ''
+        });
+
+        console.log('Loaded existing application data for user');
+      }
+    } catch (error) {
+      console.error('Error loading application data:', error);
+    }
+  };
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({
@@ -89,31 +123,83 @@ const Application = () => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Application submitted:', formData);
     
-    // Save application data to localStorage for profile page
-    localStorage.setItem('childName', formData.childName);
-    localStorage.setItem('parentName', formData.parentName);
-    localStorage.setItem('parentPhone', formData.parentPhone);
-    localStorage.setItem('parentEmail', formData.parentEmail);
-    localStorage.setItem('address', formData.address);
-    
-    // Save additional application details
-    localStorage.setItem('disabilityType', formData.disabilityType);
-    localStorage.setItem('requirementType', formData.requirementType);
-    localStorage.setItem('applicationComplete', 'true');
-    
-    toast({
-      title: "Application Submitted Successfully!",
-      description: `Thank you for submitting ${formData.childName}'s application. You will be redirected to your profile.`,
-    });
-    
-    // Navigate to profile after submission
-    setTimeout(() => {
-      navigate('/profile');
-    }, 2000);
+    if (!user?.id) {
+      toast({
+        title: "Authentication Required",
+        description: "Please log in to submit your application.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+    console.log('Submitting application for user:', user.id);
+
+    try {
+      const applicationData = {
+        user_id: user.id,
+        parent_name: formData.parentName,
+        parent_phone: formData.parentPhone,
+        parent_email: formData.parentEmail,
+        child_name: formData.childName,
+        child_age: formData.childAge ? parseInt(formData.childAge) : null,
+        child_gender: formData.childGender,
+        address: formData.address,
+        emergency_contact: formData.emergencyContact,
+        emergency_phone: formData.emergencyPhone,
+        disability_type: formData.disabilityType,
+        disability_duration: formData.disabilityDuration,
+        onset_date: formData.onsetDate,
+        current_symptoms: formData.currentSymptoms,
+        functional_limitations: formData.functionalLimitations,
+        current_medications: formData.currentMedications,
+        past_medications: formData.pastMedications,
+        allergies: formData.allergies,
+        previous_treatments: formData.previousTreatments,
+        medical_history: formData.medicalHistory,
+        requirement_type: formData.requirementType,
+        therapy_needs: formData.therapyNeeds,
+        equipment_needs: formData.equipmentNeeds,
+        caregiver_support: formData.caregiverSupport,
+        application_complete: true
+      };
+
+      // Use upsert to handle both insert and update
+      const { error } = await supabase
+        .from('user_applications')
+        .upsert(applicationData, { 
+          onConflict: 'user_id',
+          ignoreDuplicates: false 
+        });
+
+      if (error) {
+        console.error('Supabase error:', error);
+        throw error;
+      }
+
+      toast({
+        title: "Application Submitted Successfully!",
+        description: `Thank you for submitting ${formData.childName}'s application. You will be redirected to your profile.`,
+      });
+      
+      // Navigate to profile after submission
+      setTimeout(() => {
+        navigate('/profile');
+      }, 2000);
+
+    } catch (error) {
+      console.error('Error submitting application:', error);
+      toast({
+        title: "Submission Failed",
+        description: "There was an error submitting your application. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const renderDynamicFields = () => {
@@ -487,9 +573,10 @@ const Application = () => {
           <div className="text-center pb-8">
             <Button
               type="submit"
-              className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-black py-4 px-12 rounded-lg h-16 text-xl shadow-2xl transform hover:scale-105 transition-all duration-200"
+              disabled={isSubmitting}
+              className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-black py-4 px-12 rounded-lg h-16 text-xl shadow-2xl transform hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Submit Application 🚀
+              {isSubmitting ? 'Submitting...' : 'Submit Application 🚀'}
             </Button>
           </div>
         </form>
