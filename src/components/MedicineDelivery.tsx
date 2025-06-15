@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -58,11 +59,20 @@ const MedicineDelivery = ({ onUploadRequest }: MedicineDeliveryProps) => {
     // Store order data in localStorage for the billing page
     localStorage.setItem('orderData', JSON.stringify(orderData));
     
-    // Navigate to billing page
-    navigate('/billing');
-
-    // Set booked state and reset quantities after navigation
+    // Set booked state first
     setIsBooked(true);
+    
+    // Reset form after setting booked state
+    setTimeout(() => {
+      setMedicineQuantities({});
+      setDeliveryAddress('');
+      setPhoneNumber('');
+    }, 100);
+  };
+
+  const handleBookMore = () => {
+    setIsBooked(false);
+    // Reset all quantities to 0
     setMedicineQuantities({});
     setDeliveryAddress('');
     setPhoneNumber('');
@@ -133,10 +143,10 @@ const MedicineDelivery = ({ onUploadRequest }: MedicineDeliveryProps) => {
   // If booked, show success message with big green tick
   if (isBooked) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black flex items-center justify-center p-4">
-        <div className="max-w-2xl mx-auto text-center space-y-8">
-          {/* Big Green Tick */}
-          <div className="w-32 h-32 bg-gradient-to-r from-green-400 to-green-500 rounded-full flex items-center justify-center mx-auto shadow-2xl animate-scale-in">
+      <div className="space-y-8">
+        {/* Big Green Tick */}
+        <div className="text-center">
+          <div className="w-32 h-32 bg-gradient-to-r from-green-400 to-green-500 rounded-full flex items-center justify-center mx-auto shadow-2xl mb-6">
             <Check className="w-20 h-20 text-white stroke-[3]" />
           </div>
 
@@ -155,8 +165,8 @@ const MedicineDelivery = ({ onUploadRequest }: MedicineDeliveryProps) => {
 
           {/* Action Button */}
           <Button
-            onClick={() => setIsBooked(false)}
-            className="py-4 px-8 text-lg font-black bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-xl transition-all duration-200"
+            onClick={handleBookMore}
+            className="mt-8 py-4 px-8 text-lg font-black bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-xl transition-all duration-200"
           >
             <Pill className="w-5 h-5 mr-2" />
             Book More Medicines
@@ -294,7 +304,7 @@ const MedicineDelivery = ({ onUploadRequest }: MedicineDeliveryProps) => {
           className="w-full py-4 text-lg font-black bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-600 hover:to-cyan-600 text-white rounded-xl transition-all duration-200 disabled:opacity-50"
         >
           {deliveryAddress && phoneNumber
-            ? '💳 Book Medicine'
+            ? '💊 Book Medicine'
             : '📋 Complete All Fields'
           }
         </Button>
