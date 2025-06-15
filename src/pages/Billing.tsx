@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -50,9 +49,6 @@ const Billing = () => {
       return;
     }
 
-    // Simulate payment processing
-    alert(`Payment successful! Your medicines will be delivered soon.`);
-    
     // Set payment success flag and clear order data
     localStorage.setItem('paymentSuccess', 'true');
     localStorage.removeItem('orderData');
