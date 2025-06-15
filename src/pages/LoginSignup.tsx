@@ -21,7 +21,7 @@ const LoginSignup = () => {
 
   // Redirect if already logged in
   if (user) {
-    navigate('/profile');
+    navigate('/');
     return null;
   }
 

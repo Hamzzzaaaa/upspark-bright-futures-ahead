@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -13,7 +14,6 @@ import TherapistDetails from "./pages/TherapistDetails";
 import PlanSelection from "./pages/PlanSelection";
 import BookingConfirmation from "./pages/BookingConfirmation";
 import Billing from "./pages/Billing";
-import HomeRedirect from "./pages/HomeRedirect";
 
 const queryClient = new QueryClient();
 
@@ -26,7 +26,6 @@ const App = () => (
           <Sonner />
           <BrowserRouter>
             <Routes>
-              <Route path="/" element={<HomeRedirect />} />
               <Route path="/login" element={<LoginSignup />} />
               <Route path="/application" element={<Application />} />
               <Route path="/profile" element={<Profile />} />
@@ -34,8 +33,7 @@ const App = () => (
               <Route path="/plan-selection" element={<PlanSelection />} />
               <Route path="/booking-confirmation" element={<BookingConfirmation />} />
               <Route path="/billing" element={<Billing />} />
-              {/* Optionally leave /dashboard for the dashboard, or remove if not needed */}
-              <Route path="/dashboard" element={<Index />} />
+              <Route path="/" element={<Index />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
