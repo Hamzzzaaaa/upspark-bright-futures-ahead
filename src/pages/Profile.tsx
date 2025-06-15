@@ -11,9 +11,12 @@ import TherapistBooking from '@/components/TherapistBooking';
 import MedicineDelivery from '@/components/MedicineDelivery';
 import DocumentVerification from '@/components/DocumentVerification';
 import UpSparkLogo from '@/components/UpSparkLogo';
+import { useAuth } from '@/contexts/AuthContext';
+import { toast } from 'sonner';
 
 const Profile = () => {
   const navigate = useNavigate();
+  const { signOut } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [activeTab, setActiveTab] = useState('profile');
   const [selectedPlan, setSelectedPlan] = useState(30);
@@ -82,8 +85,15 @@ const Profile = () => {
     console.log('Profile updated');
   };
 
-  const handleLogout = () => {
-    navigate('/login');
+  const handleLogout = async () => {
+    try {
+      await signOut();
+      toast.success('Successfully signed out!');
+      navigate('/login');
+    } catch (error) {
+      console.error('Error signing out:', error);
+      toast.error('Error signing out. Please try again.');
+    }
   };
 
   const handlePlanSelected = (planDays: number) => {
