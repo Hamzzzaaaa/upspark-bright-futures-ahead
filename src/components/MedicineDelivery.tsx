@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Pill, Clock, MapPin, Calendar, FileText, CheckCircle, Upload, AlertCircle, Phone, Minus, Plus } from 'lucide-react';
+import { Pill, MapPin, Phone, CheckCircle, Upload, AlertCircle, Minus, Plus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 interface MedicineDeliveryProps {
@@ -12,47 +12,14 @@ interface MedicineDeliveryProps {
 
 const MedicineDelivery = ({ onUploadRequest }: MedicineDeliveryProps) => {
   const navigate = useNavigate();
-  const [selectedFrequency, setSelectedFrequency] = useState<string>('');
   const [deliveryAddress, setDeliveryAddress] = useState<string>('');
   const [phoneNumber, setPhoneNumber] = useState<string>('');
-  const [preferredTime, setPreferredTime] = useState<string>('');
   const [medicineQuantities, setMedicineQuantities] = useState<{[key: string]: number}>({});
 
   // Check verification status
   const isVerified = localStorage.getItem('prescriptionVerified') === 'true';
   const extractedMedicinesData = localStorage.getItem('extractedMedicines');
   const prescribedMedicines = extractedMedicinesData ? JSON.parse(extractedMedicinesData) : [];
-
-  const frequencies = [
-    {
-      id: 'weekly',
-      title: 'Weekly Delivery',
-      description: 'Every 7 days',
-      icon: '📅',
-      color: 'from-green-400 to-teal-500'
-    },
-    {
-      id: 'monthly',
-      title: 'Monthly Delivery',
-      description: 'Every 30 days',
-      icon: '🗓️',
-      color: 'from-blue-400 to-purple-500'
-    },
-    {
-      id: 'as-needed',
-      title: 'As Needed',
-      description: 'Order when required',
-      icon: '🔄',
-      color: 'from-purple-400 to-pink-500'
-    }
-  ];
-
-  const timeSlots = [
-    '9:00 AM - 12:00 PM',
-    '12:00 PM - 3:00 PM',
-    '3:00 PM - 6:00 PM',
-    '6:00 PM - 9:00 PM'
-  ];
 
   const updateQuantity = (medicineId: string, change: number) => {
     setMedicineQuantities(prev => ({
@@ -66,7 +33,7 @@ const MedicineDelivery = ({ onUploadRequest }: MedicineDeliveryProps) => {
   };
 
   const handleBookMedicine = () => {
-    if (!selectedFrequency || !deliveryAddress || !phoneNumber || !preferredTime) {
+    if (!deliveryAddress || !phoneNumber) {
       alert('Please fill in all required fields');
       return;
     }
@@ -77,10 +44,8 @@ const MedicineDelivery = ({ onUploadRequest }: MedicineDeliveryProps) => {
         ...medicine,
         quantity: getQuantity(medicine.id)
       })),
-      frequency: selectedFrequency,
       deliveryAddress,
-      phoneNumber,
-      preferredTime
+      phoneNumber
     };
 
     // Store order data in localStorage for the billing page
@@ -130,21 +95,21 @@ const MedicineDelivery = ({ onUploadRequest }: MedicineDeliveryProps) => {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Card className="bold-card">
             <CardContent className="p-6 text-center">
-              <div className="w-12 h-12 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full flex items-center justify-center mx-auto mb-3">
-                <Clock className="w-6 h-6 text-white" />
-              </div>
-              <h4 className="text-lg font-black text-white mb-2">Quick Delivery</h4>
-              <p className="text-base font-bold text-white">Same day delivery available</p>
-            </CardContent>
-          </Card>
-          
-          <Card className="bold-card">
-            <CardContent className="p-6 text-center">
               <div className="w-12 h-12 bg-gradient-to-r from-green-400 to-teal-500 rounded-full flex items-center justify-center mx-auto mb-3">
                 <CheckCircle className="w-6 h-6 text-white" />
               </div>
               <h4 className="text-lg font-black text-white mb-2">Doctor Prescribed</h4>
               <p className="text-base font-bold text-white">Only verified medicines</p>
+            </CardContent>
+          </Card>
+          
+          <Card className="bold-card">
+            <CardContent className="p-6 text-center">
+              <div className="w-12 h-12 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full flex items-center justify-center mx-auto mb-3">
+                <Pill className="w-6 h-6 text-white" />
+              </div>
+              <h4 className="text-lg font-black text-white mb-2">Safe Delivery</h4>
+              <p className="text-base font-bold text-white">Secure medicine delivery</p>
             </CardContent>
           </Card>
         </div>
@@ -222,38 +187,10 @@ const MedicineDelivery = ({ onUploadRequest }: MedicineDeliveryProps) => {
         </div>
       </div>
 
-      {/* Delivery Options */}
+      {/* Delivery Details */}
       <div className="space-y-4">
         <h3 className="text-xl sm:text-2xl font-black text-white">Delivery Details</h3>
         
-        {/* Frequency Selection */}
-        <div className="space-y-3">
-          <label className="text-base font-black text-white">Delivery Frequency</label>
-          {frequencies.map((freq) => (
-            <Card 
-              key={freq.id}
-              className={`border-2 cursor-pointer transition-all duration-200 bold-card ${
-                selectedFrequency === freq.id 
-                  ? 'border-purple-400 shadow-lg scale-105' 
-                  : 'border-gray-200 hover:border-gray-300'
-              }`}
-              onClick={() => setSelectedFrequency(freq.id)}
-            >
-              <CardContent className="p-4">
-                <div className="flex items-center space-x-4">
-                  <div className={`w-12 h-12 bg-gradient-to-r ${freq.color} rounded-full flex items-center justify-center text-2xl`}>
-                    {freq.icon}
-                  </div>
-                  <div>
-                    <h4 className="font-black text-white text-lg sm:text-xl">{freq.title}</h4>
-                    <p className="text-base font-bold text-white">{freq.description}</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-
         {/* Address Input */}
         <div className="space-y-2">
           <label className="text-base font-black text-white flex items-center">
@@ -282,37 +219,13 @@ const MedicineDelivery = ({ onUploadRequest }: MedicineDeliveryProps) => {
           />
         </div>
 
-        {/* Time Slot Selection */}
-        <div className="space-y-2">
-          <label className="text-base font-black text-white flex items-center">
-            <Clock className="w-4 h-4 mr-1" />
-            Preferred Time Slot
-          </label>
-          <div className="grid grid-cols-2 gap-2">
-            {timeSlots.map((time) => (
-              <Button
-                key={time}
-                variant={preferredTime === time ? "default" : "outline"}
-                onClick={() => setPreferredTime(time)}
-                className={`rounded-xl text-sm font-bold ${
-                  preferredTime === time 
-                    ? 'bg-gradient-to-r from-teal-500 to-cyan-500 text-white' 
-                    : 'border-gray-600 bg-gray-800 text-white hover:bg-gray-700'
-                }`}
-              >
-                {time}
-              </Button>
-            ))}
-          </div>
-        </div>
-
         {/* Book Medicine Button */}
         <Button
           onClick={handleBookMedicine}
-          disabled={!selectedFrequency || !deliveryAddress || !phoneNumber || !preferredTime}
+          disabled={!deliveryAddress || !phoneNumber}
           className="w-full py-4 text-lg font-black bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-600 hover:to-cyan-600 text-white rounded-xl transition-all duration-200 disabled:opacity-50"
         >
-          {selectedFrequency && deliveryAddress && phoneNumber && preferredTime
+          {deliveryAddress && phoneNumber
             ? '💳 Book Medicine'
             : '📋 Complete All Fields'
           }
