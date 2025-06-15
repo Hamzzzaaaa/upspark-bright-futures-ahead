@@ -1,4 +1,3 @@
-
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
@@ -266,6 +265,11 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
   }, [searchQuery, pincodeFilter, categoryFilter]);
 
   const handleTherapistClick = (therapistId: string) => {
+    // Store therapist data in localStorage to avoid "not found" issue
+    const selectedTherapist = therapists.find(t => t.id === therapistId);
+    if (selectedTherapist) {
+      localStorage.setItem('selectedTherapist', JSON.stringify(selectedTherapist));
+    }
     navigate(`/therapist/${therapistId}`);
   };
 
@@ -339,7 +343,7 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
             <p className="text-gray-400 text-xs sm:text-sm mt-2">Try adjusting your search terms, pincode, or category.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+          <div className="grid grid-cols-2 gap-3 sm:gap-4">
             {filteredTherapists.map((therapist) => (
               <Card 
                 key={therapist.id}
