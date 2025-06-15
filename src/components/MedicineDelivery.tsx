@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Pill, Clock, MapPin, Calendar, FileText, CheckCircle, Upload } from 'lucide-react';
+import { Pill, Clock, MapPin, Calendar, FileText, CheckCircle, Upload, AlertCircle } from 'lucide-react';
 
 interface MedicineDeliveryProps {
   onUploadRequest?: () => void;
@@ -33,6 +33,13 @@ const MedicineDelivery = ({ onUploadRequest }: MedicineDeliveryProps) => {
       description: 'Every 30 days',
       icon: '🗓️',
       color: 'from-blue-400 to-purple-500'
+    },
+    {
+      id: 'as-needed',
+      title: 'As Needed',
+      description: 'Order when required',
+      icon: '🔄',
+      color: 'from-purple-400 to-pink-500'
     }
   ];
 
@@ -51,7 +58,7 @@ const MedicineDelivery = ({ onUploadRequest }: MedicineDeliveryProps) => {
     }
   };
 
-  // If not verified, show upload reminder
+  // If not verified, show verification needed message
   if (!isVerified) {
     return (
       <div className="space-y-6">
@@ -63,18 +70,18 @@ const MedicineDelivery = ({ onUploadRequest }: MedicineDeliveryProps) => {
           <p className="text-lg sm:text-xl font-bold text-white">Safe and reliable medicine delivery</p>
         </div>
 
-        {/* Upload Reminder Card */}
+        {/* Verification Needed Card */}
         <Card className="bold-card border-2 border-orange-500/50 bg-gradient-to-r from-orange-900/30 to-red-900/30">
           <CardContent className="p-8 text-center space-y-6">
             <div className="w-20 h-20 bg-gradient-to-r from-orange-400 to-red-500 rounded-full flex items-center justify-center mx-auto">
-              <FileText className="w-10 h-10 text-white" />
+              <AlertCircle className="w-10 h-10 text-white" />
             </div>
             <div className="space-y-3">
               <h3 className="text-2xl font-black text-white">
-                📄 Please upload your prescription
+                🔒 Verification Needed
               </h3>
               <p className="text-lg font-bold text-white">
-                to access and purchase medicines. Your health matters!
+                Please upload and verify your prescription to access medicines prescribed by your doctor
               </p>
             </div>
             <Button
@@ -82,7 +89,7 @@ const MedicineDelivery = ({ onUploadRequest }: MedicineDeliveryProps) => {
               className="bold-button py-4 px-8 text-lg font-black rounded-xl"
             >
               <Upload className="w-5 h-5 mr-2" />
-              Upload Now
+              Upload Prescription
             </Button>
           </CardContent>
         </Card>
@@ -104,8 +111,8 @@ const MedicineDelivery = ({ onUploadRequest }: MedicineDeliveryProps) => {
               <div className="w-12 h-12 bg-gradient-to-r from-green-400 to-teal-500 rounded-full flex items-center justify-center mx-auto mb-3">
                 <CheckCircle className="w-6 h-6 text-white" />
               </div>
-              <h4 className="text-lg font-black text-white mb-2">Verified</h4>
-              <p className="text-base font-bold text-white">Licensed pharmacy partners</p>
+              <h4 className="text-lg font-black text-white mb-2">Doctor Prescribed</h4>
+              <p className="text-base font-bold text-white">Only verified medicines</p>
             </CardContent>
           </Card>
         </div>
@@ -113,7 +120,7 @@ const MedicineDelivery = ({ onUploadRequest }: MedicineDeliveryProps) => {
     );
   }
 
-  // If verified, show prescribed medicines
+  // If verified, show prescribed medicines only
   return (
     <div className="space-y-6">
       {/* Header with Success Message */}
@@ -126,17 +133,17 @@ const MedicineDelivery = ({ onUploadRequest }: MedicineDeliveryProps) => {
         </div>
         <div className="bg-gradient-to-r from-green-900/50 to-blue-900/50 border border-green-500/30 rounded-xl p-4 mb-4">
           <p className="text-lg font-black text-green-400 mb-1">
-            ✅ Verification Complete
+            ✅ Prescription Verified
           </p>
           <p className="text-base font-bold text-white">
-            Here are the medicines prescribed for you
+            Order only the medicines prescribed by your doctor
           </p>
         </div>
       </div>
 
-      {/* Prescribed Medicines */}
+      {/* Prescribed Medicines Only */}
       <div className="space-y-4">
-        <h3 className="text-xl sm:text-2xl font-black text-white">Prescribed Medicines</h3>
+        <h3 className="text-xl sm:text-2xl font-black text-white">Your Prescribed Medicines</h3>
         <div className="space-y-3">
           {prescribedMedicines.map((medicine: any) => (
             <Card key={medicine.id} className="bold-card border-green-500/20">
