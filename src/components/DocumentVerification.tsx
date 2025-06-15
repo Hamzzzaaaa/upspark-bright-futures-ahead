@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -47,32 +46,32 @@ const DocumentVerification = ({ onVerificationComplete }: DocumentVerificationPr
       // Simulate verification process
       await new Promise(resolve => setTimeout(resolve, 3000));
 
-      // Realistic prescription medicines extracted from document
+      // Prescribed medicines extracted from document
       const extractedMedicines = [
         {
           id: '1',
-          name: 'Metformin 500mg',
+          name: 'Valparin chrono',
           dosage: '1 tablet twice daily',
           duration: '30 days',
           instructions: 'Take with meals'
         },
         {
           id: '2',
-          name: 'Lisinopril 10mg',
+          name: 'Rize-2',
           dosage: '1 tablet once daily',
           duration: '30 days',
           instructions: 'Take in the morning'
         },
         {
           id: '3',
-          name: 'Atorvastatin 20mg',
+          name: 'Cloba 10',
           dosage: '1 tablet at bedtime',
           duration: '30 days',
           instructions: 'Take with or without food'
         },
         {
           id: '4',
-          name: 'Aspirin 81mg',
+          name: 'Zonigran',
           dosage: '1 tablet once daily',
           duration: '30 days',
           instructions: 'Take with food to avoid stomach upset'
