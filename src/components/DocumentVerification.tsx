@@ -47,35 +47,35 @@ const DocumentVerification = ({ onVerificationComplete }: DocumentVerificationPr
       // Simulate verification process
       await new Promise(resolve => setTimeout(resolve, 3000));
 
-      // Mock extracted medicines from prescription
+      // Realistic prescription medicines extracted from document
       const extractedMedicines = [
         {
           id: '1',
-          name: 'Paracetamol 500mg',
+          name: 'Metformin 500mg',
           dosage: '1 tablet twice daily',
-          duration: '5 days',
-          instructions: 'Take after meals'
+          duration: '30 days',
+          instructions: 'Take with meals'
         },
         {
           id: '2',
-          name: 'Amoxicillin 250mg',
-          dosage: '1 capsule three times daily',
-          duration: '7 days',
-          instructions: 'Take before meals'
+          name: 'Lisinopril 10mg',
+          dosage: '1 tablet once daily',
+          duration: '30 days',
+          instructions: 'Take in the morning'
         },
         {
           id: '3',
-          name: 'Vitamin D3 1000IU',
-          dosage: '1 tablet daily',
+          name: 'Atorvastatin 20mg',
+          dosage: '1 tablet at bedtime',
           duration: '30 days',
-          instructions: 'Take with breakfast'
+          instructions: 'Take with or without food'
         },
         {
           id: '4',
-          name: 'Omega-3 Fish Oil',
-          dosage: '1 capsule daily',
+          name: 'Aspirin 81mg',
+          dosage: '1 tablet once daily',
           duration: '30 days',
-          instructions: 'Take with any meal'
+          instructions: 'Take with food to avoid stomach upset'
         }
       ];
 
