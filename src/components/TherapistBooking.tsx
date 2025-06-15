@@ -1,4 +1,3 @@
-
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
@@ -557,116 +556,38 @@ const TherapistBooking = ({ onPlanSelected }: TherapistBookingProps) => {
       {/* Header */}
       <div className="text-center">
         <h2 className="text-2xl sm:text-3xl font-black text-white mb-2">
-          Find Therapists Near You 📍
+          Our Therapists 👩‍⚕️👨‍⚕️
         </h2>
         <p className="text-lg sm:text-xl font-bold text-white">
-          Hyderabad - Search by therapy type and pincode
+          Choose from our expert therapists
         </p>
       </div>
 
-      {/* Search Filters */}
-      <div className="space-y-4">
-        <div className="flex flex-col sm:flex-row gap-4">
-          <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-            <Input
-              type="text"
-              placeholder="Search therapist type or name..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 bg-card border-gray-600 text-white placeholder-gray-400"
-            />
-          </div>
-          <div className="sm:w-48">
-            <Input
-              type="text"
-              placeholder="Enter pincode"
-              value={pincodeFilter}
-              onChange={(e) => setPincodeFilter(e.target.value)}
-              className="bg-card border-gray-600 text-white placeholder-gray-400"
-            />
-          </div>
-          <div className="sm:w-56">
-            <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-              <SelectTrigger className="bg-card border-gray-600 text-white">
-                <SelectValue placeholder="Select Category" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Categories</SelectItem>
-                <SelectItem value="speech">Speech Therapy</SelectItem>
-                <SelectItem value="behavioral">Behavioral Therapy</SelectItem>
-                <SelectItem value="occupational">Occupational Therapy</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-      </div>
+      {/* Therapist Grid - Clean and Simple */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+        {therapists.filter(t => t.available).map((therapist) => (
+          <Card 
+            key={therapist.id}
+            className="border-2 cursor-pointer transition-all duration-200 bold-card hover:border-purple-400 hover:scale-105"
+            onClick={() => handleTherapistClick(therapist.id)}
+          >
+            <CardContent className="p-4 flex flex-col items-center text-center space-y-3">
+              {/* Profile Picture */}
+              <Avatar className="w-20 h-20 sm:w-24 sm:h-24">
+                <AvatarImage src={therapist.image} alt={therapist.name} />
+                <AvatarFallback className="bg-purple-500 text-white font-bold text-lg">
+                  {therapist.name.split(' ').map(n => n[0]).join('')}
+                </AvatarFallback>
+              </Avatar>
 
-      {/* Results Count */}
-      {(searchQuery || pincodeFilter || categoryFilter !== 'all') && (
-        <div className="text-center">
-          <p className="text-purple-300 font-bold">
-            Found {filteredTherapists.length} therapist{filteredTherapists.length !== 1 ? 's' : ''} 
-            {searchQuery && ` for "${searchQuery}"`}
-            {pincodeFilter && ` in pincode "${pincodeFilter}"`}
-            {categoryFilter !== 'all' && ` in ${categoryFilter} therapy`}
-          </p>
-        </div>
-      )}
-
-      {/* Therapist Grid - 2 columns responsive */}
-      <div className="space-y-6">        
-        {filteredTherapists.length === 0 ? (
-          <div className="text-center py-8">
-            <p className="text-gray-300 text-lg">No therapists found matching your search criteria.</p>
-            <p className="text-gray-400 text-sm mt-2">Try adjusting your search terms, pincode, or category.</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-2 gap-4">
-            {filteredTherapists.map((therapist) => (
-              <Card 
-                key={therapist.id}
-                className="border-2 cursor-pointer transition-all duration-200 bold-card hover:border-purple-400 hover:scale-105"
-                onClick={() => handleTherapistClick(therapist.id)}
-              >
-                <CardContent className="p-4 flex flex-col items-center text-center space-y-3">
-                  {/* Profile Picture */}
-                  <Avatar className="w-16 h-16 sm:w-20 sm:h-20">
-                    <AvatarImage src={therapist.image} alt={therapist.name} />
-                    <AvatarFallback className="bg-purple-500 text-white font-bold">
-                      {therapist.name.split(' ').map(n => n[0]).join('')}
-                    </AvatarFallback>
-                  </Avatar>
-
-                  {/* Doctor Name */}
-                  <div>
-                    <h4 className="font-black text-white text-sm sm:text-base">{therapist.name}</h4>
-                    <p className="text-xs sm:text-sm font-bold text-purple-300">{therapist.specialization}</p>
-                  </div>
-
-                  {/* Rating and Experience */}
-                  <div className="flex items-center space-x-2">
-                    <div className="flex items-center space-x-1">
-                      <Star className="w-3 h-3 text-yellow-400 fill-current" />
-                      <span className="text-xs font-bold text-white">{therapist.rating}</span>
-                    </div>
-                    <span className="text-xs text-gray-400">•</span>
-                    <span className="text-xs font-bold text-gray-400">{therapist.experience}</span>
-                  </div>
-
-                  {/* Location */}
-                  <div className="flex items-center space-x-1">
-                    <MapPin className="w-3 h-3 text-blue-400" />
-                    <span className="text-xs font-bold text-blue-300">{therapist.area}</span>
-                  </div>
-
-                  {/* Click for details hint */}
-                  <p className="text-xs text-gray-400">Click for details</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        )}
+              {/* Doctor Name */}
+              <div>
+                <h4 className="font-black text-white text-sm sm:text-base mb-1">{therapist.name}</h4>
+                <p className="text-xs sm:text-sm font-bold text-purple-300">{therapist.specialization}</p>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
       </div>
     </div>
   );
