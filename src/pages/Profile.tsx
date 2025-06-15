@@ -182,9 +182,6 @@ const Profile = () => {
               <p className="text-xl font-black text-white opacity-90">Manage your account information</p>
             </div>
 
-            {/* Document Verification Section */}
-            <DocumentVerification onVerificationComplete={handleVerificationComplete} />
-
             {/* Profile Picture Section */}
             <div className="text-center mb-8">
               <div className="relative inline-block">
@@ -347,6 +344,9 @@ const Profile = () => {
                 )}
               </CardContent>
             </Card>
+
+            {/* Document Verification Section - Now positioned after profile details */}
+            <DocumentVerification onVerificationComplete={handleVerificationComplete} />
 
             {/* Logout Button */}
             <Button

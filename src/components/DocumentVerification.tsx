@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Upload, FileText, CheckCircle, Loader2 } from 'lucide-react';
+import { Upload, FileText, CheckCircle, Loader2, Edit, X } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface DocumentVerificationProps {
@@ -14,6 +14,7 @@ const DocumentVerification = ({ onVerificationComplete }: DocumentVerificationPr
   const [isUploading, setIsUploading] = useState(false);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [isVerified, setIsVerified] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
   const { toast } = useToast();
 
   // Check if user already has a verified prescription
@@ -107,7 +108,32 @@ const DocumentVerification = ({ onVerificationComplete }: DocumentVerificationPr
     }
   };
 
-  if (hasVerifiedPrescription) {
+  const handleEdit = () => {
+    setIsEditing(true);
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditing(false);
+    setUploadedFile(null);
+  };
+
+  const handleDeleteVerification = () => {
+    // Clear verification data
+    localStorage.removeItem('prescriptionVerified');
+    localStorage.removeItem('prescriptionFile');
+    localStorage.removeItem('extractedMedicines');
+    localStorage.removeItem('verificationDate');
+    
+    setIsEditing(false);
+    setUploadedFile(null);
+    
+    toast({
+      title: "Verification Removed",
+      description: "Your prescription verification has been cleared.",
+    });
+  };
+
+  if (hasVerifiedPrescription && !isEditing) {
     const fileName = localStorage.getItem('prescriptionFile') || 'prescription.pdf';
     const verificationDate = localStorage.getItem('verificationDate');
     const formattedDate = verificationDate ? new Date(verificationDate).toLocaleDateString() : 'Recently';
@@ -115,10 +141,20 @@ const DocumentVerification = ({ onVerificationComplete }: DocumentVerificationPr
     return (
       <Card className="bold-card border-green-500/30 bg-gradient-to-r from-green-900/50 to-blue-900/50">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-black text-white flex items-center justify-center">
-            <CheckCircle className="w-6 h-6 mr-3 text-green-400" />
-            Document Verified ✅
-          </CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-2xl font-black text-white flex items-center">
+              <CheckCircle className="w-6 h-6 mr-3 text-green-400" />
+              Document Verified ✅
+            </CardTitle>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleEdit}
+              className="text-white hover:text-white hover:bg-white/10"
+            >
+              <Edit className="w-5 h-5" />
+            </Button>
+          </div>
         </CardHeader>
         <CardContent className="space-y-4 text-center">
           <div className="flex items-center justify-center space-x-3">
@@ -142,10 +178,22 @@ const DocumentVerification = ({ onVerificationComplete }: DocumentVerificationPr
   return (
     <Card className="bold-card">
       <CardHeader className="text-center">
-        <CardTitle className="text-2xl font-black text-white flex items-center justify-center">
-          <FileText className="w-6 h-6 mr-3 text-blue-400" />
-          Document Verification
-        </CardTitle>
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-2xl font-black text-white flex items-center">
+            <FileText className="w-6 h-6 mr-3 text-blue-400" />
+            Document Verification
+          </CardTitle>
+          {isEditing && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleCancelEdit}
+              className="text-white hover:text-white hover:bg-white/10"
+            >
+              <X className="w-5 h-5" />
+            </Button>
+          )}
+        </div>
         <p className="text-lg font-bold text-white">Upload your prescription or medical document</p>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -168,6 +216,15 @@ const DocumentVerification = ({ onVerificationComplete }: DocumentVerificationPr
                 Supports JPG, PNG, and PDF files
               </p>
             </div>
+            {isEditing && hasVerifiedPrescription && (
+              <Button
+                onClick={handleDeleteVerification}
+                variant="outline"
+                className="w-full border-red-500/50 text-red-400 hover:bg-red-500/10 hover:border-red-400"
+              >
+                Remove Current Verification
+              </Button>
+            )}
           </div>
         ) : (
           <div className="space-y-4">
