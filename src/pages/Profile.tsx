@@ -11,29 +11,22 @@ import TherapistBooking from '@/components/TherapistBooking';
 import MedicineDelivery from '@/components/MedicineDelivery';
 import DocumentVerification from '@/components/DocumentVerification';
 import UpSparkLogo from '@/components/UpSparkLogo';
-import { useAuth } from '@/contexts/AuthContext';
-import { supabase } from '@/integrations/supabase/client';
-import { toast } from 'sonner';
 
 const Profile = () => {
   const navigate = useNavigate();
-  const { signOut, user } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [activeTab, setActiveTab] = useState('profile');
   const [selectedPlan, setSelectedPlan] = useState(30);
-  const [isLoading, setIsLoading] = useState(true);
   
-  // User data from database
-  const [userData, setUserData] = useState({
-    parentName: '',
-    childName: '',
-    email: '',
-    phone: '',
-    address: '',
-    profileImage: ''
-  });
+  // Load data from localStorage (application form and any saved profile data)
+  const [parentName, setParentName] = useState('');
+  const [childName, setChildName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [address, setAddress] = useState('');
+  const [profileImage, setProfileImage] = useState<string>('');
   
-  // Current plan information from database
+  // Current plan information
   const [currentPlan, setCurrentPlan] = useState({
     therapistName: '',
     planName: '',
@@ -47,114 +40,50 @@ const Profile = () => {
   const overallDevelopment = Math.round((therapistProgress + activitiesProgress) / 2); // Average of both
 
   useEffect(() => {
-    if (user) {
-      loadUserData();
-    }
-  }, [user]);
+    // Load application data from localStorage
+    const savedChildName = localStorage.getItem('childName') || '';
+    const savedParentName = localStorage.getItem('parentName') || 'Sarah Johnson';
+    const savedEmail = localStorage.getItem('parentEmail') || 'sarah.johnson@email.com';
+    const savedPhone = localStorage.getItem('parentPhone') || '+1 (555) 123-4567';
+    const savedAddress = localStorage.getItem('address') || '123 Main St, Anytown, USA';
+    const savedProfileImage = localStorage.getItem('profileImage') || '';
+    
+    // Load current booking information
+    const savedTherapistName = localStorage.getItem('bookedTherapistName') || '';
+    const savedPlanName = localStorage.getItem('bookedPlanName') || '';
+    const savedPlanPrice = localStorage.getItem('bookedPlanPrice') || '';
+    const savedStartDate = localStorage.getItem('bookingDate') || '';
+    
+    setChildName(savedChildName);
+    setParentName(savedParentName);
+    setEmail(savedEmail);
+    setPhone(savedPhone);
+    setAddress(savedAddress);
+    setProfileImage(savedProfileImage);
+    
+    setCurrentPlan({
+      therapistName: savedTherapistName,
+      planName: savedPlanName,
+      planPrice: savedPlanPrice,
+      startDate: savedStartDate
+    });
+  }, []);
 
-  const loadUserData = async () => {
-    if (!user?.id) return;
-
-    try {
-      setIsLoading(true);
-
-      // Load application data
-      const { data: applicationData, error: appError } = await supabase
-        .from('user_applications')
-        .select('*')
-        .eq('user_id', user.id)
-        .single();
-
-      if (applicationData && !appError) {
-        setUserData({
-          parentName: applicationData.parent_name || '',
-          childName: applicationData.child_name || '',
-          email: applicationData.parent_email || user.email || '',
-          phone: applicationData.parent_phone || '',
-          address: applicationData.address || '',
-          profileImage: '' // Will be handled separately if needed
-        });
-      } else {
-        // Fallback to user metadata if no application data
-        setUserData({
-          parentName: user.user_metadata?.parent_name || '',
-          childName: user.user_metadata?.child_name || '',
-          email: user.email || '',
-          phone: '',
-          address: '',
-          profileImage: ''
-        });
-      }
-
-      // Load booking data
-      const { data: bookingData, error: bookingError } = await supabase
-        .from('user_bookings')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false })
-        .limit(1)
-        .single();
-
-      if (bookingData && !bookingError) {
-        setCurrentPlan({
-          therapistName: bookingData.therapist_name || '',
-          planName: bookingData.plan_name || '',
-          planPrice: bookingData.plan_price || '',
-          startDate: bookingData.booking_date || ''
-        });
-      }
-
-      console.log('Loaded user data from database');
-    } catch (error) {
-      console.error('Error loading user data:', error);
-    } finally {
-      setIsLoading(false);
-    }
+  const handleSave = () => {
+    // Save to localStorage
+    localStorage.setItem('parentName', parentName);
+    localStorage.setItem('childName', childName);
+    localStorage.setItem('parentEmail', email);
+    localStorage.setItem('parentPhone', phone);
+    localStorage.setItem('address', address);
+    localStorage.setItem('profileImage', profileImage);
+    
+    setIsEditing(false);
+    console.log('Profile updated');
   };
 
-  const handleSave = async () => {
-    if (!user?.id) return;
-
-    try {
-      // Update application data
-      const { error } = await supabase
-        .from('user_applications')
-        .upsert({
-          user_id: user.id,
-          parent_name: userData.parentName,
-          child_name: userData.childName,
-          parent_email: userData.email,
-          parent_phone: userData.phone,
-          address: userData.address
-        }, { 
-          onConflict: 'user_id',
-          ignoreDuplicates: false 
-        });
-
-      if (error) {
-        console.error('Error saving profile:', error);
-        toast.error('Failed to save profile changes');
-        return;
-      }
-
-      setIsEditing(false);
-      toast.success('Profile updated successfully!');
-      console.log('Profile updated in database');
-    } catch (error) {
-      console.error('Error saving profile:', error);
-      toast.error('Failed to save profile changes');
-    }
-  };
-
-  const handleLogout = async () => {
-    try {
-      await signOut();
-      toast.success('Successfully signed out!');
-      navigate('/login');
-    } catch (error) {
-      console.error('Error signing out:', error);
-      toast.error('Error signing out. Please try again.');
-    }
+  const handleLogout = () => {
+    navigate('/login');
   };
 
   const handlePlanSelected = (planDays: number) => {
@@ -168,9 +97,8 @@ const Profile = () => {
       const reader = new FileReader();
       reader.onload = (e) => {
         const imageUrl = e.target?.result as string;
-        setUserData(prev => ({ ...prev, profileImage: imageUrl }));
+        setProfileImage(imageUrl);
         if (!isEditing) {
-          // Save immediately if not in editing mode
           localStorage.setItem('profileImage', imageUrl);
         }
       };
@@ -184,15 +112,8 @@ const Profile = () => {
 
   const handleUploadRequest = () => {
     setActiveTab('profile');
+    // Scroll to document verification if needed
   };
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-white text-xl font-bold">Loading your profile...</div>
-      </div>
-    );
-  }
 
   const renderActiveTab = () => {
     switch (activeTab) {
@@ -203,7 +124,7 @@ const Profile = () => {
             <div className="bold-card p-8 rounded-3xl text-center">
               <UpSparkLogo size="medium" className="mb-6" />
               <h1 className="text-5xl mb-4 font-black text-white">Welcome to UpSpark!</h1>
-              <p className="text-3xl font-black text-white">Let's make today amazing for {userData.childName} ✨</p>
+              <p className="text-3xl font-black text-white">Let's make today amazing for {childName} ✨</p>
             </div>
 
             {/* Progress Stats Grid */}
@@ -247,7 +168,7 @@ const Profile = () => {
           </div>
         );
       case 'activities':
-        return <ActivitiesZone childName={userData.childName} selectedPlan={selectedPlan} />;
+        return <ActivitiesZone childName={childName} selectedPlan={selectedPlan} />;
       case 'therapist':
         return <TherapistBooking onPlanSelected={handlePlanSelected} />;
       case 'medicine':
@@ -265,9 +186,9 @@ const Profile = () => {
             <div className="text-center mb-8">
               <div className="relative inline-block">
                 <Avatar className="w-32 h-32 mx-auto border-4 border-primary/20">
-                  <AvatarImage src={userData.profileImage} alt="Profile" />
+                  <AvatarImage src={profileImage} alt="Profile" />
                   <AvatarFallback className="bg-gradient-to-r from-primary to-secondary text-white text-3xl font-black">
-                    {userData.parentName.split(' ').map(n => n[0]).join('')}
+                    {parentName.split(' ').map(n => n[0]).join('')}
                   </AvatarFallback>
                 </Avatar>
                 <label className="absolute bottom-0 right-0 bg-primary hover:bg-primary/90 text-white p-3 rounded-full cursor-pointer transition-all duration-200 hover:scale-105">
@@ -346,8 +267,8 @@ const Profile = () => {
                   <Input
                     id="parentName"
                     type="text"
-                    value={userData.parentName}
-                    onChange={(e) => setUserData(prev => ({ ...prev, parentName: e.target.value }))}
+                    value={parentName}
+                    onChange={(e) => setParentName(e.target.value)}
                     className="bg-background/50 border-2 border-primary/20 focus:border-primary text-white font-black text-lg h-12"
                     disabled={!isEditing}
                   />
@@ -361,8 +282,8 @@ const Profile = () => {
                   <Input
                     id="childName"
                     type="text"
-                    value={userData.childName}
-                    onChange={(e) => setUserData(prev => ({ ...prev, childName: e.target.value }))}
+                    value={childName}
+                    onChange={(e) => setChildName(e.target.value)}
                     className="bg-background/50 border-2 border-primary/20 focus:border-primary text-white font-black text-lg h-12"
                     disabled={!isEditing}
                   />
@@ -376,8 +297,8 @@ const Profile = () => {
                   <Input
                     id="email"
                     type="email"
-                    value={userData.email}
-                    onChange={(e) => setUserData(prev => ({ ...prev, email: e.target.value }))}
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     className="bg-background/50 border-2 border-primary/20 focus:border-primary text-white font-black text-lg h-12"
                     disabled={!isEditing}
                   />
@@ -391,8 +312,8 @@ const Profile = () => {
                   <Input
                     id="phone"
                     type="tel"
-                    value={userData.phone}
-                    onChange={(e) => setUserData(prev => ({ ...prev, phone: e.target.value }))}
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
                     className="bg-background/50 border-2 border-primary/20 focus:border-primary text-white font-black text-lg h-12"
                     disabled={!isEditing}
                   />
@@ -406,8 +327,8 @@ const Profile = () => {
                   <Input
                     id="address"
                     type="text"
-                    value={userData.address}
-                    onChange={(e) => setUserData(prev => ({ ...prev, address: e.target.value }))}
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
                     className="bg-background/50 border-2 border-primary/20 focus:border-primary text-white font-black text-lg h-12"
                     disabled={!isEditing}
                   />
@@ -424,7 +345,7 @@ const Profile = () => {
               </CardContent>
             </Card>
 
-            {/* Document Verification Section */}
+            {/* Document Verification Section - Now positioned after profile details */}
             <DocumentVerification onVerificationComplete={handleVerificationComplete} />
 
             {/* Logout Button */}
@@ -449,16 +370,16 @@ const Profile = () => {
   return (
     <div className="min-h-screen">
       {/* Main Content */}
-      <div className="pb-24 sm:pb-28 md:pb-32">
-        <div className="p-4 sm:p-6 max-w-md mx-auto">
+      <div className="pb-32">
+        <div className="p-6 max-w-md mx-auto">
           {renderActiveTab()}
         </div>
       </div>
 
-      {/* Bottom Navigation - Responsive */}
-      <div className="fixed bottom-0 left-0 right-0 bold-card border-t-4 border-primary safe-area-pb">
-        <div className="max-w-md mx-auto px-2 sm:px-4 md:px-6 py-2 sm:py-3 md:py-4">
-          <div className="flex justify-around items-center">
+      {/* Bottom Navigation */}
+      <div className="fixed bottom-0 left-0 right-0 bold-card border-t-4 border-primary">
+        <div className="max-w-md mx-auto px-6 py-4">
+          <div className="flex justify-around">
             {[
               { id: 'dashboard', icon: Home, label: 'Home' },
               { id: 'activities', icon: Activity, label: 'Activities' },
@@ -468,26 +389,26 @@ const Profile = () => {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex flex-col items-center py-2 sm:py-3 px-2 sm:px-3 md:px-4 rounded-xl sm:rounded-2xl transition-all duration-300 font-black min-w-0 ${
+                className={`flex flex-col items-center py-3 px-4 rounded-2xl transition-all duration-300 font-black ${
                   activeTab === tab.id
-                    ? 'bold-button shadow-2xl scale-105 sm:scale-110'
+                    ? 'bold-button shadow-2xl scale-110'
                     : 'text-white hover:text-white hover:scale-105'
                 }`}
               >
-                <tab.icon className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 mb-1 sm:mb-2" />
-                <span className="text-xs sm:text-sm md:text-base font-black tracking-wide truncate">{tab.label}</span>
+                <tab.icon className="w-8 h-8 mb-2" />
+                <span className="text-base font-black tracking-wide">{tab.label}</span>
               </button>
             ))}
             <button
               onClick={() => setActiveTab('profile')}
-              className={`flex flex-col items-center py-2 sm:py-3 px-2 sm:px-3 md:px-4 rounded-xl sm:rounded-2xl transition-all duration-300 font-black min-w-0 ${
+              className={`flex flex-col items-center py-3 px-4 rounded-2xl transition-all duration-300 font-black ${
                 activeTab === 'profile'
-                  ? 'bold-button shadow-2xl scale-105 sm:scale-110'
+                  ? 'bold-button shadow-2xl scale-110'
                   : 'text-white hover:text-white hover:scale-105'
               }`}
             >
-              <User className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 mb-1 sm:mb-2" />
-              <span className="text-xs sm:text-sm md:text-base font-black tracking-wide truncate">Profile</span>
+              <User className="w-8 h-8 mb-2" />
+              <span className="text-base font-black tracking-wide">Profile</span>
             </button>
           </div>
         </div>

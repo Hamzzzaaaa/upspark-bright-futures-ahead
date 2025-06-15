@@ -1,12 +1,9 @@
-
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Upload, FileText, CheckCircle, Loader2, Edit, X } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { useAuth } from '@/contexts/AuthContext';
-import { supabase } from '@/integrations/supabase/client';
 
 interface DocumentVerificationProps {
   onVerificationComplete: () => void;
@@ -17,38 +14,10 @@ const DocumentVerification = ({ onVerificationComplete }: DocumentVerificationPr
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [isVerified, setIsVerified] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [prescriptionData, setPrescriptionData] = useState<any>(null);
   const { toast } = useToast();
-  const { user } = useAuth();
 
-  useEffect(() => {
-    if (user?.id) {
-      loadPrescriptionData();
-    }
-  }, [user]);
-
-  const loadPrescriptionData = async () => {
-    if (!user?.id) return;
-
-    try {
-      const { data, error } = await supabase
-        .from('user_prescriptions')
-        .select('*')
-        .eq('user_id', user.id)
-        .eq('is_verified', true)
-        .order('created_at', { ascending: false })
-        .limit(1)
-        .single();
-
-      if (data && !error) {
-        setPrescriptionData(data);
-        setIsVerified(true);
-        console.log('Loaded prescription data from database');
-      }
-    } catch (error) {
-      console.error('Error loading prescription data:', error);
-    }
-  };
+  // Check if user already has a verified prescription
+  const hasVerifiedPrescription = localStorage.getItem('prescriptionVerified') === 'true';
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -69,7 +38,7 @@ const DocumentVerification = ({ onVerificationComplete }: DocumentVerificationPr
   };
 
   const handleVerification = async () => {
-    if (!uploadedFile || !user?.id) return;
+    if (!uploadedFile) return;
 
     setIsUploading(true);
 
@@ -109,44 +78,17 @@ const DocumentVerification = ({ onVerificationComplete }: DocumentVerificationPr
         }
       ];
 
-      // Get user's application ID
-      const { data: applicationData } = await supabase
-        .from('user_applications')
-        .select('id')
-        .eq('user_id', user.id)
-        .single();
-
-      // Save prescription verification to database
-      const { data, error } = await supabase
-        .from('user_prescriptions')
-        .upsert({
-          user_id: user.id,
-          application_id: applicationData?.id || null,
-          prescription_file_name: uploadedFile.name,
-          verification_date: new Date().toISOString(),
-          extracted_medicines: extractedMedicines,
-          is_verified: true
-        }, {
-          onConflict: 'user_id'
-        });
-
-      if (error) {
-        console.error('Database error:', error);
-        throw error;
-      }
-
-      setPrescriptionData({
-        prescription_file_name: uploadedFile.name,
-        verification_date: new Date().toISOString(),
-        extracted_medicines: extractedMedicines,
-        is_verified: true
-      });
+      // Store verification status and extracted medicines
+      localStorage.setItem('prescriptionVerified', 'true');
+      localStorage.setItem('prescriptionFile', uploadedFile.name);
+      localStorage.setItem('extractedMedicines', JSON.stringify(extractedMedicines));
+      localStorage.setItem('verificationDate', new Date().toISOString());
 
       setIsVerified(true);
       
       toast({
         title: "Verification Complete! ✅",
-        description: "Your prescription has been successfully verified and saved.",
+        description: "Your prescription has been successfully verified.",
       });
 
       // Redirect to medicine page after a brief delay
@@ -155,7 +97,6 @@ const DocumentVerification = ({ onVerificationComplete }: DocumentVerificationPr
       }, 2000);
 
     } catch (error) {
-      console.error('Verification error:', error);
       toast({
         title: "Verification Failed",
         description: "Please try uploading again or contact support.",
@@ -175,42 +116,25 @@ const DocumentVerification = ({ onVerificationComplete }: DocumentVerificationPr
     setUploadedFile(null);
   };
 
-  const handleDeleteVerification = async () => {
-    if (!user?.id) return;
-
-    try {
-      const { error } = await supabase
-        .from('user_prescriptions')
-        .delete()
-        .eq('user_id', user.id);
-
-      if (error) {
-        console.error('Delete error:', error);
-        throw error;
-      }
-
-      setPrescriptionData(null);
-      setIsVerified(false);
-      setIsEditing(false);
-      setUploadedFile(null);
-      
-      toast({
-        title: "Verification Removed",
-        description: "Your prescription verification has been cleared.",
-      });
-    } catch (error) {
-      console.error('Error deleting verification:', error);
-      toast({
-        title: "Delete Failed",
-        description: "Failed to remove verification. Please try again.",
-        variant: "destructive"
-      });
-    }
+  const handleDeleteVerification = () => {
+    // Clear verification data
+    localStorage.removeItem('prescriptionVerified');
+    localStorage.removeItem('prescriptionFile');
+    localStorage.removeItem('extractedMedicines');
+    localStorage.removeItem('verificationDate');
+    
+    setIsEditing(false);
+    setUploadedFile(null);
+    
+    toast({
+      title: "Verification Removed",
+      description: "Your prescription verification has been cleared.",
+    });
   };
 
-  if (isVerified && prescriptionData && !isEditing) {
-    const fileName = prescriptionData.prescription_file_name || 'prescription.pdf';
-    const verificationDate = prescriptionData.verification_date;
+  if (hasVerifiedPrescription && !isEditing) {
+    const fileName = localStorage.getItem('prescriptionFile') || 'prescription.pdf';
+    const verificationDate = localStorage.getItem('verificationDate');
     const formattedDate = verificationDate ? new Date(verificationDate).toLocaleDateString() : 'Recently';
 
     return (
@@ -291,7 +215,7 @@ const DocumentVerification = ({ onVerificationComplete }: DocumentVerificationPr
                 Supports JPG, PNG, and PDF files
               </p>
             </div>
-            {isEditing && prescriptionData && (
+            {isEditing && hasVerifiedPrescription && (
               <Button
                 onClick={handleDeleteVerification}
                 variant="outline"
