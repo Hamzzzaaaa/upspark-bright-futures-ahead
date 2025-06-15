@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { ArrowLeft, CreditCard, MapPin, Phone, Clock, Pill, Calendar, Check } from 'lucide-react';
+import { ArrowLeft, CreditCard, MapPin, Phone, Clock, Pill, Calendar, Check, AlertCircle, Upload } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const Billing = () => {
@@ -16,6 +16,15 @@ const Billing = () => {
   const [isBooked, setIsBooked] = useState(false);
 
   useEffect(() => {
+    // Check if prescription is verified first
+    const isVerified = localStorage.getItem('prescriptionVerified') === 'true';
+    
+    if (!isVerified) {
+      // If no verification, redirect to profile
+      navigate('/profile');
+      return;
+    }
+
     const storedOrderData = localStorage.getItem('orderData');
     if (storedOrderData) {
       setOrderData(JSON.parse(storedOrderData));
@@ -24,6 +33,54 @@ const Billing = () => {
       navigate('/profile');
     }
   }, [navigate]);
+
+  // Check verification status
+  const isVerified = localStorage.getItem('prescriptionVerified') === 'true';
+
+  // If not verified, show verification needed message
+  if (!isVerified) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black p-4">
+        <div className="max-w-md mx-auto space-y-8 pt-20">
+          {/* Header */}
+          <div className="flex items-center space-x-4 mb-8">
+            <Button
+              variant="ghost"
+              onClick={() => navigate('/profile')}
+              className="text-white hover:bg-white/10"
+            >
+              <ArrowLeft className="w-5 h-5" />
+            </Button>
+            <h1 className="text-3xl font-black text-white">Billing & Payment</h1>
+          </div>
+
+          {/* Verification Needed Card */}
+          <Card className="bold-card border-2 border-orange-500/50 bg-gradient-to-r from-orange-900/30 to-red-900/30">
+            <CardContent className="p-8 text-center space-y-6">
+              <div className="w-20 h-20 bg-gradient-to-r from-orange-400 to-red-500 rounded-full flex items-center justify-center mx-auto">
+                <AlertCircle className="w-10 h-10 text-white" />
+              </div>
+              <div className="space-y-3">
+                <h3 className="text-2xl font-black text-white">
+                  🔒 Verification Required
+                </h3>
+                <p className="text-lg font-bold text-white">
+                  Please upload and verify your prescription before accessing billing
+                </p>
+              </div>
+              <Button
+                onClick={() => navigate('/profile')}
+                className="bold-button py-4 px-8 text-lg font-black rounded-xl"
+              >
+                <Upload className="w-5 h-5 mr-2" />
+                Go Back to Upload Prescription
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
 
   const paymentMethods = [
     { id: 'card', name: 'Credit/Debit Card', icon: '💳' },
@@ -166,10 +223,6 @@ const Billing = () => {
 
                 {/* Delivery Details */}
                 <div className="border-t border-gray-600 pt-4 space-y-2">
-                  <div className="flex items-center space-x-2">
-                    <Calendar className="w-4 h-4 text-blue-400" />
-                    <span className="font-bold text-white">Frequency: {orderData.frequency}</span>
-                  </div>
                   <div className="flex items-center space-x-2">
                     <MapPin className="w-4 h-4 text-blue-400" />
                     <span className="font-bold text-white text-sm">{orderData.deliveryAddress}</span>
