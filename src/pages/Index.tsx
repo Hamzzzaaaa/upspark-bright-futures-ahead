@@ -1,4 +1,3 @@
-
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
@@ -9,13 +8,27 @@ import { useNavigate } from 'react-router-dom';
 import DashboardCard from '@/components/DashboardCard';
 
 const Index = () => {
-  const { user, signOut, loading } = useAuth();
+  const { user, signOut, loading, isNewUser, clearNewUserFlag } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Redirect to profile page which now contains all navigation
-    navigate('/profile');
-  }, [navigate]);
+    if (!loading) {
+      if (!user) {
+        // Not authenticated, stay on index or redirect to login
+        return;
+      }
+      
+      if (isNewUser) {
+        console.log('Redirecting new user to application page');
+        clearNewUserFlag();
+        navigate('/application');
+        return;
+      }
+      
+      // Existing user, redirect to profile
+      navigate('/profile');
+    }
+  }, [user, loading, isNewUser, navigate, clearNewUserFlag]);
 
   const handleSignOut = async () => {
     await signOut();

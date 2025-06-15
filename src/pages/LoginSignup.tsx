@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -60,7 +59,7 @@ const LoginSignup = () => {
           }
         } else {
           toast.success('Successfully logged in!');
-          navigate('/');
+          // Navigation will be handled by the Index component based on user status
         }
       } else {
         const { error } = await signUp(email, password, parentName, childName);
@@ -72,7 +71,7 @@ const LoginSignup = () => {
           }
         } else {
           toast.success('Account created successfully! Please check your email to verify your account.');
-          setIsLogin(true);
+          // Don't switch to login - let user verify email first
         }
       }
     } catch (error) {

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,8 +9,12 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { FileText, User, Calendar, Pill } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
+import { useAuth } from '@/contexts/AuthContext';
 
 const Application = () => {
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  
   const [formData, setFormData] = useState({
     // General Information
     parentName: '',
@@ -44,7 +48,39 @@ const Application = () => {
     caregiverSupport: ''
   });
 
-  const navigate = useNavigate();
+  useEffect(() => {
+    // Clear any existing application data for new users
+    const clearStorageForNewUser = () => {
+      const keysToCheck = [
+        'childName', 'parentName', 'parentPhone', 'parentEmail', 'address',
+        'bookedTherapistName', 'bookedPlanName', 'bookedPlanPrice', 'bookingDate',
+        'profileImage'
+      ];
+      
+      keysToCheck.forEach(key => {
+        localStorage.removeItem(key);
+      });
+    };
+
+    // Pre-fill from user metadata if available
+    if (user?.user_metadata) {
+      const parentName = user.user_metadata.parent_name || '';
+      const childName = user.user_metadata.child_name || '';
+      const email = user.email || '';
+      
+      setFormData(prev => ({
+        ...prev,
+        parentName,
+        childName,
+        parentEmail: email
+      }));
+      
+      // Clear existing storage for fresh start
+      clearStorageForNewUser();
+      
+      console.log('Application page loaded for new user:', { parentName, childName, email });
+    }
+  }, [user]);
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({
@@ -64,14 +100,19 @@ const Application = () => {
     localStorage.setItem('parentEmail', formData.parentEmail);
     localStorage.setItem('address', formData.address);
     
+    // Save additional application details
+    localStorage.setItem('disabilityType', formData.disabilityType);
+    localStorage.setItem('requirementType', formData.requirementType);
+    localStorage.setItem('applicationComplete', 'true');
+    
     toast({
       title: "Application Submitted Successfully!",
-      description: `Thank you for submitting ${formData.childName}'s application. You will be redirected to the main app.`,
+      description: `Thank you for submitting ${formData.childName}'s application. You will be redirected to your profile.`,
     });
     
-    // Navigate to main app after submission
+    // Navigate to profile after submission
     setTimeout(() => {
-      navigate('/');
+      navigate('/profile');
     }, 2000);
   };
 
