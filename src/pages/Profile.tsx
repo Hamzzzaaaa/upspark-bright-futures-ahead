@@ -370,16 +370,16 @@ const Profile = () => {
   return (
     <div className="min-h-screen">
       {/* Main Content */}
-      <div className="pb-32">
-        <div className="p-6 max-w-md mx-auto">
+      <div className="pb-24 sm:pb-28 md:pb-32">
+        <div className="p-4 sm:p-6 max-w-md mx-auto">
           {renderActiveTab()}
         </div>
       </div>
 
-      {/* Bottom Navigation */}
-      <div className="fixed bottom-0 left-0 right-0 bold-card border-t-4 border-primary">
-        <div className="max-w-md mx-auto px-6 py-4">
-          <div className="flex justify-around">
+      {/* Bottom Navigation - Responsive */}
+      <div className="fixed bottom-0 left-0 right-0 bold-card border-t-4 border-primary safe-area-pb">
+        <div className="max-w-md mx-auto px-2 sm:px-4 md:px-6 py-2 sm:py-3 md:py-4">
+          <div className="flex justify-around items-center">
             {[
               { id: 'dashboard', icon: Home, label: 'Home' },
               { id: 'activities', icon: Activity, label: 'Activities' },
@@ -389,26 +389,26 @@ const Profile = () => {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex flex-col items-center py-3 px-4 rounded-2xl transition-all duration-300 font-black ${
+                className={`flex flex-col items-center py-2 sm:py-3 px-2 sm:px-3 md:px-4 rounded-xl sm:rounded-2xl transition-all duration-300 font-black min-w-0 ${
                   activeTab === tab.id
-                    ? 'bold-button shadow-2xl scale-110'
+                    ? 'bold-button shadow-2xl scale-105 sm:scale-110'
                     : 'text-white hover:text-white hover:scale-105'
                 }`}
               >
-                <tab.icon className="w-8 h-8 mb-2" />
-                <span className="text-base font-black tracking-wide">{tab.label}</span>
+                <tab.icon className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 mb-1 sm:mb-2" />
+                <span className="text-xs sm:text-sm md:text-base font-black tracking-wide truncate">{tab.label}</span>
               </button>
             ))}
             <button
               onClick={() => setActiveTab('profile')}
-              className={`flex flex-col items-center py-3 px-4 rounded-2xl transition-all duration-300 font-black ${
+              className={`flex flex-col items-center py-2 sm:py-3 px-2 sm:px-3 md:px-4 rounded-xl sm:rounded-2xl transition-all duration-300 font-black min-w-0 ${
                 activeTab === 'profile'
-                  ? 'bold-button shadow-2xl scale-110'
+                  ? 'bold-button shadow-2xl scale-105 sm:scale-110'
                   : 'text-white hover:text-white hover:scale-105'
               }`}
             >
-              <User className="w-8 h-8 mb-2" />
-              <span className="text-base font-black tracking-wide">Profile</span>
+              <User className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 mb-1 sm:mb-2" />
+              <span className="text-xs sm:text-sm md:text-base font-black tracking-wide truncate">Profile</span>
             </button>
           </div>
         </div>
