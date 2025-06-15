@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -21,6 +21,15 @@ const MedicineDelivery = ({ onUploadRequest }: MedicineDeliveryProps) => {
   const isVerified = localStorage.getItem('prescriptionVerified') === 'true';
   const extractedMedicinesData = localStorage.getItem('extractedMedicines');
   const prescribedMedicines = extractedMedicinesData ? JSON.parse(extractedMedicinesData) : [];
+
+  // Check if user returned from successful payment
+  useEffect(() => {
+    const paymentSuccess = localStorage.getItem('paymentSuccess');
+    if (paymentSuccess === 'true') {
+      setIsBooked(true);
+      localStorage.removeItem('paymentSuccess');
+    }
+  }, []);
 
   const updateQuantity = (medicineId: string, change: number) => {
     setMedicineQuantities(prev => ({
@@ -59,15 +68,8 @@ const MedicineDelivery = ({ onUploadRequest }: MedicineDeliveryProps) => {
     // Store order data in localStorage for the billing page
     localStorage.setItem('orderData', JSON.stringify(orderData));
     
-    // Set booked state first
-    setIsBooked(true);
-    
-    // Reset form after setting booked state
-    setTimeout(() => {
-      setMedicineQuantities({});
-      setDeliveryAddress('');
-      setPhoneNumber('');
-    }, 100);
+    // Navigate to billing page
+    navigate('/billing');
   };
 
   const handleBookMore = () => {

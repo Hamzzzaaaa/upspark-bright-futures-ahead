@@ -53,8 +53,11 @@ const Billing = () => {
     // Simulate payment processing
     alert(`Payment successful! Your medicines will be delivered soon.`);
     
-    // Clear order data and navigate back
+    // Set payment success flag and clear order data
+    localStorage.setItem('paymentSuccess', 'true');
     localStorage.removeItem('orderData');
+    
+    // Navigate back to profile where medicine delivery component will show success
     navigate('/profile');
   };
 
