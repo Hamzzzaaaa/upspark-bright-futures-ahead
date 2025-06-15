@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Clock, Calendar, ArrowLeft, RefreshCw, Volume2 } from 'lucide-react';
+import { Clock, Calendar, ArrowLeft, RefreshCw, Volume2, Upload, CheckCircle, PlayCircle } from 'lucide-react';
 import { Canvas as FabricCanvas, PencilBrush } from 'fabric';
 
 interface Activity {
@@ -9,18 +9,21 @@ interface Activity {
   title: string;
   description: string;
   duration: number;
-  category: 'cognitive' | 'motor' | 'speech' | 'creative' | 'sensory';
+  category: 'cognitive' | 'motor' | 'speech' | 'creative' | 'sensory' | 'daily_living';
   completed: boolean;
   emoji: string;
   interactive?: boolean;
+  requiresVideo?: boolean;
+  videoInstructions?: string;
 }
 
 interface ActivitiesZoneProps {
   childName: string;
   selectedPlan?: number; // days from therapist booking
+  onActivityComplete?: () => void;
 }
 
-const ActivitiesZone = ({ childName, selectedPlan = 30 }: ActivitiesZoneProps) => {
+const ActivitiesZone = ({ childName, selectedPlan = 30, onActivityComplete }: ActivitiesZoneProps) => {
   const [activities, setActivities] = useState<Activity[]>([
     {
       id: 'activity1',
@@ -65,61 +68,73 @@ const ActivitiesZone = ({ childName, selectedPlan = 30 }: ActivitiesZoneProps) =
     {
       id: 'activity5',
       title: 'Activity 5',
-      description: 'Music Making - Create beautiful melodies with colorful notes',
+      description: 'Unbuttoning a Shirt - Practice fine motor skills by unbuttoning clothes',
       duration: 15,
-      category: 'creative',
-      emoji: '🎵',
+      category: 'daily_living',
+      emoji: '👕',
       completed: false,
-      interactive: true
+      requiresVideo: true,
+      videoInstructions: 'Record a video showing your child unbuttoning at least 3 buttons on a shirt. Make sure the child is doing it independently.'
     },
     {
       id: 'activity6',
       title: 'Activity 6',
-      description: 'Balance Walk - Walk on a line maintaining balance',
+      description: 'Combing Hair - Learn self-grooming by combing hair properly',
       duration: 8,
-      category: 'motor',
-      emoji: '🚶‍♀️',
-      completed: false
+      category: 'daily_living',
+      emoji: '🪮',
+      completed: false,
+      requiresVideo: true,
+      videoInstructions: 'Record a video of your child combing their hair from front to back. Show at least 10 strokes with proper grip.'
     },
     {
       id: 'activity7',
       title: 'Activity 7',
-      description: 'Number Counting - Count objects and match numbers',
+      description: 'Brushing Teeth - Develop oral hygiene habits with proper technique',
       duration: 12,
-      category: 'cognitive',
-      emoji: '🔢',
-      completed: false
+      category: 'daily_living',
+      emoji: '🪥',
+      completed: false,
+      requiresVideo: true,
+      videoInstructions: 'Record your child brushing teeth for 1-2 minutes. Show proper circular motions on all teeth surfaces.'
     },
     {
       id: 'activity8',
       title: 'Activity 8',
-      description: 'Singing Time - Sing simple songs and rhymes',
-      duration: 10,
-      category: 'speech',
-      emoji: '🎵',
-      completed: false
+      description: 'Tying Shoelaces - Master the coordination needed for tying shoes',
+      duration: 20,
+      category: 'daily_living',
+      emoji: '👟',
+      completed: false,
+      requiresVideo: true,
+      videoInstructions: 'Record your child tying shoelaces independently. Show the complete process from loose laces to tied bow.'
     },
     {
       id: 'activity9',
       title: 'Activity 9',
-      description: 'Puzzle Solving - Complete colorful jigsaw puzzles',
-      duration: 18,
-      category: 'cognitive',
-      emoji: '🧩',
-      completed: false
+      description: 'Washing Hands - Practice proper handwashing technique',
+      duration: 10,
+      category: 'daily_living',
+      emoji: '🧼',
+      completed: false,
+      requiresVideo: true,
+      videoInstructions: 'Record your child washing hands with soap for 20 seconds. Show scrubbing palms, backs, and between fingers.'
     },
     {
       id: 'activity10',
       title: 'Activity 10',
-      description: 'Dance & Movement - Follow fun dance moves and rhythms',
-      duration: 12,
-      category: 'motor',
-      emoji: '💃',
-      completed: false
+      description: 'Folding Clothes - Learn organization skills by folding simple garments',
+      duration: 15,
+      category: 'daily_living',
+      emoji: '👔',
+      completed: false,
+      requiresVideo: true,
+      videoInstructions: 'Record your child folding a t-shirt or simple garment. Show the complete folding process neatly.'
     }
   ]);
 
   const [activeActivity, setActiveActivity] = useState<Activity | null>(null);
+  const [uploadedVideos, setUploadedVideos] = useState<{[key: string]: string}>({});
 
   const toggleActivity = (id: string) => {
     setActivities(prev => 
@@ -129,10 +144,13 @@ const ActivitiesZone = ({ childName, selectedPlan = 30 }: ActivitiesZoneProps) =
           : activity
       )
     );
+    onActivityComplete?.();
   };
 
   const openActivity = (activity: Activity) => {
-    if (activity.interactive) {
+    if (activity.interactive && !activity.requiresVideo) {
+      setActiveActivity(activity);
+    } else if (activity.requiresVideo) {
       setActiveActivity(activity);
     } else {
       toggleActivity(activity.id);
@@ -145,15 +163,48 @@ const ActivitiesZone = ({ childName, selectedPlan = 30 }: ActivitiesZoneProps) =
       motor: 'from-green-400 to-teal-500',
       speech: 'from-yellow-400 to-orange-500',
       creative: 'from-pink-400 to-red-500',
-      sensory: 'from-indigo-400 to-blue-500'
+      sensory: 'from-indigo-400 to-blue-500',
+      daily_living: 'from-orange-400 to-red-500'
     };
     return colors[category as keyof typeof colors] || 'from-gray-400 to-gray-500';
   };
 
   const completedCount = activities.filter(a => a.completed).length;
 
+  const handleVideoUpload = (activityId: string, file: File) => {
+    const videoUrl = URL.createObjectURL(file);
+    setUploadedVideos(prev => ({
+      ...prev,
+      [activityId]: videoUrl
+    }));
+  };
+
+  const verifyAndCompleteActivity = (activityId: string) => {
+    toggleActivity(activityId);
+    setActiveActivity(null);
+    
+    if ('speechSynthesis' in window) {
+      const utterance = new SpeechSynthesisUtterance('Great job! Activity completed successfully!');
+      utterance.rate = 0.8;
+      speechSynthesis.speak(utterance);
+    }
+  };
+
   // If interactive activity is active, show the interactive component
   if (activeActivity) {
+    // Handle video upload activities
+    if (activeActivity.requiresVideo) {
+      return (
+        <VideoUploadActivity 
+          activity={activeActivity}
+          onBack={() => setActiveActivity(null)}
+          onVideoUpload={(file) => handleVideoUpload(activeActivity.id, file)}
+          onComplete={() => verifyAndCompleteActivity(activeActivity.id)}
+          uploadedVideo={uploadedVideos[activeActivity.id]}
+        />
+      );
+    }
+
     return (
       <div className="space-y-6">
         <div className="flex items-center space-x-4">
@@ -206,15 +257,6 @@ const ActivitiesZone = ({ childName, selectedPlan = 30 }: ActivitiesZoneProps) =
             }}
           />
         )}
-        
-        {activeActivity.title.includes('Activity 5') && (
-          <MusicMakingGame 
-            onComplete={() => {
-              toggleActivity(activeActivity.id);
-              setActiveActivity(null);
-            }}
-          />
-        )}
       </div>
     );
   }
@@ -257,9 +299,23 @@ const ActivitiesZone = ({ childName, selectedPlan = 30 }: ActivitiesZoneProps) =
                   <div>
                     <h3 className="text-xl font-black text-white mb-1">{activity.title}</h3>
                     <p className="text-base font-bold text-gray-300 mb-2">{activity.description}</p>
-                    <div className="flex items-center text-gray-400">
-                      <Clock className="w-4 h-4 mr-1" />
-                      <span className="text-sm font-bold">{activity.duration} min</span>
+                    <div className="flex items-center text-gray-400 space-x-4">
+                      <div className="flex items-center">
+                        <Clock className="w-4 h-4 mr-1" />
+                        <span className="text-sm font-bold">{activity.duration} min</span>
+                      </div>
+                      {activity.requiresVideo && (
+                        <div className="flex items-center text-orange-400">
+                          <Upload className="w-4 h-4 mr-1" />
+                          <span className="text-sm font-bold">Video Required</span>
+                        </div>
+                      )}
+                      {activity.interactive && !activity.requiresVideo && (
+                        <div className="flex items-center text-blue-400">
+                          <PlayCircle className="w-4 h-4 mr-1" />
+                          <span className="text-sm font-bold">Interactive</span>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -271,6 +327,156 @@ const ActivitiesZone = ({ childName, selectedPlan = 30 }: ActivitiesZoneProps) =
           </Card>
         ))}
       </div>
+    </div>
+  );
+};
+
+// Video Upload Activity Component
+const VideoUploadActivity = ({ 
+  activity, 
+  onBack, 
+  onVideoUpload, 
+  onComplete, 
+  uploadedVideo 
+}: {
+  activity: Activity;
+  onBack: () => void;
+  onVideoUpload: (file: File) => void;
+  onComplete: () => void;
+  uploadedVideo?: string;
+}) => {
+  const [isVerifying, setIsVerifying] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file && file.type.startsWith('video/')) {
+      onVideoUpload(file);
+    }
+  };
+
+  const handleVerify = () => {
+    setIsVerifying(true);
+    // Simulate verification process
+    setTimeout(() => {
+      setIsVerifying(false);
+      onComplete();
+    }, 3000);
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center space-x-4">
+        <Button
+          onClick={onBack}
+          variant="outline"
+          size="sm"
+          className="flex items-center space-x-2 text-white"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          <span className="text-white">Back</span>
+        </Button>
+        <h2 className="text-xl font-normal text-white">
+          {activity.title}
+        </h2>
+      </div>
+
+      <div className="text-center">
+        <div className="text-6xl mb-4">{activity.emoji}</div>
+        <h3 className="text-2xl font-normal text-white mb-2">{activity.description}</h3>
+        <p className="text-gray-300 text-lg mb-6">Duration: {activity.duration} minutes</p>
+      </div>
+
+      {/* Instructions Card */}
+      <Card className="bold-card">
+        <CardHeader>
+          <CardTitle className="text-white text-xl font-black">📋 Instructions</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-gray-300 text-lg leading-relaxed">
+            {activity.videoInstructions}
+          </p>
+        </CardContent>
+      </Card>
+
+      {/* Video Upload Section */}
+      <Card className="bold-card">
+        <CardHeader>
+          <CardTitle className="text-white text-xl font-black">📹 Upload Video</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="video/*"
+            onChange={handleFileChange}
+            className="hidden"
+          />
+          
+          {!uploadedVideo ? (
+            <Button
+              onClick={() => fileInputRef.current?.click()}
+              className="w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-normal py-4 text-lg rounded-xl"
+            >
+              <Upload className="w-5 h-5 mr-2" />
+              Choose Video File
+            </Button>
+          ) : (
+            <div className="space-y-4">
+              <div className="bg-green-100 border border-green-300 rounded-xl p-4">
+                <div className="flex items-center text-green-700 mb-2">
+                  <CheckCircle className="w-5 h-5 mr-2" />
+                  <span className="font-bold">Video Uploaded Successfully!</span>
+                </div>
+                <video 
+                  src={uploadedVideo} 
+                  controls 
+                  className="w-full rounded-lg"
+                  style={{ maxHeight: '300px' }}
+                />
+              </div>
+              
+              <div className="flex space-x-4">
+                <Button
+                  onClick={() => fileInputRef.current?.click()}
+                  variant="outline"
+                  className="flex-1 text-white border-white hover:bg-white hover:text-gray-800"
+                >
+                  Upload Different Video
+                </Button>
+                
+                <Button
+                  onClick={handleVerify}
+                  disabled={isVerifying}
+                  className="flex-1 bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white font-normal"
+                >
+                  {isVerifying ? (
+                    <>
+                      <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                      Verifying...
+                    </>
+                  ) : (
+                    <>
+                      <CheckCircle className="w-4 h-4 mr-2" />
+                      Verify & Complete
+                    </>
+                  )}
+                </Button>
+              </div>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {isVerifying && (
+        <Card className="bold-card bg-gradient-to-r from-yellow-900/50 to-orange-900/50 border-yellow-500/30">
+          <CardContent className="p-6 text-center">
+            <RefreshCw className="w-8 h-8 text-yellow-400 mx-auto mb-4 animate-spin" />
+            <h3 className="text-xl font-black text-white mb-2">Verifying Activity...</h3>
+            <p className="text-yellow-300">Our AI is analyzing the video to verify completion</p>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 };
@@ -786,186 +992,6 @@ const ShapeSelectionGame = ({ onComplete }: { onComplete: () => void }) => {
           <div className="text-4xl mb-2">🎉</div>
           <h3 className="text-2xl font-normal text-white">Amazing Job!</h3>
           <p className="text-white text-lg">You learned all {shapes.length} shape names!</p>
-        </div>
-      )}
-    </div>
-  );
-};
-
-// NEW: Music Making Game Component
-const MusicMakingGame = ({ onComplete }: { onComplete: () => void }) => {
-  const [notes] = useState([
-    { id: 1, name: 'Do', color: 'bg-red-400', frequency: 261.63 },
-    { id: 2, name: 'Re', color: 'bg-orange-400', frequency: 293.66 },
-    { id: 3, name: 'Mi', color: 'bg-yellow-400', frequency: 329.63 },
-    { id: 4, name: 'Fa', color: 'bg-green-400', frequency: 349.23 },
-    { id: 5, name: 'So', color: 'bg-blue-400', frequency: 392.0 },
-    { id: 6, name: 'La', color: 'bg-indigo-400', frequency: 440.0 },
-    { id: 7, name: 'Ti', color: 'bg-purple-400', frequency: 493.88 }
-  ]);
-  
-  const [playedNotes, setPlayedNotes] = useState<string[]>([]);
-  const [currentMelody, setCurrentMelody] = useState<string[]>([]);
-  const [isPlaying, setIsPlaying] = useState(false);
-
-  const playNote = async (note: typeof notes[0]) => {
-    setPlayedNotes(prev => [...prev, note.name]);
-    setCurrentMelody(prev => [...prev, note.name]);
-    
-    // Create and play audio tone
-    if ('AudioContext' in window || 'webkitAudioContext' in window) {
-      const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
-      const audioContext = new AudioContext();
-      const oscillator = audioContext.createOscillator();
-      const gainNode = audioContext.createGain();
-      
-      oscillator.connect(gainNode);
-      gainNode.connect(audioContext.destination);
-      
-      oscillator.frequency.setValueAtTime(note.frequency, audioContext.currentTime);
-      oscillator.type = 'sine';
-      
-      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
-      
-      oscillator.start(audioContext.currentTime);
-      oscillator.stop(audioContext.currentTime + 0.5);
-    }
-    
-    // Speak the note name
-    if ('speechSynthesis' in window) {
-      const utterance = new SpeechSynthesisUtterance(note.name);
-      utterance.rate = 0.8;
-      speechSynthesis.speak(utterance);
-    }
-
-    // Complete after playing 10 notes
-    if (playedNotes.length + 1 >= 10) {
-      setTimeout(() => {
-        if ('speechSynthesis' in window) {
-          const utterance = new SpeechSynthesisUtterance('Beautiful melody! You are a great musician!');
-          speechSynthesis.speak(utterance);
-        }
-        onComplete();
-      }, 1000);
-    }
-  };
-
-  const playMelody = async () => {
-    if (currentMelody.length === 0) return;
-    
-    setIsPlaying(true);
-    
-    for (let i = 0; i < currentMelody.length; i++) {
-      const noteName = currentMelody[i];
-      const note = notes.find(n => n.name === noteName);
-      if (note) {
-        await new Promise(resolve => {
-          if ('AudioContext' in window || 'webkitAudioContext' in window) {
-            const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
-            const audioContext = new AudioContext();
-            const oscillator = audioContext.createOscillator();
-            const gainNode = audioContext.createGain();
-            
-            oscillator.connect(gainNode);
-            gainNode.connect(audioContext.destination);
-            
-            oscillator.frequency.setValueAtTime(note.frequency, audioContext.currentTime);
-            oscillator.type = 'sine';
-            
-            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.4);
-            
-            oscillator.start(audioContext.currentTime);
-            oscillator.stop(audioContext.currentTime + 0.4);
-            
-            setTimeout(resolve, 500);
-          } else {
-            setTimeout(resolve, 500);
-          }
-        });
-      }
-    }
-    
-    setIsPlaying(false);
-  };
-
-  const clearMelody = () => {
-    setCurrentMelody([]);
-  };
-
-  return (
-    <div className="space-y-8">
-      <div className="text-center">
-        <h3 className="text-2xl font-normal text-white mb-2">Music Making 🎵</h3>
-        <p className="text-gray-300">Click on the colorful notes to create beautiful melodies!</p>
-        <div className="text-3xl font-normal text-purple-300 mt-4">
-          Notes Played: {playedNotes.length} / 10
-        </div>
-      </div>
-
-      {/* Musical Notes */}
-      <div className="space-y-4">
-        <h4 className="text-lg font-normal text-gray-300 text-center">Musical Scale</h4>
-        <div className="grid grid-cols-7 gap-2">
-          {notes.map((note) => (
-            <button
-              key={note.id}
-              onClick={() => playNote(note)}
-              disabled={isPlaying}
-              className={`${note.color} text-white font-normal py-4 px-2 rounded-2xl 
-                hover:scale-105 active:scale-95 transition-all duration-200 shadow-lg
-                disabled:opacity-50 disabled:cursor-not-allowed`}
-            >
-              <div className="text-2xl mb-1">🎵</div>
-              <div className="text-sm">{note.name}</div>
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Current Melody Display */}
-      {currentMelody.length > 0 && (
-        <div className="bg-gradient-to-r from-purple-100 to-pink-100 p-6 rounded-2xl">
-          <h4 className="text-lg font-normal text-gray-800 mb-4 text-center">Your Melody</h4>
-          <div className="flex justify-center space-x-2 mb-4 flex-wrap">
-            {currentMelody.map((noteName, index) => (
-              <div
-                key={index}
-                className="bg-white px-3 py-2 rounded-xl shadow-md font-normal text-purple-600 m-1"
-              >
-                {noteName}
-              </div>
-            ))}
-          </div>
-          
-          <div className="flex justify-center space-x-4">
-            <Button
-              onClick={playMelody}
-              disabled={isPlaying || currentMelody.length === 0}
-              className="bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white font-normal py-2 px-4 rounded-xl flex items-center space-x-2"
-            >
-              <Volume2 className="w-4 h-4" />
-              <span>{isPlaying ? 'Playing...' : 'Play Melody'}</span>
-            </Button>
-            
-            <Button
-              onClick={clearMelody}
-              variant="outline"
-              className="flex items-center space-x-2 text-white border-white hover:bg-white hover:text-gray-800"
-            >
-              <RefreshCw className="w-4 h-4" />
-              <span>Clear</span>
-            </Button>
-          </div>
-        </div>
-      )}
-
-      {playedNotes.length >= 10 && (
-        <div className="text-center p-6 bg-gradient-to-r from-yellow-400 to-pink-400 rounded-2xl">
-          <div className="text-4xl mb-2">🎉</div>
-          <h3 className="text-2xl font-normal text-white">Amazing Musician!</h3>
-          <p className="text-white text-lg">You created a beautiful melody with {playedNotes.length} notes!</p>
         </div>
       )}
     </div>
