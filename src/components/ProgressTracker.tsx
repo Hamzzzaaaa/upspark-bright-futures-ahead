@@ -1,5 +1,4 @@
 
-import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { TrendingUp, Calendar } from 'lucide-react';
 
@@ -8,88 +7,22 @@ interface ProgressTrackerProps {
 }
 
 const ProgressTracker = ({ childName }: ProgressTrackerProps) => {
-  const [progressData, setProgressData] = useState({
-    completedSessions: 0,
-    totalSessions: 0,
-    completedActivities: 0,
-    totalActivities: 50,
-    therapistProgress: 0,
-    activitiesProgress: 0,
-    overallDevelopment: 0
-  });
-
-  useEffect(() => {
-    // Load progress data from localStorage
-    const savedCompletedSessions = parseInt(localStorage.getItem('completedSessions') || '0');
-    const savedCompletedActivities = parseInt(localStorage.getItem('completedActivities') || '0');
-    const savedPlanName = localStorage.getItem('bookedPlanName') || '';
-    
-    // Calculate total sessions based on plan
-    let totalSessions = 0;
-    if (savedPlanName.includes('Basic')) totalSessions = 4;
-    else if (savedPlanName.includes('Standard')) totalSessions = 10;
-    else if (savedPlanName.includes('Premium')) totalSessions = 18;
-    else if (localStorage.getItem('bookedTherapistName')) totalSessions = 16; // Default for therapist bookings
-    
-    const totalActivities = 50;
-    
-    // Calculate percentages
-    const therapistProgress = totalSessions > 0 ? Math.round((savedCompletedSessions / totalSessions) * 100) : 0;
-    const activitiesProgress = Math.round((savedCompletedActivities / totalActivities) * 100);
-    const overallDevelopment = Math.round((therapistProgress + activitiesProgress) / 2);
-    
-    setProgressData({
-      completedSessions: savedCompletedSessions,
-      totalSessions,
-      completedActivities: savedCompletedActivities,
-      totalActivities,
-      therapistProgress,
-      activitiesProgress,
-      overallDevelopment
-    });
-  }, []);
-
-  const categoryProgress = [
-    { 
-      category: 'Cognitive', 
-      progress: Math.min(progressData.activitiesProgress + 10, 100), 
-      color: 'from-blue-400 to-purple-500', 
-      emoji: '🧠' 
-    },
-    { 
-      category: 'Motor Skills', 
-      progress: Math.min(progressData.activitiesProgress + 5, 100), 
-      color: 'from-green-400 to-teal-500', 
-      emoji: '🤸' 
-    },
-    { 
-      category: 'Speech', 
-      progress: Math.min(progressData.therapistProgress + 15, 100), 
-      color: 'from-yellow-400 to-orange-500', 
-      emoji: '🗣️' 
-    },
-    { 
-      category: 'Behavior', 
-      progress: Math.min(progressData.therapistProgress + 10, 100), 
-      color: 'from-pink-400 to-red-500', 
-      emoji: '😊' 
-    },
-    { 
-      category: 'Emotional', 
-      progress: Math.min(progressData.overallDevelopment + 20, 100), 
-      color: 'from-indigo-400 to-blue-500', 
-      emoji: '💚' 
-    }
+  const progressData = [
+    { category: 'Cognitive', progress: 78, color: 'from-blue-400 to-purple-500', emoji: '🧠' },
+    { category: 'Motor Skills', progress: 65, color: 'from-green-400 to-teal-500', emoji: '🤸' },
+    { category: 'Speech', progress: 82, color: 'from-yellow-400 to-orange-500', emoji: '🗣️' },
+    { category: 'Behavior', progress: 71, color: 'from-pink-400 to-red-500', emoji: '😊' },
+    { category: 'Emotional', progress: 88, color: 'from-indigo-400 to-blue-500', emoji: '💚' }
   ];
 
   const weeklyActivities = [
-    { day: 'Mon', completed: Math.floor(progressData.activitiesProgress * 0.08), total: 8 },
-    { day: 'Tue', completed: Math.floor(progressData.activitiesProgress * 0.09), total: 8 },
-    { day: 'Wed', completed: Math.floor(progressData.activitiesProgress * 0.07), total: 8 },
-    { day: 'Thu', completed: Math.floor(progressData.activitiesProgress * 0.10), total: 8 },
-    { day: 'Fri', completed: Math.floor(progressData.activitiesProgress * 0.08), total: 8 },
-    { day: 'Sat', completed: Math.floor(progressData.activitiesProgress * 0.06), total: 6 },
-    { day: 'Sun', completed: Math.floor(progressData.activitiesProgress * 0.05), total: 6 }
+    { day: 'Mon', completed: 6, total: 8 },
+    { day: 'Tue', completed: 7, total: 8 },
+    { day: 'Wed', completed: 5, total: 8 },
+    { day: 'Thu', completed: 8, total: 8 },
+    { day: 'Fri', completed: 6, total: 8 },
+    { day: 'Sat', completed: 4, total: 6 },
+    { day: 'Sun', completed: 3, total: 6 }
   ];
 
   return (
@@ -112,18 +45,8 @@ const ProgressTracker = ({ childName }: ProgressTrackerProps) => {
         </CardHeader>
         <CardContent className="pt-0">
           <div className="text-center">
-            <div className="text-4xl sm:text-5xl font-black text-primary mb-2">{progressData.overallDevelopment}%</div>
+            <div className="text-4xl sm:text-5xl font-black text-primary mb-2">77%</div>
             <p className="text-lg sm:text-xl font-bold text-white">Average Progress This Month</p>
-            <div className="mt-4 grid grid-cols-2 gap-4 text-sm">
-              <div className="text-center">
-                <div className="text-2xl font-black text-purple-400">{progressData.completedSessions}/{progressData.totalSessions}</div>
-                <div className="font-bold text-gray-300">Sessions</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-black text-green-400">{progressData.completedActivities}/{progressData.totalActivities}</div>
-                <div className="font-bold text-gray-300">Activities</div>
-              </div>
-            </div>
           </div>
         </CardContent>
       </Card>
@@ -131,7 +54,7 @@ const ProgressTracker = ({ childName }: ProgressTrackerProps) => {
       {/* Category Progress */}
       <div className="space-y-4">
         <h3 className="text-xl sm:text-2xl font-black text-white">Development Areas</h3>
-        {categoryProgress.map((item) => (
+        {progressData.map((item) => (
           <Card key={item.category} className="bold-card">
             <CardContent className="p-3 sm:p-4">
               <div className="flex items-center justify-between mb-3">

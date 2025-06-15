@@ -10,14 +10,13 @@ import ActivitiesZone from '@/components/ActivitiesZone';
 import TherapistList from '@/components/TherapistList';
 import MedicineDelivery from '@/components/MedicineDelivery';
 import DocumentVerification from '@/components/DocumentVerification';
-import ProgressTracker from '@/components/ProgressTracker';
 import UpSparkLogo from '@/components/UpSparkLogo';
 import { type Therapist } from '@/data/therapistData';
 
 const Profile = () => {
   const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
-  const [activeTab, setActiveTab] = useState('dashboard');
+  const [activeTab, setActiveTab] = useState('profile');
   const [selectedPlan, setSelectedPlan] = useState(30);
   
   // Load data from localStorage (application form and any saved profile data)
@@ -36,16 +35,10 @@ const Profile = () => {
     startDate: ''
   });
 
-  // Progress tracking state
-  const [progressData, setProgressData] = useState({
-    completedSessions: 0,
-    totalSessions: 0,
-    completedActivities: 0,
-    totalActivities: 0,
-    therapistProgress: 0,
-    activitiesProgress: 0,
-    overallDevelopment: 0
-  });
+  // Progress data
+  const therapistProgress = 75; // 12/16 sessions = 75%
+  const activitiesProgress = 85; // 85% activities done
+  const overallDevelopment = Math.round((therapistProgress + activitiesProgress) / 2); // Average of both
 
   useEffect(() => {
     // Load application data from localStorage
@@ -62,30 +55,6 @@ const Profile = () => {
     const savedPlanPrice = localStorage.getItem('bookedPlanPrice') || '';
     const savedStartDate = localStorage.getItem('bookingDate') || '';
     
-    // Load progress data
-    const savedCompletedSessions = parseInt(localStorage.getItem('completedSessions') || '0');
-    const savedCompletedActivities = parseInt(localStorage.getItem('completedActivities') || '0');
-    
-    // Calculate progress based on plan
-    let totalSessions = 0;
-    if (savedPlanName.includes('Basic')) totalSessions = 4;
-    else if (savedPlanName.includes('Standard')) totalSessions = 10;
-    else if (savedPlanName.includes('Premium')) totalSessions = 18;
-    else if (savedTherapistName && !savedPlanName.includes('Plan')) totalSessions = 16; // Default for therapist bookings
-    
-    // If newly booked (no start date or today's date), start with 0 sessions
-    const isNewlyBooked = !savedStartDate || savedStartDate === new Date().toLocaleDateString();
-    const actualCompletedSessions = isNewlyBooked ? 0 : savedCompletedSessions;
-    
-    // Activities calculation (assuming 50 total activities for a complete program)
-    const totalActivities = 50;
-    const actualCompletedActivities = isNewlyBooked ? 0 : savedCompletedActivities;
-    
-    // Calculate percentages
-    const therapistProgress = totalSessions > 0 ? Math.round((actualCompletedSessions / totalSessions) * 100) : 0;
-    const activitiesProgress = Math.round((actualCompletedActivities / totalActivities) * 100);
-    const overallDevelopment = Math.round((therapistProgress + activitiesProgress) / 2);
-    
     setChildName(savedChildName);
     setParentName(savedParentName);
     setEmail(savedEmail);
@@ -98,16 +67,6 @@ const Profile = () => {
       planName: savedPlanName,
       planPrice: savedPlanPrice,
       startDate: savedStartDate
-    });
-
-    setProgressData({
-      completedSessions: actualCompletedSessions,
-      totalSessions,
-      completedActivities: actualCompletedActivities,
-      totalActivities,
-      therapistProgress,
-      activitiesProgress,
-      overallDevelopment
     });
   }, []);
 
@@ -141,10 +100,6 @@ const Profile = () => {
     localStorage.setItem('bookedPlanPrice', therapist.consultationFee.toString());
     localStorage.setItem('bookingDate', new Date().toLocaleDateString());
     
-    // Reset progress for new booking
-    localStorage.setItem('completedSessions', '0');
-    localStorage.setItem('completedActivities', '0');
-    
     // Update current plan state
     setCurrentPlan({
       therapistName: therapist.name,
@@ -152,14 +107,6 @@ const Profile = () => {
       planPrice: therapist.consultationFee.toString(),
       startDate: new Date().toLocaleDateString()
     });
-    
-    // Reset progress data for new booking
-    setProgressData(prev => ({
-      ...prev,
-      completedSessions: 0,
-      therapistProgress: 0,
-      overallDevelopment: Math.round(prev.activitiesProgress / 2)
-    }));
     
     console.log('Therapist selected:', therapist.name);
   };
@@ -188,41 +135,6 @@ const Profile = () => {
     // Scroll to document verification if needed
   };
 
-  const handleActivityComplete = () => {
-    const newCompletedActivities = progressData.completedActivities + 1;
-    const newActivitiesProgress = Math.round((newCompletedActivities / progressData.totalActivities) * 100);
-    const newOverallDevelopment = Math.round((progressData.therapistProgress + newActivitiesProgress) / 2);
-    
-    // Save to localStorage
-    localStorage.setItem('completedActivities', newCompletedActivities.toString());
-    
-    // Update state
-    setProgressData(prev => ({
-      ...prev,
-      completedActivities: newCompletedActivities,
-      activitiesProgress: newActivitiesProgress,
-      overallDevelopment: newOverallDevelopment
-    }));
-  };
-
-  const handleSessionComplete = () => {
-    const newCompletedSessions = progressData.completedSessions + 1;
-    const newTherapistProgress = progressData.totalSessions > 0 ? 
-      Math.round((newCompletedSessions / progressData.totalSessions) * 100) : 0;
-    const newOverallDevelopment = Math.round((newTherapistProgress + progressData.activitiesProgress) / 2);
-    
-    // Save to localStorage
-    localStorage.setItem('completedSessions', newCompletedSessions.toString());
-    
-    // Update state
-    setProgressData(prev => ({
-      ...prev,
-      completedSessions: newCompletedSessions,
-      therapistProgress: newTherapistProgress,
-      overallDevelopment: newOverallDevelopment
-    }));
-  };
-
   const renderActiveTab = () => {
     switch (activeTab) {
       case 'dashboard':
@@ -244,22 +156,9 @@ const Profile = () => {
               >
                 <CardContent className="p-8 text-center">
                   <Calendar className="w-12 h-12 text-purple-400 mx-auto mb-3" />
-                  <div className="text-4xl font-black text-white mb-2">
-                    {progressData.completedSessions}/{progressData.totalSessions || 'N/A'}
-                  </div>
+                  <div className="text-4xl font-black text-white mb-2">12/16</div>
                   <div className="text-xl font-black text-white mb-1">Therapist Sessions</div>
-                  <div className="text-lg font-bold text-purple-300">
-                    {progressData.totalSessions > 0 ? `${progressData.therapistProgress}% Complete` : 'Book a therapist to start'}
-                  </div>
-                  {progressData.totalSessions > 0 && (
-                    <Button 
-                      onClick={(e) => { e.stopPropagation(); handleSessionComplete(); }}
-                      className="mt-3 text-xs bg-purple-500 hover:bg-purple-600"
-                      size="sm"
-                    >
-                      Mark Session Complete
-                    </Button>
-                  )}
+                  <div className="text-lg font-bold text-purple-300">{therapistProgress}% Complete</div>
                 </CardContent>
               </Card>
 
@@ -270,18 +169,9 @@ const Profile = () => {
               >
                 <CardContent className="p-8 text-center">
                   <TrendingUp className="w-12 h-12 text-green-400 mx-auto mb-3" />
-                  <div className="text-4xl font-black text-white mb-2">
-                    {progressData.completedActivities}/{progressData.totalActivities}
-                  </div>
+                  <div className="text-4xl font-black text-white mb-2">{activitiesProgress}%</div>
                   <div className="text-xl font-black text-white mb-1">Activities Done</div>
-                  <div className="text-lg font-bold text-green-300">{progressData.activitiesProgress}% Complete</div>
-                  <Button 
-                    onClick={(e) => { e.stopPropagation(); handleActivityComplete(); }}
-                    className="mt-3 text-xs bg-green-500 hover:bg-green-600"
-                    size="sm"
-                  >
-                    Mark Activity Complete
-                  </Button>
+                  <div className="text-lg font-bold text-green-300">Great Progress!</div>
                 </CardContent>
               </Card>
 
@@ -289,24 +179,16 @@ const Profile = () => {
               <Card className="bold-card sm:col-span-2">
                 <CardContent className="p-8 text-center">
                   <TrendingUp className="w-12 h-12 text-yellow-400 mx-auto mb-3" />
-                  <div className="text-4xl font-black text-white mb-2">{progressData.overallDevelopment}%</div>
+                  <div className="text-4xl font-black text-white mb-2">{overallDevelopment}%</div>
                   <div className="text-xl font-black text-white mb-1">Overall Development</div>
-                  <div className="text-lg font-bold text-yellow-300">
-                    {progressData.overallDevelopment >= 80 ? 'Excellent Progress!' :
-                     progressData.overallDevelopment >= 50 ? 'Great Progress!' :
-                     progressData.overallDevelopment >= 20 ? 'Good Start!' : 
-                     'Just Getting Started'}
-                  </div>
+                  <div className="text-lg font-bold text-yellow-300">Excellent Progress This Month</div>
                 </CardContent>
               </Card>
             </div>
-
-            {/* Progress Tracker Component */}
-            <ProgressTracker childName={childName} />
           </div>
         );
       case 'activities':
-        return <ActivitiesZone childName={childName} selectedPlan={selectedPlan} onActivityComplete={handleActivityComplete} />;
+        return <ActivitiesZone childName={childName} selectedPlan={selectedPlan} />;
       case 'therapist':
         return <TherapistList onTherapistSelect={handleTherapistSelected} />;
       case 'medicine':
@@ -358,12 +240,6 @@ const Profile = () => {
                   <div className="flex items-center justify-between">
                     <span className="text-lg font-black text-gray-300">Plan:</span>
                     <span className="text-lg font-black text-green-400">{currentPlan.planName}</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-lg font-black text-gray-300">Progress:</span>
-                    <span className="text-lg font-black text-blue-400">
-                      {progressData.completedSessions}/{progressData.totalSessions} sessions
-                    </span>
                   </div>
                   {currentPlan.planPrice && (
                     <div className="flex items-center justify-between">
