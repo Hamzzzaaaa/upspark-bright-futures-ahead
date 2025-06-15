@@ -18,10 +18,9 @@ interface Activity {
 interface ActivitiesZoneProps {
   childName: string;
   selectedPlan?: number; // days from therapist booking
-  onActivityComplete?: () => void; // Added this prop
 }
 
-const ActivitiesZone = ({ childName, selectedPlan = 30, onActivityComplete }: ActivitiesZoneProps) => {
+const ActivitiesZone = ({ childName, selectedPlan = 30 }: ActivitiesZoneProps) => {
   const [activities, setActivities] = useState<Activity[]>([
     {
       id: 'activity1',
@@ -130,11 +129,6 @@ const ActivitiesZone = ({ childName, selectedPlan = 30, onActivityComplete }: Ac
           : activity
       )
     );
-    
-    // Call the callback when an activity is completed
-    if (onActivityComplete) {
-      onActivityComplete();
-    }
   };
 
   const openActivity = (activity: Activity) => {
