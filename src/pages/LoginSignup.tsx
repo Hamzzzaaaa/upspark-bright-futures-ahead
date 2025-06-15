@@ -6,6 +6,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Sparkles, Heart, Star } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
+import { toast } from 'sonner';
 
 const LoginSignup = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -14,35 +16,69 @@ const LoginSignup = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [childName, setChildName] = useState('');
   const [parentName, setParentName] = useState('');
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { signUp, signIn, user } = useAuth();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Redirect if already logged in
+  if (user) {
+    navigate('/');
+    return null;
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
     
     // Basic validation
     if (!email || !password) {
-      alert('Please fill in all required fields');
+      toast.error('Please fill in all required fields');
+      setLoading(false);
       return;
     }
     
     if (!isLogin && password !== confirmPassword) {
-      alert('Passwords do not match');
+      toast.error('Passwords do not match');
+      setLoading(false);
       return;
     }
     
     if (!isLogin && (!childName || !parentName)) {
-      alert('Please fill in all fields for signup');
+      toast.error('Please fill in all fields for signup');
+      setLoading(false);
       return;
     }
     
-    // For login, navigate to application form
-    if (isLogin) {
-      console.log('Logging in...', { email });
-      navigate('/application');
-    } else {
-      // For signup, navigate to main app
-      console.log('Creating account...', { email, parentName, childName });
-      navigate('/');
+    try {
+      if (isLogin) {
+        const { error } = await signIn(email, password);
+        if (error) {
+          if (error.message === 'Invalid login credentials') {
+            toast.error('Invalid email or password. Please check your credentials.');
+          } else {
+            toast.error(error.message);
+          }
+        } else {
+          toast.success('Successfully logged in!');
+          navigate('/');
+        }
+      } else {
+        const { error } = await signUp(email, password, parentName, childName);
+        if (error) {
+          if (error.message === 'User already registered') {
+            toast.error('An account with this email already exists. Please sign in instead.');
+          } else {
+            toast.error(error.message);
+          }
+        } else {
+          toast.success('Account created successfully! Please check your email to verify your account.');
+          setIsLogin(true);
+        }
+      }
+    } catch (error) {
+      toast.error('An unexpected error occurred. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -93,6 +129,7 @@ const LoginSignup = () => {
                       className="border-2 border-gray-500 bg-gray-700 text-white focus:border-blue-400 focus:bg-gray-600 h-14 text-lg font-semibold placeholder:text-gray-300"
                       placeholder="Enter your name"
                       required
+                      disabled={loading}
                     />
                   </div>
                   
@@ -108,6 +145,7 @@ const LoginSignup = () => {
                       className="border-2 border-gray-500 bg-gray-700 text-white focus:border-blue-400 focus:bg-gray-600 h-14 text-lg font-semibold placeholder:text-gray-300"
                       placeholder="Enter child's name"
                       required
+                      disabled={loading}
                     />
                   </div>
                 </>
@@ -125,6 +163,7 @@ const LoginSignup = () => {
                   className="border-2 border-gray-500 bg-gray-700 text-white focus:border-blue-400 focus:bg-gray-600 h-14 text-lg font-semibold placeholder:text-gray-300"
                   placeholder="Enter your email"
                   required
+                  disabled={loading}
                 />
               </div>
               
@@ -140,6 +179,7 @@ const LoginSignup = () => {
                   className="border-2 border-gray-500 bg-gray-700 text-white focus:border-blue-400 focus:bg-gray-600 h-14 text-lg font-semibold placeholder:text-gray-300"
                   placeholder="Enter your password"
                   required
+                  disabled={loading}
                 />
               </div>
               
@@ -156,15 +196,17 @@ const LoginSignup = () => {
                     className="border-2 border-gray-500 bg-gray-700 text-white focus:border-blue-400 focus:bg-gray-600 h-14 text-lg font-semibold placeholder:text-gray-300"
                     placeholder="Confirm your password"
                     required
+                    disabled={loading}
                   />
                 </div>
               )}
               
               <Button
                 type="submit"
-                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-black py-4 rounded-lg h-16 text-xl shadow-xl transform hover:scale-105 transition-all duration-200"
+                disabled={loading}
+                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-black py-4 rounded-lg h-16 text-xl shadow-xl transform hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:transform-none"
               >
-                {isLogin ? 'Sign In 🚀' : 'Create Account 🌟'}
+                {loading ? 'Processing...' : (isLogin ? 'Sign In 🚀' : 'Create Account 🌟')}
               </Button>
             </form>
             
@@ -177,7 +219,8 @@ const LoginSignup = () => {
                 type="button"
                 variant="ghost"
                 onClick={() => setIsLogin(!isLogin)}
-                className="text-blue-400 hover:text-blue-300 font-bold text-lg hover:bg-gray-700 px-6 py-3"
+                disabled={loading}
+                className="text-blue-400 hover:text-blue-300 font-bold text-lg hover:bg-gray-700 px-6 py-3 disabled:opacity-50"
               >
                 {isLogin ? 'Sign Up Here!' : 'Sign In Here!'}
               </Button>
