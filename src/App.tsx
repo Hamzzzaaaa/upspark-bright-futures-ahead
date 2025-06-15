@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -14,6 +13,7 @@ import TherapistDetails from "./pages/TherapistDetails";
 import PlanSelection from "./pages/PlanSelection";
 import BookingConfirmation from "./pages/BookingConfirmation";
 import Billing from "./pages/Billing";
+import HomeRedirect from "./pages/HomeRedirect";
 
 const queryClient = new QueryClient();
 
@@ -26,7 +26,7 @@ const App = () => (
           <Sonner />
           <BrowserRouter>
             <Routes>
-              <Route path="/" element={<LoginSignup />} />
+              <Route path="/" element={<HomeRedirect />} />
               <Route path="/login" element={<LoginSignup />} />
               <Route path="/application" element={<Application />} />
               <Route path="/profile" element={<Profile />} />
